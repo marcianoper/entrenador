@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Panel del Entrenador</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{--bg:#0f1115;--card:#181b22;--card2:#20242d;--line:#2c313c;--txt:#eef0f4;--muted:#8a91a0;--acc:#ff6a2b;--ok:#36c26b;--bad:#e5484d}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  .hidden{display:none!important}
+  .muted{color:var(--muted)}
+  input,select,textarea{width:100%;background:var(--card2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit}
+  textarea{min-height:60px;resize:vertical}
+  label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+  button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:10px 14px;font:inherit;font-weight:600;cursor:pointer}
+  button.sec{background:var(--card2);border:1px solid var(--line);color:var(--txt);font-weight:500}
+  button.mini{padding:6px 10px;font-size:13px}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .row{display:flex;gap:8px;align-items:center}
+  .end{justify-content:flex-end}
+  .wrap{max-width:1100px;margin:0 auto;padding:16px}
+  header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px}
+  header h1{font-size:20px;margin:0}
+  header select{width:auto;min-width:140px}
+  .tabs{display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--line)}
+  .tabs button{background:none;color:var(--muted);border-radius:0;border-bottom:2px solid transparent;padding:10px 12px}
+  .tabs button.on{color:var(--txt);border-bottom-color:var(--acc)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:14px}
+  .dia{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;min-height:96px}
+  .dia:hover{border-color:var(--muted)}
+  .dia.hoy{box-shadow:inset 0 3px 0 var(--acc)}
+  .dia.sel{border-color:var(--acc)}
+  .dn{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .dt{font-weight:700;margin:6px 0 4px}
+  .dc{font-size:12px;color:var(--muted)}
+  .edhead{display:flex;justify-content:space-between;align-items:center}
+  .edhead h2{margin:0;font-size:18px}
+  .ej{display:flex;gap:10px;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}
+  .ejnum{width:28px;height:28px;border-radius:50%;background:var(--acc);display:grid;place-items:center;font-weight:700;flex:none}
+  .ejbody{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
+  .ejact{display:flex;flex-direction:column;gap:4px}
+  .ej video{width:100%;max-width:320px;border-radius:8px;background:#000}
+  .file{display:inline-block;margin:0;color:var(--txt);background:var(--card);border:1px dashed var(--muted);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:14px}
+  .file input{display:none}
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+  th{font-size:12px;color:var(--muted);text-transform:uppercase}
+  .pill{font-size:12px;padding:3px 8px;border-radius:99px;display:inline-block}
+  .p-ok{background:#1d3b29;color:#7be3a2}.p-bad{background:#3b1d1f;color:#f3a1a4}.p-n{background:var(--card2);color:var(--muted)}
+  .formcli{display:grid;grid-template-columns:2fr 1.4fr 1fr auto;gap:8px;align-items:end;margin-bottom:14px}
+  .formcli label{margin-top:0}
+  .center{min-height:100vh;display:grid;place-items:center;padding:16px}
+  .login{width:100%;max-width:360px}
+  #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#000;border:1px solid var(--line);padding:10px 16px;border-radius:10px;opacity:0;transition:.25s;pointer-events:none;z-index:9}
+  #toast.on{opacity:1}
+  .stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+  .stat b{font-size:22px;display:block}
+  @media (max-width:800px){
+    .grid7{grid-template-columns:repeat(2,1fr)}
+    .formcli{grid-template-columns:1fr}
+    .hide-m{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login" class="center hidden">
+  <div class="card login">
+    <h2 style="margin-top:0">🏋️ Panel del Entrenador</h2>
+    <label>Correo</label><input id="lgEmail" type="email" autocomplete="username">
+    <label>Contraseña</label><input id="lgPass" type="password" autocomplete="current-password">
+    <div style="margin-top:14px"><button id="btnLogin" style="width:100%">Entrar</button></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="wrap hidden">
+  <header>
+    <h1>🏋️ Panel del Entrenador</h1>
+    <div class="row">
+      <select id="selMem"></select>
+      <button id="btnNuevaMem" class="sec mini">+ Membresía</button>
+      <button id="btnSalir" class="sec mini">Salir</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="semana" class="on">📅 Semana</button>
+    <button data-tab="clientes">👥 Clientes</button>
+    <button data-tab="hoy">✅ Hoy</button>
+  </nav>
+
+  <section id="tab-semana">
+    <div id="semana" class="grid7"></div>
+    <div id="editor" class="card hidden"></div>
+  </section>
+
+  <section id="tab-clientes" class="hidden">
+    <div class="card" style="margin-bottom:14px">
+      <div class="formcli">
+        <div><label>Nombre</label><input id="cNombre" placeholder="Juan Pérez"></div>
+        <div><label>WhatsApp (10 dígitos)</label><input id="cTel" inputmode="numeric" placeholder="4621234567"></div>
+        <div><label>Vence (opcional)</label><input id="cVence" type="date"></div>
+        <div class="row"><button id="btnCli">Agregar</button><button id="btnCliCancel" class="sec hidden">Cancelar</button></div>
+      </div>
+    </div>
+    <div class="card"><div id="listaClientes"></div></div>
+  </section>
+
+  <section id="tab-hoy" class="hidden">
+    <div id="hoy"></div>
+  </section>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ======================= CONFIGURACIÓN ======================= */
+const SUPABASE_URL      = 'https://rcegikeiaxptolrduguc.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8';
+const URL_RUTINA        = 'https://TU-SITIO.pages.dev/rutina.html'; // donde publiques rutina.html
+const LIMITE_MB         = 50;   // límite por archivo del plan gratis de Supabase
+/* ============================================================= */
+
+const TZ   = 'America/Mexico_City';
+const DIAS = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+const sb   = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const $    = s => document.querySelector(s);
+
+let membresias = [], memId = null, rutinas = {}, clientes = [];
+let diaEdit = null, ed = { titulo: '', notas: '' }, ejs = [], borrarVideos = [], subiendo = 0;
+let editCliId = null;
+
+/* ---------- utilidades ---------- */
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('on'), 2600); }
+function esc(s) { return (s ?? '').toString().replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function hoyMX() { return new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date()); }
+function diaHoy() { const w = new Intl.DateTimeFormat('en-US', { timeZone: TZ, weekday: 'short' }).format(new Date()); return { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 }[w]; }
+function fallo(error, msg) { if (error) { console.error(error); toast('⚠️ ' + (msg || error.message)); return true; } return false; }
+function guardarLocal(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+function leerLocal(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+
+/* ---------- sesión ---------- */
+async function init() {
+  const { data: { session } } = await sb.auth.getSession();
+  session ? entrar() : $('#login').classList.remove('hidden');
+}
+$('#btnLogin').onclick = async () => {
+  const { error } = await sb.auth.signInWithPassword({ email: $('#lgEmail').value.trim(), password: $('#lgPass').value });
+  if (fallo(error, 'Correo o contraseña incorrectos')) return;
+  entrar();
+};
+$('#lgPass').addEventListener('keydown', e => { if (e.key === 'Enter') $('#btnLogin').click(); });
+$('#btnSalir').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+
+async function entrar() {
+  $('#login').classList.add('hidden');
+  $('#app').classList.remove('hidden');
+  await cargarMembresias();
+}
+
+/* ---------- membresías ---------- */
+async function cargarMembresias(seleccionar) {
+  const { data, error } = await sb.from('membresias').select('*').order('nombre');
+  if (fallo(error)) return;
+  membresias = data;
+  const guardada = seleccionar || leerLocal('memId');
+  memId = (membresias.find(m => m.id === guardada) || membresias[0] || {}).id || null;
+  $('#selMem').innerHTML = membresias.map(m => `<option value="${m.id}" ${m.id === memId ? 'selected' : ''}>${esc(m.nombre)}</option>`).join('');
+  cargarTodo();
+}
+$('#selMem').onchange = e => { memId = e.target.value; guardarLocal('memId', memId); cerrarEditor(); cargarTodo(); };
+$('#btnNuevaMem').onclick = async () => {
+  const nombre = (prompt('Nombre de la nueva membresía (ej. "B", "Básica"):') || '').trim();
+  if (!nombre) return;
+  const { data, error } = await sb.from('membresias').insert({ nombre }).select().single();
+  if (fallo(error, 'No se pudo crear (¿ya existe ese nombre?)')) return;
+  guardarLocal('memId', data.id);
+  cargarMembresias(data.id);
+  toast('Membresía creada');
+};
+
+function cargarTodo() { if (!memId) return; renderSemana(); renderClientes(); renderHoy(); }
+
+/* ---------- pestañas ---------- */
+document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
+  ['semana', 'clientes', 'hoy'].forEach(t => $('#tab-' + t).classList.toggle('hidden', t !== b.dataset.tab));
+  if (b.dataset.tab === 'hoy') renderHoy();
+});
+
+/* ======================= SEMANA ======================= */
+async function renderSemana() {
+  const { data, error } = await sb.from('rutinas_dia').select('id,dia,titulo,notas,ejercicios(id)').eq('membresia_id', memId);
+  if (fallo(error)) return;
+  rutinas = {}; data.forEach(r => rutinas[r.dia] = r);
+  const hoy = diaHoy();
+  $('#semana').innerHTML = [1, 2, 3, 4, 5, 6, 7].map(d => {
+    const r = rutinas[d], n = r?.ejercicios?.length || 0;
+    return `<div class="dia ${d === hoy ? 'hoy' : ''} ${d === diaEdit ? 'sel' : ''}" data-dia="${d}">
+      <div class="dn">${DIAS[d]}${d === hoy ? ' · hoy' : ''}</div>
+      <div class="dt">${r?.titulo ? esc(r.titulo) : '<span class="muted">Descanso</span>'}</div>
+      <div class="dc">${n} ejercicio${n === 1 ? '' : 's'}</div></div>`;
+  }).join('');
+}
+$('#semana').onclick = e => { const el = e.target.closest('.dia'); if (el) abrirDia(+el.dataset.dia); };
+
+async function abrirDia(d) {
+  if (subiendo) return toast('Espera a que termine de subir el video');
+  diaEdit = d; borrarVideos = [];
+  const r = rutinas[d];
+  ed = { titulo: r?.titulo || '', notas: r?.notas || '' };
+  ejs = [];
+  if (r) {
+    const { data, error } = await sb.from('ejercicios').select('*').eq('rutina_id', r.id).order('orden');
+    if (fallo(error)) return;
+    ejs = data.map(e => ({ ...e }));
+  }
+  renderEditor(); renderSemana();
+  $('#editor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function cerrarEditor() { diaEdit = null; $('#editor').classList.add('hidden'); renderSemana(); }
+
+function renderEditor() {
+  const el = $('#editor'); el.classList.remove('hidden');
+  el.innerHTML = `
+    <div class="edhead"><h2>${DIAS[diaEdit]}</h2><button class="sec mini" data-act="cerrar">✕ Cerrar</button></div>
+    <label>Tema del día <span class="muted">(déjalo vacío si es descanso)</span></label>
+    <input id="edTitulo" value="${esc(ed.titulo)}" placeholder="Ej. Pecho y tríceps">
+    <label>Indicaciones generales (opcional)</label>
+    <textarea id="edNotas" placeholder="Ej. Calienta 10 min antes. Descanso de 60 s entre series.">${esc(ed.notas)}</textarea>
+    <div>${ejs.map((e, i) => `
+      <div class="ej">
+        <div class="ejnum">${i + 1}</div>
+        <div class="ejbody">
+          <input data-f="nombre" data-i="${i}" value="${esc(e.nombre)}" placeholder="Nombre del ejercicio (ej. Press de banca)">
+          <div class="row">
+            <input data-f="series" data-i="${i}" value="${esc(e.series)}" type="number" min="1" placeholder="Series">
+            <input data-f="reps" data-i="${i}" value="${esc(e.reps)}" placeholder="Reps (ej. 10-12)">
+          </div>
+          <input data-f="nota" data-i="${i}" value="${esc(e.nota)}" placeholder="Nota (opcional)">
+          ${e.video_url ? `<video src="${esc(e.video_url)}" controls playsinline preload="metadata"></video>` : ''}
+          <div class="row">
+            <label class="file">🎥 ${e.video_url ? 'Cambiar video' : 'Subir video'}<input type="file" accept="video/*" data-up="${i}"></label>
+            <span class="muted" id="st${i}"></span>
+          </div>
+        </div>
+        <div class="ejact">
+          <button class="sec mini" data-act="subir" data-i="${i}" title="Subir">↑</button>
+          <button class="sec mini" data-act="bajar" data-i="${i}" title="Bajar">↓</button>
+          <button class="sec mini" data-act="borrar" data-i="${i}" title="Eliminar">🗑</button>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div class="row" style="margin-top:12px;justify-content:space-between">
+      <button class="sec" data-act="agregar">+ Agregar ejercicio</button>
+      <button id="btnGuardarDia" data-act="guardar" ${subiendo ? 'disabled' : ''}>💾 Guardar ${DIAS[diaEdit]}</button>
+    </div>`;
+}
+
+$('#editor').addEventListener('input', e => {
+  const t = e.target;
+  if (t.id === 'edTitulo') ed.titulo = t.value;
+  else if (t.id === 'edNotas') ed.notas = t.value;
+  else if (t.dataset.f) ejs[+t.dataset.i][t.dataset.f] = t.value;
+});
+
+$('#editor').addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const i = +b.dataset.i, act = b.dataset.act;
+  if (act === 'cerrar') return cerrarEditor();
+  if (act === 'guardar') return guardarDia();
+  if (act === 'agregar') { ejs.push({ nombre: '', series: '', reps: '', nota: '' }); return renderEditor(); }
+  if (act === 'borrar') {
+    if (!confirm('¿Eliminar este ejercicio?')) return;
+    if (ejs[i].video_path) borrarVideos.push(ejs[i].video_path);
+    ejs.splice(i, 1); return renderEditor();
+  }
+  if (act === 'subir' && i > 0) { [ejs[i - 1], ejs[i]] = [ejs[i], ejs[i - 1]]; return renderEditor(); }
+  if (act === 'bajar' && i < ejs.length - 1) { [ejs[i + 1], ejs[i]] = [ejs[i], ejs[i + 1]]; return renderEditor(); }
+});
+
+$('#editor').addEventListener('change', async e => {
+  const inp = e.target; if (!inp.dataset.up) return;
+  const i = +inp.dataset.up, file = inp.files[0]; if (!file) return;
+  if (file.size > LIMITE_MB * 1024 * 1024) return toast(`El video pesa ${(file.size / 1048576).toFixed(0)} MB. Máximo ${LIMITE_MB} MB: comprímelo primero.`);
+  const ej = ejs[i];
+  const ext = (file.name.split('.').pop() || 'mp4').toLowerCase();
+  const path = `${memId}/${crypto.randomUUID()}.${ext}`;
+  subiendo++; $('#st' + i).textContent = '⏳ Subiendo…'; $('#btnGuardarDia').disabled = true;
+  const { error } = await sb.storage.from('videos').upload(path, file, { contentType: file.type || 'video/mp4' });
+  subiendo--;
+  if (fallo(error, 'No se pudo subir el video')) { renderEditor(); return; }
+  if (ej.video_path) borrarVideos.push(ej.video_path);
+  ej.video_path = path;
+  ej.video_url = sb.storage.from('videos').getPublicUrl(path).data.publicUrl;
+  if (!ej.nombre) ej.nombre = file.name.replace(/\.[^.]+$/, '');
+  renderEditor(); toast('Video subido ✔ — no olvides Guardar');
+});
+
+async function guardarDia() {
+  if (subiendo) return toast('Espera a que termine de subir el video');
+  const btn = $('#btnGuardarDia'); btn.disabled = true; btn.textContent = 'Guardando…';
+  const { data: r, error } = await sb.from('rutinas_dia')
+    .upsert({ membresia_id: memId, dia: diaEdit, titulo: ed.titulo.trim() || null, notas: ed.notas.trim() || null, updated_at: new Date().toISOString() },
+            { onConflict: 'membresia_id,dia' })
+    .select().single();
+  if (fallo(error)) { renderEditor(); return; }
+
+  const del = await sb.from('ejercicios').delete().eq('rutina_id', r.id);
+  if (fallo(del.error)) { renderEditor(); return; }
+
+  const filas = ejs.filter(e => (e.nombre || '').trim() || e.video_url).map((e, i) => ({
+    rutina_id: r.id, orden: i + 1,
+    nombre: (e.nombre || '').trim() || `Ejercicio ${i + 1}`,
+    series: e.series ? parseInt(e.series) : null,
+    reps: (e.reps ?? '').toString().trim() || null,
+    nota: (e.nota || '').trim() || null,
+    video_path: e.video_path || null, video_url: e.video_url || null
+  }));
+  if (filas.length) {
+    const ins = await sb.from('ejercicios').insert(filas);
+    if (fallo(ins.error)) { renderEditor(); return; }
+  }
+  if (borrarVideos.length) { await sb.storage.from('videos').remove(borrarVideos); borrarVideos = []; }
+  toast(`${DIAS[diaEdit]} guardado ✔`);
+  await renderSemana(); await abrirDia(diaEdit);
+}
+
+/* ======================= CLIENTES ======================= */
+async function renderClientes() {
+  const { data, error } = await sb.from('clientes').select('*').eq('membresia_id', memId).order('nombre');
+  if (fallo(error)) return;
+  clientes = data;
+  const hoy = hoyMX();
+  $('#listaClientes').innerHTML = !clientes.length ? '<p class="muted">Aún no hay clientes en esta membresía.</p>' : `
+    <table><thead><tr><th>Cliente</th><th class="hide-m">WhatsApp</th><th>Estado</th><th></th></tr></thead><tbody>
+    ${clientes.map(c => {
+      const vencido = c.vence && c.vence < hoy;
+      const estado = !c.activo ? '<span class="pill p-n">Pausado</span>' : vencido ? '<span class="pill p-bad">Vencido</span>' : '<span class="pill p-ok">Activo</span>';
+      return `<tr>
+        <td><b>${esc(c.nombre)}</b><div class="muted" style="font-size:12px">${c.vence ? 'Vence ' + c.vence : 'Sin vencimiento'}</div></td>
+        <td class="hide-m">${esc(c.telefono)}</td>
+        <td>${estado}</td>
+        <td><div class="row end" style="flex-wrap:wrap">
+          <button class="sec mini" data-c="link" data-id="${c.id}">🔗 Link</button>
+          <button class="sec mini" data-c="pausa" data-id="${c.id}">${c.activo ? '⏸' : '▶️'}</button>
+          <button class="sec mini" data-c="editar" data-id="${c.id}">✏️</button>
+          <button class="sec mini" data-c="borrar" data-id="${c.id}">🗑</button>
+        </div></td></tr>`;
+    }).join('')}</tbody></table>`;
+}
+
+$('#listaClientes').onclick = async e => {
+  const b = e.target.closest('[data-c]'); if (!b) return;
+  const c = clientes.find(x => x.id === b.dataset.id);
+  if (b.dataset.c === 'link') {
+    const url = `${URL_RUTINA}?t=${c.token}`;
+    try { await navigator.clipboard.writeText(url); toast('Link copiado ✔'); } catch { prompt('Copia el link:', url); }
+  }
+  if (b.dataset.c === 'pausa') {
+    const { error } = await sb.from('clientes').update({ activo: !c.activo }).eq('id', c.id);
+    if (!fallo(error)) { toast(c.activo ? 'Cliente pausado' : 'Cliente activado'); renderClientes(); }
+  }
+  if (b.dataset.c === 'editar') {
+    editCliId = c.id;
+    $('#cNombre').value = c.nombre; $('#cTel').value = c.telefono; $('#cVence').value = c.vence || '';
+    $('#btnCli').textContent = 'Guardar cambios'; $('#btnCliCancel').classList.remove('hidden');
+    $('#cNombre').focus();
+  }
+  if (b.dataset.c === 'borrar') {
+    if (!confirm(`¿Eliminar a ${c.nombre}? Se borra también su historial.`)) return;
+    const { error } = await sb.from('clientes').delete().eq('id', c.id);
+    if (!fallo(error)) { toast('Cliente eliminado'); renderClientes(); }
+  }
+};
+
+function limpiarFormCli() {
+  editCliId = null; $('#cNombre').value = ''; $('#cTel').value = ''; $('#cVence').value = '';
+  $('#btnCli').textContent = 'Agregar'; $('#btnCliCancel').classList.add('hidden');
+}
+$('#btnCliCancel').onclick = limpiarFormCli;
+$('#btnCli').onclick = async () => {
+  const nombre = $('#cNombre').value.trim();
+  const telefono = $('#cTel').value.replace(/\D/g, '');
+  const vence = $('#cVence').value || null;
+  if (!nombre) return toast('Escribe el nombre');
+  if (telefono.length !== 10 && telefono.length !== 12) return toast('El WhatsApp debe tener 10 dígitos');
+  const q = editCliId
+    ? sb.from('clientes').update({ nombre, telefono, vence }).eq('id', editCliId)
+    : sb.from('clientes').insert({ nombre, telefono, vence, membresia_id: memId });
+  const { error } = await q;
+  if (fallo(error)) return;
+  toast(editCliId ? 'Cliente actualizado ✔' : 'Cliente agregado ✔');
+  limpiarFormCli(); renderClientes();
+};
+
+/* ======================= HOY ======================= */
+async function renderHoy() {
+  const hoy = hoyMX(), d = diaHoy();
+  const { data: cls, error } = await sb.from('clientes').select('id,nombre,activo,vence').eq('membresia_id', memId).order('nombre');
+  if (fallo(error)) return;
+  const ids = cls.map(c => c.id);
+  let env = [], comp = [];
+  if (ids.length) {
+    const a = await sb.from('envios').select('cliente_id,estado,detalle').eq('fecha', hoy).in('cliente_id', ids);
+    const b = await sb.from('completados').select('cliente_id').eq('fecha', hoy).in('cliente_id', ids);
+    env = a.data || []; comp = (b.data || []).map(x => x.cliente_id);
+  }
+  const r = rutinas[d];
+  const activos = cls.filter(c => c.activo && !(c.vence && c.vence < hoy));
+  const enviados = env.filter(x => x.estado === 'enviado').length;
+  const terminaron = activos.filter(c => comp.includes(c.id)).length;
+  $('#hoy').innerHTML = `
+    <div class="stats">
+      <div class="stat"><span class="muted">${DIAS[d]} · ${hoy}</span><b>${r?.titulo ? esc(r.titulo) : 'Descanso'}</b></div>
+      <div class="stat"><span class="muted">WhatsApp enviados</span><b>${enviados} / ${activos.length}</b></div>
+      <div class="stat"><span class="muted">Terminaron</span><b>${terminaron} / ${activos.length}</b></div>
+      <div class="stat"><button class="sec mini" onclick="renderHoy()">↻ Actualizar</button></div>
+    </div>
+    <div class="card">${!cls.length ? '<p class="muted">Sin clientes.</p>' : `
+      <table><thead><tr><th>Cliente</th><th>WhatsApp</th><th>Terminó</th></tr></thead><tbody>
+      ${cls.map(c => {
+        const e = env.find(x => x.cliente_id === c.id);
+        const inactivo = !c.activo || (c.vence && c.vence < hoy);
+        const w = inactivo ? '<span class="pill p-n">No aplica</span>'
+          : !e ? '<span class="pill p-n">Pendiente</span>'
+          : e.estado === 'enviado' ? '<span class="pill p-ok">Enviado</span>'
+          : `<span class="pill p-bad" title="${esc(e.detalle)}">Error</span>`;
+        return `<tr><td>${esc(c.nombre)}</td><td>${w}</td><td>${comp.includes(c.id) ? '✅' : '<span class="muted">—</span>'}</td></tr>`;
+      }).join('')}</tbody></table>`}</div>`;
+}
+
+init();
+</script>
+</body>
+</html>

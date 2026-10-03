@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mi rutina</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{--bg:#0f1115;--card:#181b22;--card2:#20242d;--line:#2c313c;--txt:#eef0f4;--muted:#8a91a0;--acc:#ff6a2b;--ok:#36c26b}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  .wrap{max-width:560px;margin:0 auto;padding:16px 16px 40px}
+  .hola{color:var(--muted);font-size:14px;margin:4px 0 2px}
+  h1{font-size:26px;margin:0 0 4px;line-height:1.2}
+  .sub{color:var(--muted);font-size:14px}
+  .dias{display:flex;gap:6px;overflow-x:auto;margin:16px -16px;padding:0 16px 4px;scrollbar-width:none}
+  .dias::-webkit-scrollbar{display:none}
+  .chip{flex:none;background:var(--card);border:1px solid var(--line);color:var(--muted);border-radius:99px;padding:7px 14px;font:inherit;font-size:14px;cursor:pointer}
+  .chip.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+  .chip.hoy:not(.on){color:var(--txt);border-color:var(--acc)}
+  .notas{background:var(--card2);border-left:3px solid var(--acc);border-radius:8px;padding:10px 12px;margin:0 0 14px;font-size:15px}
+  .ej{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:14px}
+  .ej video{width:100%;display:block;background:#000;max-height:70vh}
+  .ejtxt{padding:12px 14px}
+  .ejtop{display:flex;gap:10px;align-items:center}
+  .num{width:28px;height:28px;border-radius:50%;background:var(--acc);display:grid;place-items:center;font-weight:700;font-size:14px;flex:none}
+  .ejn{font-weight:700;font-size:17px}
+  .sr{margin-top:6px;display:flex;gap:8px;flex-wrap:wrap}
+  .tag{background:var(--card2);border-radius:8px;padding:3px 10px;font-size:14px}
+  .nota{color:var(--muted);font-size:14px;margin-top:6px}
+  .btn{width:100%;background:var(--ok);color:#fff;border:0;border-radius:14px;padding:16px;font:inherit;font-size:17px;font-weight:700;cursor:pointer;margin-top:6px}
+  .btn:disabled{opacity:.6}
+  .listo{text-align:center;background:#1d3b29;color:#7be3a2;border-radius:14px;padding:16px;font-weight:700;margin-top:6px}
+  .vacio{text-align:center;padding:50px 10px;color:var(--muted)}
+  .vacio .big{font-size:48px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><div class="vacio">Cargando tu rutina…</div></div>
+
+<script>
+/* ======================= CONFIGURACIÓN ======================= */
+const SUPABASE_URL      = 'https://TU-PROYECTO.supabase.co';
+const SUPABASE_ANON_KEY = 'TU_ANON_KEY';
+/* ============================================================= */
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const DIAS  = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+const CORTO = ['', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+const token = new URLSearchParams(location.search).get('t') || '';
+const $app  = document.getElementById('app');
+const esc = s => (s ?? '').toString().replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function mensaje(icono, titulo, texto) {
+  $app.innerHTML = `<div class="vacio"><div class="big">${icono}</div><h1>${titulo}</h1><p>${texto}</p></div>`;
+}
+
+async function cargar(dia) {
+  if (!/^[0-9a-f-]{36}$/i.test(token)) return mensaje('🔗', 'Link no válido', 'Pide a tu entrenador que te vuelva a mandar tu link.');
+  const { data, error } = await sb.rpc('rutina_cliente', { p_token: token, p_dia: dia ?? null });
+  if (error) return mensaje('⚠️', 'No se pudo cargar', 'Revisa tu conexión e inténtalo de nuevo.');
+  if (data.error === 'link_invalido') return mensaje('🔗', 'Link no válido', 'Pide a tu entrenador que te vuelva a mandar tu link.');
+  if (data.error === 'membresia_vencida') return mensaje('⏸', 'Membresía inactiva', `${esc(data.nombre)}, tu membresía no está activa. Contacta a tu entrenador para renovarla.`);
+  render(data);
+}
+
+function render(d) {
+  const esHoy = d.dia === d.dia_hoy;
+  const chips = [1, 2, 3, 4, 5, 6, 7].map(n =>
+    `<button class="chip ${n === d.dia ? 'on' : ''} ${n === d.dia_hoy ? 'hoy' : ''}" data-d="${n}">${CORTO[n]}${n === d.dia_hoy ? ' · hoy' : ''}</button>`).join('');
+
+  let cuerpo;
+  if (!d.titulo && !d.ejercicios.length) {
+    cuerpo = `<div class="vacio"><div class="big">😴</div><p>${esHoy ? 'Hoy es' : 'Este es'} día de descanso. ¡Recupérate bien!</p></div>`;
+  } else {
+    cuerpo = (d.notas ? `<div class="notas">${esc(d.notas).replace(/\n/g, '<br>')}</div>` : '') +
+      d.ejercicios.map((e, i) => `
+        <div class="ej">
+          ${e.video_url ? `<video src="${esc(e.video_url)}" controls playsinline preload="metadata"></video>` : ''}
+          <div class="ejtxt">
+            <div class="ejtop"><div class="num">${i + 1}</div><div class="ejn">${esc(e.nombre)}</div></div>
+            ${(e.series || e.reps) ? `<div class="sr">${e.series ? `<span class="tag">${e.series} series</span>` : ''}${e.reps ? `<span class="tag">${esc(e.reps)} reps</span>` : ''}</div>` : ''}
+            ${e.nota ? `<div class="nota">💡 ${esc(e.nota)}</div>` : ''}
+          </div>
+        </div>`).join('') +
+      (esHoy ? (d.terminado
+        ? `<div class="listo">✅ ¡Rutina de hoy terminada! Bien hecho 🔥</div>`
+        : `<button class="btn" id="btnFin">✅ Terminé mi rutina</button>`) : '');
+  }
+
+  $app.innerHTML = `
+    <div class="hola">Hola, ${esc(d.nombre)} 👋 · ${esc(d.membresia)}</div>
+    <h1>${DIAS[d.dia]}${d.titulo ? ' – ' + esc(d.titulo) : ''}</h1>
+    ${d.ejercicios.length ? `<div class="sub">${d.ejercicios.length} ejercicio${d.ejercicios.length === 1 ? '' : 's'}</div>` : ''}
+    <div class="dias">${chips}</div>
+    ${cuerpo}`;
+
+  $app.querySelectorAll('.chip').forEach(c => c.onclick = () => cargar(+c.dataset.d));
+  const b = document.getElementById('btnFin');
+  if (b) b.onclick = async () => {
+    b.disabled = true; b.textContent = 'Guardando…';
+    const { data, error } = await sb.rpc('marcar_terminado', { p_token: token });
+    if (error || !data) { b.disabled = false; b.textContent = '✅ Terminé mi rutina'; return alert('No se pudo guardar, inténtalo de nuevo.'); }
+    cargar(d.dia);
+  };
+  // Al reproducir un video, pausa los demás
+  $app.querySelectorAll('video').forEach(v => v.addEventListener('play', () =>
+    $app.querySelectorAll('video').forEach(o => { if (o !== v) o.pause(); })));
+}
+
+cargar();
+</script>
+</body>
+</html>
