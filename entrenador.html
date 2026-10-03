@@ -123,7 +123,7 @@
 /* ======================= CONFIGURACIÓN ======================= */
 const SUPABASE_URL      = 'https://rcegikeiaxptolrduguc.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8';
-const URL_RUTINA        = 'https://marcianoper.github.io/entrenador/rutina.html'; // donde publiques rutina.html
+const URL_RUTINA        = 'https://TU-SITIO.pages.dev/rutina.html'; // donde publiques rutina.html
 const LIMITE_MB         = 50;   // límite por archivo del plan gratis de Supabase
 /* ============================================================= */
 
@@ -166,7 +166,7 @@ async function entrar() {
 
 /* ---------- membresías ---------- */
 async function cargarMembresias(seleccionar) {
-  const { data, error } = await sb.from('membresias').select('*').order('nombre');
+  const { data, error } = await sb.from('ent_membresias').select('*').order('nombre');
   if (fallo(error)) return;
   membresias = data;
   const guardada = seleccionar || leerLocal('memId');
@@ -178,7 +178,7 @@ $('#selMem').onchange = e => { memId = e.target.value; guardarLocal('memId', mem
 $('#btnNuevaMem').onclick = async () => {
   const nombre = (prompt('Nombre de la nueva membresía (ej. "B", "Básica"):') || '').trim();
   if (!nombre) return;
-  const { data, error } = await sb.from('membresias').insert({ nombre }).select().single();
+  const { data, error } = await sb.from('ent_membresias').insert({ nombre }).select().single();
   if (fallo(error, 'No se pudo crear (¿ya existe ese nombre?)')) return;
   guardarLocal('memId', data.id);
   cargarMembresias(data.id);
@@ -196,7 +196,7 @@ document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
 
 /* ======================= SEMANA ======================= */
 async function renderSemana() {
-  const { data, error } = await sb.from('rutinas_dia').select('id,dia,titulo,notas,ejercicios(id)').eq('membresia_id', memId);
+  const { data, error } = await sb.from('ent_rutinas_dia').select('id,dia,titulo,notas,ejercicios:ent_ejercicios(id)').eq('membresia_id', memId);
   if (fallo(error)) return;
   rutinas = {}; data.forEach(r => rutinas[r.dia] = r);
   const hoy = diaHoy();
@@ -217,7 +217,7 @@ async function abrirDia(d) {
   ed = { titulo: r?.titulo || '', notas: r?.notas || '' };
   ejs = [];
   if (r) {
-    const { data, error } = await sb.from('ejercicios').select('*').eq('rutina_id', r.id).order('orden');
+    const { data, error } = await sb.from('ent_ejercicios').select('*').eq('rutina_id', r.id).order('orden');
     if (fallo(error)) return;
     ejs = data.map(e => ({ ...e }));
   }
@@ -293,12 +293,12 @@ $('#editor').addEventListener('change', async e => {
   const ext = (file.name.split('.').pop() || 'mp4').toLowerCase();
   const path = `${memId}/${crypto.randomUUID()}.${ext}`;
   subiendo++; $('#st' + i).textContent = '⏳ Subiendo…'; $('#btnGuardarDia').disabled = true;
-  const { error } = await sb.storage.from('videos').upload(path, file, { contentType: file.type || 'video/mp4' });
+  const { error } = await sb.storage.from('entrenador-videos').upload(path, file, { contentType: file.type || 'video/mp4' });
   subiendo--;
   if (fallo(error, 'No se pudo subir el video')) { renderEditor(); return; }
   if (ej.video_path) borrarVideos.push(ej.video_path);
   ej.video_path = path;
-  ej.video_url = sb.storage.from('videos').getPublicUrl(path).data.publicUrl;
+  ej.video_url = sb.storage.from('entrenador-videos').getPublicUrl(path).data.publicUrl;
   if (!ej.nombre) ej.nombre = file.name.replace(/\.[^.]+$/, '');
   renderEditor(); toast('Video subido ✔ — no olvides Guardar');
 });
@@ -306,13 +306,13 @@ $('#editor').addEventListener('change', async e => {
 async function guardarDia() {
   if (subiendo) return toast('Espera a que termine de subir el video');
   const btn = $('#btnGuardarDia'); btn.disabled = true; btn.textContent = 'Guardando…';
-  const { data: r, error } = await sb.from('rutinas_dia')
+  const { data: r, error } = await sb.from('ent_rutinas_dia')
     .upsert({ membresia_id: memId, dia: diaEdit, titulo: ed.titulo.trim() || null, notas: ed.notas.trim() || null, updated_at: new Date().toISOString() },
             { onConflict: 'membresia_id,dia' })
     .select().single();
   if (fallo(error)) { renderEditor(); return; }
 
-  const del = await sb.from('ejercicios').delete().eq('rutina_id', r.id);
+  const del = await sb.from('ent_ejercicios').delete().eq('rutina_id', r.id);
   if (fallo(del.error)) { renderEditor(); return; }
 
   const filas = ejs.filter(e => (e.nombre || '').trim() || e.video_url).map((e, i) => ({
@@ -324,17 +324,17 @@ async function guardarDia() {
     video_path: e.video_path || null, video_url: e.video_url || null
   }));
   if (filas.length) {
-    const ins = await sb.from('ejercicios').insert(filas);
+    const ins = await sb.from('ent_ejercicios').insert(filas);
     if (fallo(ins.error)) { renderEditor(); return; }
   }
-  if (borrarVideos.length) { await sb.storage.from('videos').remove(borrarVideos); borrarVideos = []; }
+  if (borrarVideos.length) { await sb.storage.from('entrenador-videos').remove(borrarVideos); borrarVideos = []; }
   toast(`${DIAS[diaEdit]} guardado ✔`);
   await renderSemana(); await abrirDia(diaEdit);
 }
 
 /* ======================= CLIENTES ======================= */
 async function renderClientes() {
-  const { data, error } = await sb.from('clientes').select('*').eq('membresia_id', memId).order('nombre');
+  const { data, error } = await sb.from('ent_clientes').select('*').eq('membresia_id', memId).order('nombre');
   if (fallo(error)) return;
   clientes = data;
   const hoy = hoyMX();
@@ -364,7 +364,7 @@ $('#listaClientes').onclick = async e => {
     try { await navigator.clipboard.writeText(url); toast('Link copiado ✔'); } catch { prompt('Copia el link:', url); }
   }
   if (b.dataset.c === 'pausa') {
-    const { error } = await sb.from('clientes').update({ activo: !c.activo }).eq('id', c.id);
+    const { error } = await sb.from('ent_clientes').update({ activo: !c.activo }).eq('id', c.id);
     if (!fallo(error)) { toast(c.activo ? 'Cliente pausado' : 'Cliente activado'); renderClientes(); }
   }
   if (b.dataset.c === 'editar') {
@@ -375,7 +375,7 @@ $('#listaClientes').onclick = async e => {
   }
   if (b.dataset.c === 'borrar') {
     if (!confirm(`¿Eliminar a ${c.nombre}? Se borra también su historial.`)) return;
-    const { error } = await sb.from('clientes').delete().eq('id', c.id);
+    const { error } = await sb.from('ent_clientes').delete().eq('id', c.id);
     if (!fallo(error)) { toast('Cliente eliminado'); renderClientes(); }
   }
 };
@@ -392,8 +392,8 @@ $('#btnCli').onclick = async () => {
   if (!nombre) return toast('Escribe el nombre');
   if (telefono.length !== 10 && telefono.length !== 12) return toast('El WhatsApp debe tener 10 dígitos');
   const q = editCliId
-    ? sb.from('clientes').update({ nombre, telefono, vence }).eq('id', editCliId)
-    : sb.from('clientes').insert({ nombre, telefono, vence, membresia_id: memId });
+    ? sb.from('ent_clientes').update({ nombre, telefono, vence }).eq('id', editCliId)
+    : sb.from('ent_clientes').insert({ nombre, telefono, vence, membresia_id: memId });
   const { error } = await q;
   if (fallo(error)) return;
   toast(editCliId ? 'Cliente actualizado ✔' : 'Cliente agregado ✔');
@@ -403,13 +403,13 @@ $('#btnCli').onclick = async () => {
 /* ======================= HOY ======================= */
 async function renderHoy() {
   const hoy = hoyMX(), d = diaHoy();
-  const { data: cls, error } = await sb.from('clientes').select('id,nombre,activo,vence').eq('membresia_id', memId).order('nombre');
+  const { data: cls, error } = await sb.from('ent_clientes').select('id,nombre,activo,vence').eq('membresia_id', memId).order('nombre');
   if (fallo(error)) return;
   const ids = cls.map(c => c.id);
   let env = [], comp = [];
   if (ids.length) {
-    const a = await sb.from('envios').select('cliente_id,estado,detalle').eq('fecha', hoy).in('cliente_id', ids);
-    const b = await sb.from('completados').select('cliente_id').eq('fecha', hoy).in('cliente_id', ids);
+    const a = await sb.from('ent_envios').select('cliente_id,estado,detalle').eq('fecha', hoy).in('cliente_id', ids);
+    const b = await sb.from('ent_completados').select('cliente_id').eq('fecha', hoy).in('cliente_id', ids);
     env = a.data || []; comp = (b.data || []).map(x => x.cliente_id);
   }
   const r = rutinas[d];
