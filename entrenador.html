@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Panel del Entrenador</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://js.stripe.com/endive/stripe.js"></script>
 <style>
   :root{--bg:#0f1115;--card:#181b22;--card2:#20242d;--line:#2c313c;--txt:#eef0f4;--muted:#8a91a0;--acc:#ff6a2b;--ok:#36c26b;--bad:#e5484d}
   *{box-sizing:border-box}
@@ -59,6 +60,15 @@
   .stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
   .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
   .stat b{font-size:22px;display:block}
+  .testbar{background:#3a2b08;border:1px solid #7a5a12;color:#ffd86b;border-radius:10px;padding:9px 12px;margin-bottom:12px;font-size:13px}
+  .modalbg{position:fixed;inset:0;background:#000a;z-index:30;display:grid;place-items:center;padding:16px}
+  .modal{width:min(760px,100%);max-height:92vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+  .modalhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}
+  .modalhead h2{margin:0;font-size:19px}
+  #checkout{min-height:430px;margin-top:12px;background:#fff;border-radius:12px;overflow:hidden}
+  .paymeta{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  .paymeta span{background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:7px 10px;font-size:13px}
+  .payok{background:#153320;border:1px solid #2d7543;color:#9cf0b6;padding:12px;border-radius:10px;margin:10px 0}
   @media (max-width:800px){
     .grid7{grid-template-columns:repeat(2,1fr)}
     .formcli{grid-template-columns:1fr}
@@ -80,6 +90,7 @@
 
 <!-- APP -->
 <div id="app" class="wrap hidden">
+  <div class="testbar">🧪 <b>MODO PRUEBA STRIPE</b> · Cobro fijo de $10 MXN · No usar claves de producción.</div>
   <header>
     <h1>🏋️ Panel del Entrenador</h1>
     <div class="row">
@@ -92,6 +103,7 @@
   <nav class="tabs">
     <button data-tab="semana" class="on">📅 Semana</button>
     <button data-tab="clientes">👥 Clientes</button>
+    <button data-tab="pagos">💳 Pagos</button>
     <button data-tab="hoy">✅ Hoy</button>
   </nav>
 
@@ -112,9 +124,31 @@
     <div class="card"><div id="listaClientes"></div></div>
   </section>
 
+  <section id="tab-pagos" class="hidden">
+    <div class="card"><div id="listaPagos"><p class="muted">Cargando pagos…</p></div></div>
+  </section>
+
   <section id="tab-hoy" class="hidden">
     <div id="hoy"></div>
   </section>
+</div>
+
+<div id="pagoModal" class="modalbg hidden">
+  <div class="modal">
+    <div class="modalhead">
+      <div>
+        <h2>💳 Cobro de membresía</h2>
+        <div class="muted" id="pagoCliente">Cliente</div>
+      </div>
+      <button id="btnCerrarPago" class="sec mini">✕ Cerrar</button>
+    </div>
+    <div class="paymeta">
+      <span>Importe de prueba: <b>$10.00 MXN</b></span>
+      <span id="pagoMembresia">Membresía</span>
+    </div>
+    <div id="pagoEstado" class="muted" style="margin-top:10px">Preparando Stripe…</div>
+    <div id="checkout"></div>
+  </div>
 </div>
 
 <div id="toast"></div>
@@ -125,6 +159,8 @@ const SUPABASE_URL      = 'https://rcegikeiaxptolrduguc.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8';
 const URL_RUTINA        = 'https://marcianoper.github.io/entrenador/rutina.html'; // donde publiques rutina.html
 const LIMITE_MB         = 50;   // límite por archivo del plan gratis de Supabase
+const STRIPE_PUBLIC_KEY = 'pk_test_51UN3dBB5gxh1rTOztfjv7g6MFUaxqkxSZeTa32fRktz6hNIDIhxKEnBNnfJx6Ew9mE657b3omLjyAK3FOctKjxni00kONxMH35';
+const PRECIO_PRUEBA_MXN = 10;
 /* ============================================================= */
 
 const TZ   = 'America/Mexico_City';
@@ -135,6 +171,7 @@ const $    = s => document.querySelector(s);
 let membresias = [], memId = null, rutinas = {}, clientes = [];
 let diaEdit = null, ed = { titulo: '', notas: '' }, ejs = [], borrarVideos = [], subiendo = 0;
 let editCliId = null;
+let stripe = null, checkoutPago = null, clienteCobro = null;
 
 /* ---------- utilidades ---------- */
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('on'), 2600); }
@@ -185,7 +222,7 @@ $('#btnNuevaMem').onclick = async () => {
   toast('Membresía creada');
 };
 
-function cargarTodo() { if (!memId) return; renderSemana(); renderClientes(); renderHoy(); }
+function cargarTodo() { if (!memId) return; renderSemana(); renderClientes(); renderPagos(); renderHoy(); }
 
 /* ---------- pestañas ---------- */
 document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
@@ -348,7 +385,8 @@ async function renderClientes() {
         <td class="hide-m">${esc(c.telefono)}</td>
         <td>${estado}</td>
         <td><div class="row end" style="flex-wrap:wrap">
-          <button class="sec mini" data-c="link" data-id="${c.id}">🔗 Link</button>
+          <button class="mini" data-c="cobrar" data-id="${c.id}">💳 Cobrar</button>
+           <button class="sec mini" data-c="link" data-id="${c.id}">🔗 Rutina</button>
           <button class="sec mini" data-c="pausa" data-id="${c.id}">${c.activo ? '⏸' : '▶️'}</button>
           <button class="sec mini" data-c="editar" data-id="${c.id}">✏️</button>
           <button class="sec mini" data-c="borrar" data-id="${c.id}">🗑</button>
@@ -400,6 +438,104 @@ $('#btnCli').onclick = async () => {
   limpiarFormCli(); renderClientes();
 };
 
+/* ======================= PAGOS STRIPE ======================= */
+async function abrirCobro(c) {
+  clienteCobro = c;
+  $('#pagoCliente').textContent = c.nombre;
+  const mem = membresias.find(m => m.id === c.membresia_id) || membresias.find(m => m.id === memId);
+  $('#pagoMembresia').textContent = 'Membresía: ' + (mem?.nombre || 'Actual');
+  $('#pagoEstado').textContent = 'Preparando Stripe…';
+  $('#checkout').innerHTML = '';
+  $('#pagoModal').classList.remove('hidden');
+
+  if (!STRIPE_PUBLIC_KEY.startsWith('pk_test_') || STRIPE_PUBLIC_KEY.includes('REEMPLAZA')) {
+    $('#pagoEstado').innerHTML = '⚠️ Falta colocar tu <b>clave publicable de prueba</b> de Stripe (pk_test_...).';
+    return;
+  }
+
+  try {
+    stripe ||= Stripe(STRIPE_PUBLIC_KEY);
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) throw new Error('Tu sesión expiró. Vuelve a iniciar sesión.');
+
+    const fetchClientSecret = async () => {
+      const r = await fetch(`${SUPABASE_URL}/functions/v1/create-checkout-session`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({
+          cliente_id: c.id,
+          membresia_id: memId,
+          return_url: `${location.origin}${location.pathname}?pago=retorno&session_id={CHECKOUT_SESSION_ID}`
+        })
+      });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error || 'No se pudo crear la sesión de Stripe');
+      return j.clientSecret;
+    };
+
+    checkoutPago = await stripe.createEmbeddedCheckoutPage({ fetchClientSecret });
+    checkoutPago.mount('#checkout');
+    $('#pagoEstado').textContent = 'Checkout de prueba listo. Importe fijo: $10 MXN.';
+  } catch (e) {
+    console.error(e);
+    $('#pagoEstado').textContent = '⚠️ ' + e.message;
+  }
+}
+
+async function cerrarCobro() {
+  try { if (checkoutPago?.destroy) checkoutPago.destroy(); } catch (_) {}
+  try { if (checkoutPago?.unmount) checkoutPago.unmount(); } catch (_) {}
+  checkoutPago = null; clienteCobro = null;
+  $('#checkout').innerHTML = '';
+  $('#pagoModal').classList.add('hidden');
+  await renderClientes(); await renderPagos();
+}
+$('#btnCerrarPago').onclick = cerrarCobro;
+$('#pagoModal').addEventListener('click', e => { if (e.target.id === 'pagoModal') cerrarCobro(); });
+
+async function renderPagos() {
+  if (!memId || !$('#listaPagos')) return;
+  const { data, error } = await sb.from('ent_pagos')
+    .select('id,cliente_id,importe_centavos,moneda,estado,fecha_pago,created_at,stripe_session_id')
+    .eq('membresia_id', memId)
+    .order('created_at', { ascending: false })
+    .limit(100);
+  if (error) {
+    $('#listaPagos').innerHTML = `<p class="muted">La tabla <b>ent_pagos</b> todavía no está creada. Ejecuta el SQL de instalación.</p>`;
+    return;
+  }
+  const nombres = Object.fromEntries(clientes.map(c => [c.id, c.nombre]));
+  const pagados = data.filter(p => p.estado === 'pagado');
+  const total = pagados.reduce((a,p) => a + (p.importe_centavos || 0), 0) / 100;
+  $('#listaPagos').innerHTML = `
+    <div class="stats">
+      <div class="stat"><span class="muted">Cobrado en prueba</span><b>$${total.toFixed(2)}</b></div>
+      <div class="stat"><span class="muted">Pagos aprobados</span><b>${pagados.length}</b></div>
+      <div class="stat"><span class="muted">Registros</span><b>${data.length}</b></div>
+      <div class="stat"><button class="sec mini" onclick="renderPagos()">↻ Actualizar</button></div>
+    </div>
+    ${!data.length ? '<p class="muted">Aún no hay pagos de prueba.</p>' : `
+    <div style="overflow:auto"><table><thead><tr><th>Cliente</th><th>Importe</th><th>Estado</th><th>Fecha</th></tr></thead><tbody>
+    ${data.map(p => `<tr>
+      <td>${esc(nombres[p.cliente_id] || p.cliente_id || '—')}</td>
+      <td>$${((p.importe_centavos || 0)/100).toFixed(2)} ${(p.moneda || 'mxn').toUpperCase()}</td>
+      <td>${p.estado === 'pagado' ? '<span class="pill p-ok">Pagado</span>' : p.estado === 'fallido' ? '<span class="pill p-bad">Fallido</span>' : '<span class="pill p-n">'+esc(p.estado || 'pendiente')+'</span>'}</td>
+      <td>${esc((p.fecha_pago || p.created_at || '').replace('T',' ').slice(0,16))}</td>
+    </tr>`).join('')}
+    </tbody></table></div>`}`;
+}
+
+async function revisarRetornoStripe() {
+  const qs = new URLSearchParams(location.search);
+  if (qs.get('pago') !== 'retorno') return;
+  toast('Pago procesado. Verificando confirmación de Stripe…');
+  history.replaceState({}, '', location.pathname);
+  setTimeout(async () => { await renderClientes(); await renderPagos(); }, 1500);
+}
+
 /* ======================= HOY ======================= */
 async function renderHoy() {
   const hoy = hoyMX(), d = diaHoy();
@@ -436,7 +572,7 @@ async function renderHoy() {
       }).join('')}</tbody></table>`}</div>`;
 }
 
-init();
+init().then(revisarRetornoStripe);
 </script>
 </body>
 </html>
