@@ -364,7 +364,74 @@ async function guardarDia() {
   await renderSemana(); await abrirDia(diaEdit);
 }
 
-\n/* ======================= PAGOS STRIPE ======================= */\nasync function abrirPago(c) {\n  try {\n    if (!STRIPE_PUBLISHABLE_KEY || STRIPE_PUBLISHABLE_KEY.includes('REEMPLAZA_AQUI')) {\n      return toast('⚠️ Falta configurar la pk_test de Stripe');\n    }\n\n    const mem = membresias.find(m => m.id === memId);\n    $('#payCliente').textContent = c.nombre || 'Cliente';\n    $('#payMembresia').textContent = mem?.nombre || 'Membresía';\n    $('#payBack').classList.remove('hidden');\n    $('#checkout').innerHTML = '<p class="muted">Cargando pago seguro…</p>';\n\n    if (stripeCheckout) {\n      try { stripeCheckout.destroy(); } catch {}\n      stripeCheckout = null;\n    }\n\n    const { data, error } = await sb.functions.invoke('create-checkout-session', {\n      body: {\n        cliente_id: c.id,\n        membresia_id: memId,\n        nombre_cliente: c.nombre\n      }\n    });\n\n    if (error) throw error;\n    if (!data?.clientSecret) throw new Error('La función no devolvió clientSecret');\n\n    stripeInstance = Stripe(STRIPE_PUBLISHABLE_KEY);\n\n    stripeCheckout = await stripeInstance.initEmbeddedCheckout({\n      clientSecret: data.clientSecret,\n      onComplete: async () => {\n        toast('Pago completado. Confirmando con Stripe…');\n        await cerrarPago();\n        setTimeout(() => {\n          renderClientes();\n          renderHoy();\n        }, 1600);\n      }\n    });\n\n    $('#checkout').innerHTML = '';\n    stripeCheckout.mount('#checkout');\n  } catch (err) {\n    console.error(err);\n    $('#checkout').innerHTML = `<p style="color:#f3a1a4">⚠️ ${esc(err?.message || 'No se pudo iniciar el pago')}</p>`;\n    toast('⚠️ No se pudo iniciar Stripe');\n  }\n}\n\nasync function cerrarPago() {\n  if (stripeCheckout) {\n    try { stripeCheckout.destroy(); } catch {}\n    stripeCheckout = null;\n  }\n  $('#checkout').innerHTML = '';\n  $('#payBack').classList.add('hidden');\n}\n\n$('#btnCerrarPago').onclick = cerrarPago;\n$('#payBack').addEventListener('click', e => {\n  if (e.target.id === 'payBack') cerrarPago();\n});\n
+
+/* ======================= PAGOS STRIPE ======================= */
+async function abrirPago(c) {
+  try {
+    if (!STRIPE_PUBLISHABLE_KEY || STRIPE_PUBLISHABLE_KEY.includes('REEMPLAZA_AQUI')) {
+      return toast('⚠️ Falta configurar la pk_test de Stripe');
+    }
+
+    const mem = membresias.find(m => m.id === memId);
+    $('#payCliente').textContent = c.nombre || 'Cliente';
+    $('#payMembresia').textContent = mem?.nombre || 'Membresía';
+    $('#payBack').classList.remove('hidden');
+    $('#checkout').innerHTML = '<p class="muted">Cargando pago seguro…</p>';
+
+    if (stripeCheckout) {
+      try { stripeCheckout.destroy(); } catch {}
+      stripeCheckout = null;
+    }
+
+    const { data, error } = await sb.functions.invoke('create-checkout-session', {
+      body: {
+        cliente_id: c.id,
+        membresia_id: memId,
+        nombre_cliente: c.nombre
+      }
+    });
+
+    if (error) throw error;
+    if (!data?.clientSecret) throw new Error('La función no devolvió clientSecret');
+
+    stripeInstance = Stripe(STRIPE_PUBLISHABLE_KEY);
+
+    stripeCheckout = await stripeInstance.initEmbeddedCheckout({
+      clientSecret: data.clientSecret,
+      onComplete: async () => {
+        toast('Pago completado. Confirmando con Stripe…');
+        await cerrarPago();
+        setTimeout(() => {
+          renderClientes();
+          renderHoy();
+        }, 1600);
+      }
+    });
+
+    $('#checkout').innerHTML = '';
+    stripeCheckout.mount('#checkout');
+  } catch (err) {
+    console.error(err);
+    $('#checkout').innerHTML =
+      `<p style="color:#f3a1a4">⚠️ ${esc(err?.message || 'No se pudo iniciar el pago')}</p>`;
+    toast('⚠️ No se pudo iniciar Stripe');
+  }
+}
+
+async function cerrarPago() {
+  if (stripeCheckout) {
+    try { stripeCheckout.destroy(); } catch {}
+    stripeCheckout = null;
+  }
+  $('#checkout').innerHTML = '';
+  $('#payBack').classList.add('hidden');
+}
+
+$('#btnCerrarPago').onclick = cerrarPago;
+$('#payBack').addEventListener('click', e => {
+  if (e.target.id === 'payBack') cerrarPago();
+});
+
 /* ======================= CLIENTES ======================= */
 async function renderClientes() {
   const { data, error } = await sb.from('ent_clientes').select('*').eq('membresia_id', memId).order('nombre');
