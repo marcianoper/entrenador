@@ -1,86 +1,82 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Hierro Rutinas</title>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Pedro Barron Rutinas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,700;1,800;1,900&family=Barlow:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ultra&family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,800;1,900&family=Barlow:wght@400;500;600;700&display=swap">
 <style>
-/* Concepto: portada de revista de culturismo 70s-90s. Masthead gigante con sombra de imprenta,
-   cada día de la semana es una "portada" a color con cover lines y viñetas cuadradas. */
+/* Concepto: las láminas de ejercicios de Pedro Barron hechas página. Papel blanco, marcos azules,
+   figuras en rojo, titulares gordos en azul como sus hojas, y portadas de revista retro por día.
+   Un solo tema claro, sin fondos negros. */
 :root{
-  --paper:#ecebe7;      /* papel de revista, gris frío */
-  --paper-2:#f8f7f4;    /* superficie de formularios */
-  --ink:#151515;        /* tinta de imprenta */
-  --ink-2:#4a4844;      /* texto secundario */
-  --rule:#151515;
-  --rule-soft:#c9c7c1;
-  --red:#d3241c;        /* rojo Muscle Builder */
-  --yellow:#f6c500;     /* amarillo de titular */
-  --blue:#1d3c9a;       /* azul real de franja */
-  --on-color:#ffffff;
-  --mast:#d3241c;
-  --mast-shadow:#151515;
-  --ok:#1c7a3e; --ok-bg:#d8efdf;
-  --warn:#8a5a00; --warn-bg:#fbeec2;
-  --bad:#b0201a; --bad-bg:#f8d9d6;
-  --muted-bg:#dddbd5;
-  --f-mast:"Bowlby One","Arial Black",Impact,sans-serif;
+  --paper:#fbfaf6;      /* papel de las láminas */
+  --card:#ffffff;
+  --ink:#16255f;        /* azul marino de tinta, en lugar de negro */
+  --ink-2:#4d5779;
+  --line:#1f46a8;       /* azul de los marcos de sus hojas */
+  --line-soft:#d5dbec;
+  --red:#d42a1f;        /* rojo de las figuras y del logo */
+  --blue:#1f46a8;
+  --yellow:#f6c500;     /* amarillo de titular de revista, solo para acentos */
+  --tint-blue:#eef2fb;
+  --tint-red:#fdeeec;
+  --ok:#1b7a3d; --ok-bg:#dcf1e3;
+  --warn:#8a5a00; --warn-bg:#fcf0c8;
+  --bad:#b5211a; --bad-bg:#fbe0dd;
+  --muted-bg:#eceef4;
+  --f-display:"Ultra","Rockwell Extra Bold","Rockwell",Georgia,serif;
   --f-cond:"Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;
   --f-body:"Barlow","Segoe UI",system-ui,sans-serif;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:#121110; --paper-2:#1c1b19; --ink:#f1efe9; --ink-2:#b5b1a8; --rule:#f1efe9; --rule-soft:#3a3835;
-    --red:#e2342a; --yellow:#f7c815; --blue:#3a62d4; --mast:#f7c815; --mast-shadow:#e2342a;
-    --ok:#7fd69c; --ok-bg:#163522; --warn:#f3cd6a; --warn-bg:#3a2d0b; --bad:#ff8f86; --bad-bg:#3d1613; --muted-bg:#2a2826;
-    color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --paper:#121110; --paper-2:#1c1b19; --ink:#f1efe9; --ink-2:#b5b1a8; --rule:#f1efe9; --rule-soft:#3a3835;
-  --red:#e2342a; --yellow:#f7c815; --blue:#3a62d4; --mast:#f7c815; --mast-shadow:#e2342a;
-  --ok:#7fd69c; --ok-bg:#163522; --warn:#f3cd6a; --warn-bg:#3a2d0b; --bad:#ff8f86; --bad-bg:#3d1613; --muted-bg:#2a2826;
-  color-scheme:dark;
+  color-scheme:light;
 }
 *{box-sizing:border-box}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;margin:0}
 button,input,select,textarea{font:inherit;color:inherit}
-:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+img{max-width:100%}
 .wrap{max-width:1320px;margin:0 auto;padding-inline:clamp(16px,3vw,32px);padding-block:0 64px}
 
 /* Franja superior */
-.strip{background:var(--blue);color:#fff;font-family:var(--f-cond);font-weight:800;font-style:italic;text-transform:uppercase;letter-spacing:.06em;font-size:14px;padding:6px clamp(16px,3vw,32px);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.demo-flag{background:var(--yellow);color:#151515;padding:0 8px;font-style:normal}
+.strip{background:var(--blue);color:#fff;font-family:var(--f-cond);font-weight:800;text-transform:uppercase;letter-spacing:.1em;font-size:14px;padding:6px clamp(16px,3vw,32px);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.demo-flag{background:var(--yellow);color:var(--ink);padding:0 8px}
 
-/* Masthead */
-.mast-row{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;padding-block:18px 10px;border-bottom:4px solid var(--rule)}
-.mast{font-family:var(--f-mast);color:var(--mast);font-size:clamp(64px,13vw,168px);line-height:.82;margin:0;letter-spacing:-.01em;text-shadow:5px 5px 0 var(--mast-shadow);text-transform:uppercase;overflow-wrap:anywhere}
-.mast-sub{font-family:var(--f-cond);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:15px;margin-top:10px}
+/* Encabezado: logo + figura que cambia de pose */
+.mast-row{display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center;padding-block:14px;border-bottom:3px solid var(--line)}
+.lockup{width:clamp(220px,30vw,380px);height:auto;display:block;mix-blend-mode:multiply}
+.mast-sub{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:15px;color:var(--red);margin-top:4px}
+.mast-right{display:flex;gap:16px;align-items:center;justify-content:flex-end}
 .memb-switch{display:flex;gap:10px}
-.memb{border:3px solid var(--rule);background:var(--paper-2);padding:8px 14px;cursor:pointer;text-align:left;min-width:120px;transition:transform .12s}
-.memb:active{transform:translateY(1px)}
-.memb b{display:block;font-family:var(--f-cond);font-weight:900;font-style:italic;font-size:30px;line-height:1;text-transform:uppercase}
+.memb{border:3px solid var(--line);background:var(--card);padding:8px 14px;cursor:pointer;text-align:left;min-width:120px;transition:transform .12s, box-shadow .12s;color:var(--ink)}
+.memb:hover{box-shadow:4px 4px 0 var(--line)}
+.memb:active{transform:translate(1px,1px);box-shadow:none}
+.memb b{display:block;font-family:var(--f-display);font-weight:400;font-size:26px;line-height:1.05;color:var(--blue)}
 .memb span{font-size:13px;color:var(--ink-2)}
-.memb[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#fff}
-.memb[aria-pressed="true"] span{color:#fff}
+.memb[aria-pressed="true"]{background:var(--red);border-color:var(--red)}
+.memb[aria-pressed="true"] b,.memb[aria-pressed="true"] span{color:#fff}
 
-/* Navegación tipo cover lines */
-.nav{display:flex;gap:6px;overflow-x:auto;padding-block:12px;border-bottom:1px solid var(--rule-soft);margin-bottom:24px;scrollbar-width:thin}
-.nav button{background:none;border:0;cursor:pointer;font-family:var(--f-cond);font-weight:800;font-style:italic;text-transform:uppercase;font-size:20px;padding:4px 12px;white-space:nowrap;letter-spacing:.01em}
+/* Flipbook de poses */
+.poses{position:relative;aspect-ratio:1/2;flex:none}
+.poses img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;opacity:0;transform:scale(.96) translateY(4px);transition:opacity .28s ease, transform .45s cubic-bezier(.2,1.4,.4,1)}
+.poses img.on{opacity:1;transform:none}
+.poses-head{width:84px}
+.pose-num{position:absolute;left:-6px;bottom:2px;font-family:var(--f-display);color:var(--red);font-size:22px;line-height:1}
+
+/* Navegación */
+.nav{display:flex;gap:6px;overflow-x:auto;padding-block:12px;border-bottom:1px solid var(--line-soft);margin-bottom:24px;scrollbar-width:thin}
+.nav button{background:none;border:0;cursor:pointer;font-family:var(--f-cond);font-weight:800;text-transform:uppercase;font-size:20px;padding:4px 12px;white-space:nowrap;letter-spacing:.02em;color:var(--blue)}
 .nav button:hover{color:var(--red)}
-.nav button[aria-current="page"]{background:var(--yellow);color:#151515;box-shadow:3px 3px 0 var(--rule)}
+.nav button[aria-current="page"]{background:var(--yellow);color:var(--ink);box-shadow:3px 3px 0 var(--line)}
 
 /* Tipografía */
-h2.headline{font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(34px,5vw,54px);line-height:.95;margin:0;text-wrap:balance}
-.dek{color:var(--ink-2);max-width:62ch;margin:6px 0 0}
+h2.headline{font-family:var(--f-display);font-weight:400;text-transform:uppercase;color:var(--blue);font-size:clamp(28px,4.2vw,46px);line-height:1;margin:0;text-wrap:balance}
+.dek{color:var(--ink-2);max-width:62ch;margin:8px 0 0}
 .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
 /* Botones */
-.btn{border:2px solid var(--rule);background:var(--paper-2);padding:8px 14px;font-family:var(--f-cond);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:16px;cursor:pointer;white-space:nowrap;transition:transform .1s, box-shadow .1s}
-.btn:hover{box-shadow:3px 3px 0 var(--rule)}
+.btn{border:2px solid var(--line);background:var(--card);color:var(--blue);padding:8px 14px;font-family:var(--f-cond);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:16px;cursor:pointer;white-space:nowrap;transition:transform .1s, box-shadow .1s}
+.btn:hover{box-shadow:3px 3px 0 var(--line)}
 .btn:active{transform:translate(1px,1px);box-shadow:none}
 .btn.primary{background:var(--red);border-color:var(--red);color:#fff}
-.btn.primary:hover{box-shadow:3px 3px 0 var(--rule)}
+.btn.primary:hover{box-shadow:3px 3px 0 var(--ink)}
 .btn.small{padding:4px 10px;font-size:14px}
 .btn.ghost{border-color:transparent;background:none}
 .btn.ghost:hover{box-shadow:none;color:var(--red)}
@@ -89,32 +85,36 @@ h2.headline{font-family:var(--f-cond);font-weight:900;font-style:italic;text-tra
 
 /* Semana: portadas */
 .week-nav{display:flex;align-items:center;gap:6px}
-.week-label{font-family:var(--f-cond);font-weight:800;font-size:20px;text-transform:uppercase;padding:0 6px}
-.covers{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
-.cover{position:relative;border:3px solid var(--rule);min-height:300px;display:flex;flex-direction:column;cursor:pointer;text-align:left;padding:0;background:var(--paper-2);transition:transform .15s, box-shadow .15s;overflow:hidden}
-.cover:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--rule)}
-.cover::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(0,0,0,.13) 1px,transparent 1.4px);background-size:6px 6px;mix-blend-mode:multiply;opacity:.6}
-.cover .band{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;font-family:var(--f-cond);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:14px;background:var(--ink);color:var(--paper)}
-.cover .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px;flex:1;position:relative;z-index:1}
-.cover .title{font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:44px;line-height:.9;margin:0;overflow-wrap:anywhere;text-shadow:2px 2px 0 rgba(0,0,0,.25)}
-.cover ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
-.cover li{font-family:var(--f-cond);font-weight:700;text-transform:uppercase;font-size:16px;line-height:1.1;display:flex;gap:8px;align-items:baseline}
-.cover li::before{content:"";width:9px;height:9px;flex:none;background:var(--bullet,var(--yellow));transform:translateY(-1px)}
-.cover .more{font-family:var(--f-cond);font-weight:700;font-style:italic;font-size:15px;opacity:.85}
-.cover .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;font-weight:600}
-.c-red{background:#d3241c;color:#fff;--bullet:#f6c500}
-.c-yellow{background:#f6c500;color:#151515;--bullet:#d3241c}
-.c-yellow .title{text-shadow:2px 2px 0 rgba(255,255,255,.4)}
-.c-blue{background:#1d3c9a;color:#fff;--bullet:#f6c500}
-.c-black{background:#151515;color:#fff;--bullet:#f6c500}
-.c-black::after{background-image:radial-gradient(rgba(255,255,255,.08) 1px,transparent 1.4px);mix-blend-mode:normal}
-.cover.rest{background:repeating-linear-gradient(-45deg,var(--paper-2) 0 12px,var(--muted-bg) 12px 24px);color:var(--ink-2)}
-.cover.empty{border-style:dashed;background:var(--paper-2);color:var(--ink-2)}
-.cover.empty .title{font-size:28px;color:var(--ink-2);text-shadow:none}
+.covers{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.cover{--c:var(--red);--c-ink:#fff;position:relative;border:3px solid var(--line);min-height:320px;display:flex;flex-direction:column;cursor:pointer;text-align:left;padding:0;background:var(--card);color:var(--ink);transition:transform .15s, box-shadow .15s;overflow:hidden;animation:rise .45s cubic-bezier(.2,.9,.3,1) both;animation-delay:calc(var(--i,0) * 50ms)}
+@keyframes rise{from{transform:translateY(10px)}to{transform:none}}
+.cover:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--line)}
+.cover .band{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;font-family:var(--f-cond);font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:14px;background:var(--c);color:var(--c-ink)}
+.cover .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px;flex:1;position:relative}
+.cover .title{font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:30px;line-height:1;margin:0;color:var(--c);overflow-wrap:break-word;text-wrap:balance}
+.c-yellow{--c:var(--yellow);--c-ink:var(--ink)}
+.c-yellow .title{color:var(--ink);text-decoration:underline;text-decoration-color:var(--yellow);text-decoration-thickness:6px;text-underline-offset:2px}
+.c-blue{--c:var(--blue)}
+.c-red{--c:var(--red)}
+.thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.thumbs span{aspect-ratio:1;border:1px solid var(--line-soft);background:#fff;display:grid;place-items:center;overflow:hidden}
+.thumbs img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.cover ul{list-style:none;margin:0;padding:0;display:grid;gap:3px}
+.cover li{font-family:var(--f-cond);font-weight:700;text-transform:uppercase;font-size:15px;line-height:1.1;display:flex;gap:8px;align-items:baseline;color:var(--ink)}
+.cover li::before{content:"";width:8px;height:8px;flex:none;background:var(--c);transform:translateY(-1px)}
+.c-yellow li::before{background:var(--red)}
+.cover .more{font-family:var(--f-cond);font-weight:700;font-size:15px;color:var(--ink-2)}
+.cover .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.cover.rest{--c:var(--line-soft);--c-ink:var(--ink);background:repeating-linear-gradient(-45deg,#fff 0 12px,var(--tint-blue) 12px 24px)}
+.cover.rest .title{color:var(--blue)}
+.cover.rest .rest-fig{position:absolute;right:10px;bottom:10px;width:78px;opacity:.9}
+.cover.empty{border-style:dashed;--c:var(--muted-bg);--c-ink:var(--ink-2)}
+.cover.empty .title{font-size:24px;color:var(--ink-2)}
 .cover.today{outline:4px solid var(--yellow);outline-offset:3px}
-.cover.today .title{padding-right:64px}
-.burst{position:absolute;right:-6px;top:30px;width:84px;height:84px;background:var(--yellow);color:#d3241c;display:grid;place-items:center;font-family:var(--f-cond);font-weight:900;font-style:italic;font-size:22px;clip-path:polygon(50% 0%,61% 18%,79% 9%,78% 30%,98% 33%,84% 50%,98% 67%,78% 70%,79% 91%,61% 82%,50% 100%,39% 82%,21% 91%,22% 70%,2% 67%,16% 50%,2% 33%,22% 30%,21% 9%,39% 18%);transform:rotate(12deg);z-index:2}
-.c-yellow .burst{background:#d3241c;color:#f6c500}
+.burst{position:absolute;right:-4px;top:26px;width:78px;height:78px;background:var(--yellow);color:var(--red);display:grid;place-items:center;font-family:var(--f-cond);font-weight:900;font-style:italic;font-size:20px;clip-path:polygon(50% 0%,61% 18%,79% 9%,78% 30%,98% 33%,84% 50%,98% 67%,78% 70%,79% 91%,61% 82%,50% 100%,39% 82%,21% 91%,22% 70%,2% 67%,16% 50%,2% 33%,22% 30%,21% 9%,39% 18%);transform:rotate(12deg);z-index:2;animation:wobble 3.2s ease-in-out infinite}
+@keyframes wobble{0%,100%{transform:rotate(12deg) scale(1)}50%{transform:rotate(4deg) scale(1.06)}}
+.c-yellow .burst{background:var(--red);color:#fff}
+.cover.today .title{padding-right:66px}
 
 /* Chips */
 .chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:2px 8px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
@@ -122,158 +122,191 @@ h2.headline{font-family:var(--f-cond);font-weight:900;font-style:italic;text-tra
 .chip.warn{background:var(--warn-bg);color:var(--warn)}
 .chip.bad{background:var(--bad-bg);color:var(--bad)}
 .chip.muted{background:var(--muted-bg);color:var(--ink-2)}
-.cover .chip{background:rgba(0,0,0,.28);color:#fff}
-.c-yellow .chip{background:rgba(0,0,0,.12);color:#151515}
+.chip.info{background:var(--tint-blue);color:var(--blue)}
 
 /* Resumen de semana */
-.summary{display:flex;gap:28px;flex-wrap:wrap;margin:0 0 22px;padding:12px 0;border-top:1px solid var(--rule-soft);border-bottom:1px solid var(--rule-soft)}
+.summary{display:flex;gap:28px;flex-wrap:wrap;margin:0 0 22px;padding:12px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
 .summary div{display:flex;flex-direction:column}
-.summary b{font-family:var(--f-cond);font-weight:900;font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
+.summary b{font-family:var(--f-display);font-weight:400;font-size:28px;line-height:1.05;font-variant-numeric:tabular-nums;color:var(--blue)}
+.summary b.alert{color:var(--red)}
 .summary span{font-size:13px;color:var(--ink-2)}
 
 /* Formularios */
 .field{display:flex;flex-direction:column;gap:6px;min-width:0}
-.field label{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:14px}
+.field label{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:14px;color:var(--blue)}
 .field .help{font-size:13px;color:var(--ink-2)}
-input[type=text],input[type=tel],input[type=date],input[type=time],input[type=number],input[type=url],input[type=email],input[type=password],input[type=search],select,textarea{width:100%;border:2px solid var(--rule);background:var(--paper-2);padding:8px 10px;border-radius:0}
+input[type=text],input[type=tel],input[type=date],input[type=time],input[type=number],input[type=url],input[type=email],input[type=password],input[type=search],select,textarea{width:100%;border:2px solid var(--line);background:#fff;padding:8px 10px;border-radius:0;color:var(--ink)}
 textarea{resize:vertical;min-height:72px}
-input::placeholder,textarea::placeholder{color:var(--ink-2);opacity:.8}
+input::placeholder,textarea::placeholder{color:#6d7593}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
 .err{color:var(--bad);font-size:13px;font-weight:600}
 
 /* Diálogo */
-dialog{border:4px solid var(--rule);background:var(--paper);color:var(--ink);padding:0;width:min(760px,calc(100vw - 24px));max-height:calc(100dvh - 24px);box-shadow:10px 10px 0 var(--rule)}
-dialog::backdrop{background:rgba(10,10,10,.55)}
-.dlg-head{position:sticky;top:0;z-index:2;background:var(--red);color:#fff;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.dlg-head h3{margin:0;font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:30px;line-height:1}
+dialog{border:3px solid var(--line);background:var(--paper);color:var(--ink);padding:0;width:min(780px,calc(100vw - 24px));max-height:calc(100dvh - 24px);box-shadow:10px 10px 0 var(--line)}
+dialog::backdrop{background:rgba(22,37,95,.45)}
+.dlg-head{position:sticky;top:0;z-index:2;background:var(--blue);color:#fff;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dlg-head h3{margin:0;font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:24px;line-height:1.05}
 .dlg-head .btn{background:transparent;border-color:#fff;color:#fff}
 .dlg-body{padding:18px;display:grid;gap:18px}
-.dlg-foot{position:sticky;bottom:0;background:var(--paper);border-top:2px solid var(--rule);padding:12px 18px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.dlg-foot{position:sticky;bottom:0;background:var(--paper);border-top:2px solid var(--line);padding:12px 18px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .swatches{display:flex;gap:8px}
-.swatch{width:40px;height:40px;border:3px solid var(--rule);cursor:pointer}
-.swatch[aria-pressed="true"]{box-shadow:0 0 0 3px var(--paper),0 0 0 6px var(--rule)}
+.swatch{width:40px;height:40px;border:3px solid var(--line);cursor:pointer;background:var(--c)}
+.swatch[aria-pressed="true"]{box-shadow:0 0 0 3px var(--paper),0 0 0 6px var(--line)}
 .toggle{display:flex;gap:10px;align-items:center;font-weight:600}
 .toggle input{width:20px;height:20px;accent-color:var(--red)}
 
-.ex-list{display:grid;gap:10px;counter-reset:ex}
-.ex-row{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:start;border:2px solid var(--rule);background:var(--paper-2);padding:10px}
-.ex-num{font-family:var(--f-mast);font-size:28px;line-height:1;color:var(--red)}
-.ex-name{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;font-size:20px;line-height:1.1}
+.picker{border:2px solid var(--line);background:#fff}
+.picker-top{display:flex;gap:8px;padding:8px;border-bottom:1px solid var(--line-soft);flex-wrap:wrap}
+.picker-top select{width:auto;flex:none}
+.picker-top input{flex:1;min-width:140px}
+.picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;padding:8px;max-height:260px;overflow-y:auto}
+.pick{border:2px solid var(--line-soft);background:#fff;cursor:pointer;padding:4px;display:flex;flex-direction:column;gap:2px;text-align:center;transition:border-color .1s, transform .1s}
+.pick:hover{border-color:var(--red);transform:translateY(-1px)}
+.pick img{aspect-ratio:1;object-fit:contain;width:100%;mix-blend-mode:multiply}
+.pick span{font-family:var(--f-cond);font-weight:700;text-transform:uppercase;font-size:12px;line-height:1.05;color:var(--blue)}
+
+.ex-list{display:grid;gap:10px}
+.ex-row{display:grid;grid-template-columns:34px 76px 1fr auto;gap:12px;align-items:start;border:2px solid var(--line);background:#fff;padding:10px}
+.ex-num{font-family:var(--f-display);font-size:26px;line-height:1;color:var(--red)}
+.ex-img{width:76px;height:76px;object-fit:contain;mix-blend-mode:multiply;border:1px solid var(--line-soft)}
+.ex-name{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;font-size:19px;line-height:1.1;color:var(--blue)}
 .ex-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
 .ex-fields .field label{font-size:12px}
 .ex-fields input{padding:6px 8px}
 .ex-note{margin-top:8px}
 .ex-actions{display:flex;flex-direction:column;gap:4px}
-.add-row{display:grid;grid-template-columns:1fr auto;gap:8px}
 
 /* Tablas */
-.table-wrap{overflow-x:auto;border:3px solid var(--rule);background:var(--paper-2)}
+.table-wrap{overflow-x:auto;border:3px solid var(--line);background:#fff}
 table{border-collapse:collapse;width:100%;min-width:720px}
-th{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:14px;text-align:left;padding:10px 12px;background:var(--ink);color:var(--paper)}
-td{padding:10px 12px;border-top:1px solid var(--rule-soft);vertical-align:middle}
+th{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:14px;text-align:left;padding:10px 12px;background:var(--blue);color:#fff}
+td{padding:10px 12px;border-top:1px solid var(--line-soft);vertical-align:middle}
 td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
 .cell-name{font-weight:700}
 .row-actions{display:flex;gap:4px;justify-content:flex-end}
 
-/* Biblioteca */
-.lib{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-.lib-item{border:3px solid var(--rule);background:var(--paper-2);display:flex;flex-direction:column}
-.lib-media{aspect-ratio:4/3;max-width:100%;background:#151515;position:relative;overflow:hidden}
-.lib-media video{width:100%;height:100%;object-fit:cover;display:block}
-.halftone{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:12px;color:#f6c500;font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:26px;line-height:.95;background:radial-gradient(rgba(246,197,0,.22) 1.2px,transparent 1.6px) 0 0/7px 7px,#151515}
-.halftone small{display:block;font-size:13px;font-style:normal;font-weight:700;color:#fff;letter-spacing:.06em;margin-top:6px}
-.lib-body{padding:10px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
-.lib-body h4{margin:0;font-family:var(--f-cond);font-weight:800;text-transform:uppercase;font-size:19px;line-height:1.1}
-.lib-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--ink-2)}
-.lib-body .row-actions{margin-top:auto;justify-content:flex-start}
+/* Biblioteca: lámina */
+.sheet{border:3px solid var(--line);background:#fff;margin-bottom:22px}
+.sheet-head{display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--line);padding:8px 14px}
+.sheet-head h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(24px,3.4vw,36px);line-height:1;color:var(--blue);text-transform:uppercase}
+.sheet-head span{margin-left:auto;font-size:13px;color:var(--ink-2)}
+.lib{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+.lib-item{border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;cursor:pointer;background:#fff;text-align:center;padding:10px 8px 8px;gap:6px;transition:background .15s}
+.lib-item:hover{background:var(--tint-red)}
+.lib-item:hover .lib-media img{transform:scale(1.04)}
+.lib-media{aspect-ratio:1;max-width:100%;position:relative;overflow:hidden}
+.lib-media img,.lib-media video{width:100%;height:100%;object-fit:contain;display:block;transition:transform .25s}
+.lib-media img{mix-blend-mode:multiply}
+.lib-item h4{margin:0;font-family:var(--f-cond);font-weight:800;text-transform:uppercase;font-size:16px;line-height:1.05;color:var(--blue)}
+.lib-meta{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;font-size:12px;color:var(--ink-2)}
 .filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-.pill{border:2px solid var(--rule);background:transparent;padding:3px 12px;font-family:var(--f-cond);font-weight:700;text-transform:uppercase;cursor:pointer;font-size:15px}
-.pill[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.pill{border:2px solid var(--line);background:#fff;color:var(--blue);padding:3px 12px;font-family:var(--f-cond);font-weight:700;text-transform:uppercase;cursor:pointer;font-size:15px}
+.pill[aria-pressed="true"]{background:var(--blue);color:#fff}
+
+/* Dos cuadros: la figura alterna entre posición inicial y final */
+.flip{position:relative;width:100%;height:100%}
+.flip img{position:absolute;inset:0}
+.flip img:last-child{animation:frame 1.8s steps(1,end) infinite}
+@keyframes frame{0%{opacity:0}50%{opacity:1}}
+.anim-tag{position:absolute;top:4px;right:4px;background:var(--yellow);color:var(--ink);font-family:var(--f-cond);font-weight:800;font-size:11px;padding:1px 6px;text-transform:uppercase;letter-spacing:.05em}
 
 /* Envíos */
 .send-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:start}
-.panel{border:3px solid var(--rule);background:var(--paper-2);padding:16px;display:grid;gap:14px}
-.panel h3{margin:0;font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:26px;line-height:1}
-.msg-preview{background:#dcf8c6;color:#111;padding:10px 12px;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere;border-radius:2px 10px 10px 10px;max-width:42ch;box-shadow:0 1px 0 rgba(0,0,0,.15)}
-.callout{border-left:6px solid var(--yellow);background:var(--paper-2);padding:10px 14px;font-size:14px}
+.panel{border:3px solid var(--line);background:#fff;padding:16px;display:grid;gap:14px}
+.panel h3{margin:0;font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:22px;line-height:1.05;color:var(--blue)}
+.msg-preview{background:#dcf8c6;color:#111b21;padding:10px 12px;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere;border-radius:2px 10px 10px 10px;max-width:42ch;box-shadow:0 1px 0 rgba(0,0,0,.15)}
+.callout{border-left:6px solid var(--yellow);background:var(--tint-blue);padding:10px 14px;font-size:14px}
 
-/* Vista del cliente: portada */
+/* Vista del cliente */
 .preview-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:28px;align-items:start}
-.phone{max-width:430px;width:100%;margin-inline:auto;border:10px solid #151515;border-radius:28px;overflow:hidden;background:var(--paper);box-shadow:8px 8px 0 var(--rule-soft)}
+.phone{max-width:430px;width:100%;margin-inline:auto;border:10px solid var(--blue);border-radius:28px;overflow:hidden;background:var(--paper);box-shadow:8px 8px 0 var(--line-soft)}
 .client{background:var(--paper);color:var(--ink)}
-.mag{position:relative;overflow:hidden;color:#fff;background:#151515;min-height:560px;display:flex;flex-direction:column}
-.mag.c-red{background:#d3241c}.mag.c-yellow{background:#f6c500;color:#151515}.mag.c-blue{background:#1d3c9a}.mag.c-black{background:#151515}
-.mag::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.18) 1.2px,transparent 1.7px);background-size:7px 7px;pointer-events:none}
-.mag.c-black::before{background-image:radial-gradient(rgba(255,255,255,.07) 1.2px,transparent 1.7px)}
+.mag{--c:var(--red);position:relative;overflow:hidden;background:#fff;border-bottom:4px solid var(--line);display:flex;flex-direction:column;min-height:600px}
+.mag::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(31,70,168,.09) 1.1px,transparent 1.6px);background-size:7px 7px;pointer-events:none}
+.mag.c-blue{--c:var(--blue)}.mag.c-yellow{--c:var(--yellow)}
 .mag > *{position:relative}
-.mag-top{background:var(--blue);color:#fff;font-family:var(--f-cond);font-weight:800;font-style:italic;text-transform:uppercase;font-size:13px;letter-spacing:.06em;padding:5px 14px;display:flex;justify-content:space-between;gap:8px}
-.mag-mast{font-family:var(--f-mast);font-size:clamp(58px,19vw,92px);line-height:.85;padding:10px 12px 0;color:#f6c500;text-shadow:4px 4px 0 #151515;text-transform:uppercase;overflow-wrap:anywhere}
-.mag.c-yellow .mag-mast{color:#d3241c}
-.mag.c-black .mag-mast{text-shadow:4px 4px 0 #d3241c}
-.mag-tag{font-family:var(--f-cond);font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.08em;padding:4px 14px 0}
-.mag-title{font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(48px,15vw,76px);line-height:.85;padding:22px 14px 0;margin:0;text-shadow:3px 3px 0 rgba(0,0,0,.3);overflow-wrap:break-word;hyphens:manual}
-.mag-title.long{font-size:clamp(38px,11vw,56px)}
-.mag-lines{list-style:none;margin:16px 14px 0;padding:0;display:grid;gap:6px;max-width:78%}
-.mag-lines li{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;font-size:19px;line-height:1.05;display:flex;gap:8px;align-items:baseline}
-.mag-lines li::before{content:"";width:11px;height:11px;flex:none;background:#f6c500}
-.mag.c-yellow .mag-lines li::before{background:#d3241c}
-.mag-lines li small{font-size:15px;font-weight:700;opacity:.85;margin-left:4px;white-space:nowrap}
-.mag-box{margin:18px 14px 0;border:2px solid currentColor;padding:8px 10px;max-width:72%;font-family:var(--f-cond);font-weight:700;font-size:16px;line-height:1.15}
-.mag-box b{display:block;text-transform:uppercase;font-size:13px;letter-spacing:.08em}
-.mag-burst{position:absolute;right:10px;bottom:84px;width:104px;height:104px;background:#f6c500;color:#d3241c;display:grid;place-items:center;text-align:center;font-family:var(--f-cond);font-weight:900;font-style:italic;font-size:20px;line-height:.9;clip-path:polygon(50% 0%,61% 18%,79% 9%,78% 30%,98% 33%,84% 50%,98% 67%,78% 70%,79% 91%,61% 82%,50% 100%,39% 82%,21% 91%,22% 70%,2% 67%,16% 50%,2% 33%,22% 30%,21% 9%,39% 18%);transform:rotate(-10deg)}
-.mag.c-yellow .mag-burst{background:#d3241c;color:#f6c500}
-.mag-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;padding:18px 14px 14px;gap:10px}
-.barcode{background:#fff;padding:5px 6px 2px;color:#151515;font-family:var(--f-body);font-size:9px;letter-spacing:.12em;text-align:center}
-.barcode i{display:block;width:96px;height:34px;background:repeating-linear-gradient(90deg,#151515 0 2px,#fff 2px 3px,#151515 3px 4px,#fff 4px 7px,#151515 7px 10px,#fff 10px 11px,#151515 11px 12px,#fff 12px 15px)}
-.mag-foot .sets{font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:22px;text-align:right;line-height:.95}
-.mag.rest-day{background:#151515}
-.articles{padding:20px 14px 28px;display:grid;gap:22px}
-.articles h3{margin:0;font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:32px;line-height:1;border-bottom:4px solid var(--rule);padding-bottom:6px}
-.art{display:grid;gap:8px}
+.mag-top{background:var(--c);color:#fff;font-family:var(--f-cond);font-weight:800;text-transform:uppercase;font-size:13px;letter-spacing:.08em;padding:5px 14px;display:flex;justify-content:space-between;gap:8px}
+.mag.c-yellow .mag-top{color:var(--ink)}
+.mag-lockup{width:min(78%,300px);margin:12px 14px 0;mix-blend-mode:multiply}
+.mag-title{font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:clamp(40px,12.5vw,60px);line-height:.95;padding:14px 14px 0;margin:0;color:var(--c);overflow-wrap:break-word;text-wrap:balance}
+.mag.c-yellow .mag-title{color:var(--blue)}
+.mag-title.long{font-size:clamp(30px,9vw,44px)}
+.mag-stage{display:grid;grid-template-columns:1fr 42%;gap:6px;padding:10px 14px 0;align-items:end;flex:1}
+.mag-lines{list-style:none;margin:0;padding:0 0 10px;display:grid;gap:7px;align-self:start}
+.mag-lines li{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;font-size:18px;line-height:1.05;display:flex;gap:8px;align-items:baseline;color:var(--ink)}
+.mag-lines li::before{content:"";width:10px;height:10px;flex:none;background:var(--red)}
+.mag-lines li small{display:block;font-size:14px;font-weight:700;color:var(--red);margin-top:1px}
+.mag-figure{position:relative}
+.mag-figure .poses{width:100%}
+.mag-box{margin:6px 14px 0;border:2px solid var(--line);background:#fff;padding:8px 10px;font-family:var(--f-cond);font-weight:700;font-size:16px;line-height:1.15;color:var(--ink)}
+.mag-box b{display:block;text-transform:uppercase;font-size:13px;letter-spacing:.08em;color:var(--red)}
+.mag-burst{position:absolute;right:12px;top:118px;width:96px;height:96px;background:var(--yellow);color:var(--red);display:grid;place-items:center;text-align:center;font-family:var(--f-cond);font-weight:900;font-style:italic;font-size:19px;line-height:.9;clip-path:polygon(50% 0%,61% 18%,79% 9%,78% 30%,98% 33%,84% 50%,98% 67%,78% 70%,79% 91%,61% 82%,50% 100%,39% 82%,21% 91%,22% 70%,2% 67%,16% 50%,2% 33%,22% 30%,21% 9%,39% 18%);transform:rotate(-10deg);z-index:3;animation:wobble2 3.4s ease-in-out infinite}
+@keyframes wobble2{0%,100%{transform:rotate(-10deg) scale(1)}50%{transform:rotate(-3deg) scale(1.07)}}
+.mag.c-yellow .mag-burst{background:var(--red);color:#fff}
+.mag-foot{display:flex;justify-content:space-between;align-items:flex-end;padding:14px;gap:10px}
+.barcode{background:#fff;border:1px solid var(--line-soft);padding:5px 6px 2px;color:var(--ink);font-size:9px;letter-spacing:.12em;text-align:center}
+.barcode i{display:block;width:96px;height:32px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,#fff 2px 3px,var(--ink) 3px 4px,#fff 4px 7px,var(--ink) 7px 10px,#fff 10px 11px,var(--ink) 11px 12px,#fff 12px 15px)}
+.mag-foot .sets{font-family:var(--f-display);text-transform:uppercase;font-size:18px;text-align:right;line-height:1.05;color:var(--blue)}
+.articles{padding:20px 14px 10px;display:grid;gap:22px}
+.articles h3,.stretch h3{margin:0;font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:28px;line-height:1;border-bottom:3px solid var(--line);padding-bottom:6px;color:var(--blue)}
+.art{display:grid;gap:8px;border:2px solid var(--line);background:#fff;padding:10px}
 .art-head{display:flex;gap:10px;align-items:baseline}
-.art-num{font-family:var(--f-mast);font-size:34px;line-height:1;color:var(--red)}
-.art-name{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;font-size:24px;line-height:1.05}
-.art-media{aspect-ratio:16/10;max-width:100%;background:#151515;position:relative;overflow:hidden}
-.art-media video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
-.specs{display:flex;gap:0;border:2px solid var(--rule)}
-.specs div{flex:1;padding:6px 8px;border-right:2px solid var(--rule);min-width:0}
+.art-num{font-family:var(--f-display);font-size:30px;line-height:1;color:var(--red)}
+.art-name{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;font-size:22px;line-height:1.05;color:var(--blue)}
+.art-media{aspect-ratio:4/3;max-width:100%;background:#fff;position:relative;overflow:hidden;border:1px solid var(--line-soft)}
+.art-media img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;display:block}
+.art-media video{width:100%;height:100%;object-fit:contain;background:#fff;display:block}
+.media-tabs{display:flex;gap:6px}
+.specs{display:flex;border:2px solid var(--line)}
+.specs div{flex:1;padding:6px 8px;border-right:2px solid var(--line);min-width:0}
 .specs div:last-child{border-right:0}
-.specs b{display:block;font-family:var(--f-cond);font-weight:900;font-size:24px;line-height:1;font-variant-numeric:tabular-nums}
+.specs b{display:block;font-family:var(--f-display);font-weight:400;font-size:20px;line-height:1.1;font-variant-numeric:tabular-nums;color:var(--blue)}
 .specs span{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);font-weight:600}
 .art-note{font-size:14px;border-left:4px solid var(--yellow);padding-left:10px;margin:0}
-.client-foot{padding:16px 14px 26px;font-size:13px;color:var(--ink-2);border-top:1px solid var(--rule-soft)}
-.client-standalone{max-width:520px;margin:0 auto}
+.stretch{padding:10px 14px 20px;display:grid;gap:10px}
+.stretch p{margin:0;font-size:14px;color:var(--ink-2)}
+.stretch-row{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line);background:#fff}
+.stretch-row figure{margin:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px;text-align:center}
+.stretch-row img{aspect-ratio:1;object-fit:contain;width:100%;mix-blend-mode:multiply}
+.stretch-row figcaption{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;font-size:12px;color:var(--blue)}
+.client-foot{padding:16px 14px 26px;font-size:13px;color:var(--ink-2);border-top:1px solid var(--line-soft)}
+.client-standalone{max-width:520px;margin:0 auto;background:var(--paper)}
+.rest-figure{width:46%;margin:10px auto 0}
 
-/* Vacíos y avisos */
-.empty-state{border:3px dashed var(--rule-soft);padding:32px 20px;text-align:center;display:grid;gap:10px;justify-items:center}
-.empty-state h4{margin:0;font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:28px}
+/* Vacíos y carga */
+.empty-state{border:3px dashed var(--line-soft);padding:28px 20px;text-align:center;display:grid;gap:10px;justify-items:center;background:#fff}
+.empty-state h4{margin:0;font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:24px;color:var(--blue)}
 .empty-state p{margin:0;color:var(--ink-2);max-width:48ch}
-.skel{background:linear-gradient(90deg,var(--muted-bg),var(--paper-2),var(--muted-bg));background-size:200% 100%;animation:sh 1.2s infinite;min-height:300px;border:3px solid var(--rule-soft)}
-@keyframes sh{to{background-position:-200% 0}}
+.empty-state .poses{width:60px}
+.loading{display:grid;place-items:center;gap:8px;padding:60px 0;font-family:var(--f-cond);font-weight:800;text-transform:uppercase;color:var(--blue);letter-spacing:.06em}
+.loading .poses{width:90px}
 
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;font-weight:600;font-size:14px;max-width:calc(100vw - 32px);z-index:50;box-shadow:4px 4px 0 var(--red)}
-
-/* Login */
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--blue);color:#fff;padding:10px 16px;font-weight:600;font-size:14px;max-width:calc(100vw - 32px);z-index:50;box-shadow:4px 4px 0 var(--red)}
 .login{max-width:420px;margin:40px auto;display:grid;gap:14px}
 
 @media (max-width:900px){
   .send-grid,.preview-layout{grid-template-columns:1fr}
+  .mast-row{grid-template-columns:1fr auto}
+  .mast-row .poses-head{display:none}
 }
 @media (max-width:640px){
   .mast-row{grid-template-columns:1fr}
+  .mast-right{justify-content:stretch}
+  .memb-switch{width:100%}
   .memb{flex:1;min-width:0}
-  .ex-row{grid-template-columns:34px 1fr}
+  .ex-row{grid-template-columns:30px 60px 1fr}
+  .ex-img{width:60px;height:60px}
   .ex-actions{grid-column:1/-1;flex-direction:row;flex-wrap:wrap}
   .ex-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
   .nav button{font-size:18px}
-  .dlg-head h3{font-size:22px}
-  .cover{min-height:240px}
+  .dlg-head h3{font-size:19px}
+  .lib{grid-template-columns:repeat(2,1fr)}
 }
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important}
+  .flip img:last-child{opacity:0}
 }
-</style>
-</head><body>
+</style></head><body>
 
 <div id="app"></div>
 <div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
@@ -283,8 +316,9 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
 /* =====================================================================
    CONFIGURACIÓN
    Deja estos dos valores vacíos para usar el modo demostración.
-   Para conectarlo a tu proyecto: pega la URL y la clave "anon public"
-   de Supabase (Settings > API) y corre el archivo hierro_supabase.sql.
+   Para conectarlo: pega la URL y la clave "anon public" de Supabase
+   (Settings > API) y corre el archivo pedro_barron_supabase.sql.
+   La carpeta img/ debe ir junto a este archivo.
    ===================================================================== */
 const CONFIG = {
   SUPABASE_URL: "",
@@ -292,19 +326,24 @@ const CONFIG = {
   BUCKET_VIDEOS: "videos"
 };
 
+/* Catálogo de ejercicios ilustrados de Pedro Barron (sus láminas) */
+const CATALOGO = [{"nombre":"Press banca","grupo":"Pectoral","imagen":"img/ej/pectoral-press-banca.webp","imagen2":""},{"nombre":"Press inclinado","grupo":"Pectoral","imagen":"img/ej/pectoral-press-inclinado.webp","imagen2":""},{"nombre":"Aperturas planas","grupo":"Pectoral","imagen":"img/ej/pectoral-aperturas-planas.webp","imagen2":""},{"nombre":"Contractor","grupo":"Pectoral","imagen":"img/ej/pectoral-contractor.webp","imagen2":""},{"nombre":"Press banca sentado","grupo":"Pectoral","imagen":"img/ej/pectoral-press-banca-sentado.webp","imagen2":""},{"nombre":"Press declinado","grupo":"Pectoral","imagen":"img/ej/pectoral-press-declinado.webp","imagen2":""},{"nombre":"Press banca máquina","grupo":"Pectoral","imagen":"img/ej/pectoral-press-banca-maquina.webp","imagen2":""},{"nombre":"Aperturas en máquina","grupo":"Pectoral","imagen":"img/ej/pectoral-aperturas-en-maquina.webp","imagen2":""},{"nombre":"Aperturas inclinadas","grupo":"Pectoral","imagen":"img/ej/pectoral-aperturas-inclinadas.webp","imagen2":""},{"nombre":"Fondos en paralelas","grupo":"Pectoral","imagen":"img/ej/pectoral-fondos-en-paralelas.webp","imagen2":""},{"nombre":"Fondos paralelas máquina","grupo":"Pectoral","imagen":"img/ej/pectoral-fondos-paralelas-maquina.webp","imagen2":""},{"nombre":"Cruces con polea","grupo":"Pectoral","imagen":"img/ej/pectoral-cruces-con-polea.webp","imagen2":""},{"nombre":"Jalón en máquina","grupo":"Dorsal","imagen":"img/ej/dorsal-jalon-en-maquina.webp","imagen2":""},{"nombre":"Jalón tras nuca","grupo":"Dorsal","imagen":"img/ej/dorsal-jalon-tras-nuca.webp","imagen2":""},{"nombre":"Jalones al pecho","grupo":"Dorsal","imagen":"img/ej/dorsal-jalones-al-pecho.webp","imagen2":""},{"nombre":"Remo Gironda","grupo":"Dorsal","imagen":"img/ej/dorsal-remo-gironda.webp","imagen2":""},{"nombre":"Dominadas en máquina","grupo":"Dorsal","imagen":"img/ej/dorsal-dominadas-en-maquina.webp","imagen2":""},{"nombre":"Remo con barra","grupo":"Dorsal","imagen":"img/ej/dorsal-remo-con-barra.webp","imagen2":""},{"nombre":"Remo en máquina","grupo":"Dorsal","imagen":"img/ej/dorsal-remo-en-maquina.webp","imagen2":""},{"nombre":"Remo a una mano","grupo":"Dorsal","imagen":"img/ej/dorsal-remo-a-una-mano.webp","imagen2":""},{"nombre":"Jalón en máquina de discos","grupo":"Dorsal","imagen":"img/ej/dorsal-jalon-en-maquina-de-discos.webp","imagen2":""},{"nombre":"Remo en máquina de discos","grupo":"Dorsal","imagen":"img/ej/dorsal-remo-en-maquina-de-discos.webp","imagen2":""},{"nombre":"Press tras nuca","grupo":"Hombro","imagen":"img/ej/hombro-press-tras-nuca.webp","imagen2":""},{"nombre":"Laterales en máquina","grupo":"Hombro","imagen":"img/ej/hombro-laterales-en-maquina.webp","imagen2":""},{"nombre":"Press sentado con mancuernas","grupo":"Hombro","imagen":"img/ej/hombro-press-sentado-con-mancuernas.webp","imagen2":""},{"nombre":"Press militar sentado","grupo":"Hombro","imagen":"img/ej/hombro-press-militar-sentado.webp","imagen2":""},{"nombre":"Laterales en polea","grupo":"Hombro","imagen":"img/ej/hombro-laterales-en-polea.webp","imagen2":""},{"nombre":"Pájaro sentado","grupo":"Hombro","imagen":"img/ej/hombro-pajaro-sentado.webp","imagen2":""},{"nombre":"Elevaciones laterales","grupo":"Hombro","imagen":"img/ej/hombro-elevaciones-laterales.webp","imagen2":""},{"nombre":"Remo al cuello","grupo":"Hombro","imagen":"img/ej/hombro-remo-al-cuello.webp","imagen2":""},{"nombre":"Pájaro en máquina","grupo":"Hombro","imagen":"img/ej/hombro-pajaro-en-maquina.webp","imagen2":""},{"nombre":"Elevaciones frontales","grupo":"Hombro","imagen":"img/ej/hombro-elevaciones-frontales.webp","imagen2":""},{"nombre":"Pájaro con polea","grupo":"Hombro","imagen":"img/ej/hombro-pajaro-con-polea.webp","imagen2":""},{"nombre":"Press francés","grupo":"Tríceps","imagen":"img/ej/triceps-press-frances.webp","imagen2":""},{"nombre":"Tríceps en máquina","grupo":"Tríceps","imagen":"img/ej/triceps-triceps-en-maquina.webp","imagen2":""},{"nombre":"Press francés a una mano","grupo":"Tríceps","imagen":"img/ej/triceps-press-frances-a-una-mano.webp","imagen2":""},{"nombre":"Extensión en polea tras nuca","grupo":"Tríceps","imagen":"img/ej/triceps-extension-en-polea-tras-nuca.webp","imagen2":""},{"nombre":"Fondos entre bancos","grupo":"Tríceps","imagen":"img/ej/triceps-fondos-entre-bancos.webp","imagen2":""},{"nombre":"Patada en polea","grupo":"Tríceps","imagen":"img/ej/triceps-patada-en-polea.webp","imagen2":""},{"nombre":"Francés de pie","grupo":"Tríceps","imagen":"img/ej/triceps-frances-de-pie.webp","imagen2":""},{"nombre":"Tirón en polea","grupo":"Tríceps","imagen":"img/ej/triceps-tiron-en-polea.webp","imagen2":""},{"nombre":"Extensiones de pie con mancuernas","grupo":"Tríceps","imagen":"img/ej/triceps-extensiones-de-pie-con-mancuernas.webp","imagen2":""},{"nombre":"Fondos cerrados","grupo":"Tríceps","imagen":"img/ej/triceps-fondos-cerrados.webp","imagen2":""},{"nombre":"Tirón con cuerdas","grupo":"Tríceps","imagen":"img/ej/triceps-tiron-con-cuerdas.webp","imagen2":""},{"nombre":"Curl con barra","grupo":"Bíceps","imagen":"img/ej/biceps-curl-con-barra.webp","imagen2":""},{"nombre":"Curl alterno sentado","grupo":"Bíceps","imagen":"img/ej/biceps-curl-alterno-sentado.webp","imagen2":""},{"nombre":"Curl Scott con barra","grupo":"Bíceps","imagen":"img/ej/biceps-curl-scott-con-barra.webp","imagen2":""},{"nombre":"Curl martillo","grupo":"Bíceps","imagen":"img/ej/biceps-curl-martillo.webp","imagen2":""},{"nombre":"Curl simultáneo sentado","grupo":"Bíceps","imagen":"img/ej/biceps-curl-simultaneo-sentado.webp","imagen2":""},{"nombre":"Curl en polea","grupo":"Bíceps","imagen":"img/ej/biceps-curl-en-polea.webp","imagen2":""},{"nombre":"Curl alterno de pie","grupo":"Bíceps","imagen":"img/ej/biceps-curl-alterno-de-pie.webp","imagen2":""},{"nombre":"Curl Scott en máquina","grupo":"Bíceps","imagen":"img/ej/biceps-curl-scott-en-maquina.webp","imagen2":""},{"nombre":"Concentrado a una mano","grupo":"Bíceps","imagen":"img/ej/biceps-concentrado-a-una-mano.webp","imagen2":""},{"nombre":"Hack","grupo":"Pierna","imagen":"img/ej/pierna-hack.webp","imagen2":""},{"nombre":"Prensa atlética","grupo":"Pierna","imagen":"img/ej/pierna-prensa-atletica.webp","imagen2":""},{"nombre":"Extensiones","grupo":"Pierna","imagen":"img/ej/pierna-extensiones.webp","imagen2":""},{"nombre":"Femoral tumbado","grupo":"Pierna","imagen":"img/ej/pierna-femoral-tumbado.webp","imagen2":""},{"nombre":"Femoral sentado","grupo":"Pierna","imagen":"img/ej/pierna-femoral-sentado.webp","imagen2":""},{"nombre":"Split","grupo":"Pierna","imagen":"img/ej/pierna-split.webp","imagen2":""},{"nombre":"Sentadilla","grupo":"Pierna","imagen":"img/ej/pierna-sentadilla.webp","imagen2":""},{"nombre":"Prensa de palanca","grupo":"Pierna","imagen":"img/ej/pierna-prensa-de-palanca.webp","imagen2":""},{"nombre":"Femoral a una pierna","grupo":"Pierna","imagen":"img/ej/pierna-femoral-a-una-pierna.webp","imagen2":""},{"nombre":"Prensa de placas","grupo":"Pierna","imagen":"img/ej/pierna-prensa-de-placas.webp","imagen2":""},{"nombre":"Buenos días","grupo":"Lumbares","imagen":"img/ej/lumbares-buenos-dias.webp","imagen2":""},{"nombre":"Peso muerto","grupo":"Lumbares","imagen":"img/ej/lumbares-peso-muerto.webp","imagen2":""},{"nombre":"Hiperextensiones","grupo":"Lumbares","imagen":"img/ej/lumbares-hiperextensiones.webp","imagen2":""},{"nombre":"Giros con palo","grupo":"Cintura","imagen":"img/ej/cintura-giros-con-palo.webp","imagen2":""},{"nombre":"Twister","grupo":"Cintura","imagen":"img/ej/cintura-twister.webp","imagen2":""},{"nombre":"Encogimientos en máquina","grupo":"Abdomen","imagen":"img/ej/abdomen-encogimientos-en-maquina.webp","imagen2":""},{"nombre":"Abdominal en máquina","grupo":"Abdomen","imagen":"img/ej/abdomen-abdominal-en-maquina.webp","imagen2":""},{"nombre":"Elevación de piernas en tabla","grupo":"Abdomen","imagen":"img/ej/abdomen-elevacion-de-piernas-en-tabla.webp","imagen2":""},{"nombre":"Elevación de tronco en tabla","grupo":"Abdomen","imagen":"img/ej/abdomen-elevacion-de-tronco-en-tabla.webp","imagen2":""},{"nombre":"Encogimientos","grupo":"Abdomen","imagen":"img/ej/abdomen-encogimientos.webp","imagen2":""},{"nombre":"Elevación de tronco en banco","grupo":"Abdomen","imagen":"img/ej/abdomen-elevacion-de-tronco-en-banco.webp","imagen2":""},{"nombre":"Concentrado en polea","grupo":"Abdomen","imagen":"img/ej/abdomen-concentrado-en-polea.webp","imagen2":""},{"nombre":"Bicicleta","grupo":"Aeróbicos","imagen":"img/ej/aerobicos-bicicleta.webp","imagen2":""},{"nombre":"Cinta-footing","grupo":"Aeróbicos","imagen":"img/ej/aerobicos-cinta-footing.webp","imagen2":""},{"nombre":"Step","grupo":"Aeróbicos","imagen":"img/ej/aerobicos-step.webp","imagen2":""},{"nombre":"Remo (aeróbico)","grupo":"Aeróbicos","imagen":"img/ej/aerobicos-remo-aerobico.webp","imagen2":""},{"nombre":"Elíptica","grupo":"Aeróbicos","imagen":"img/ej/aerobicos-eliptica.webp","imagen2":""},{"nombre":"Abductores","grupo":"Ab/Aductores","imagen":"img/ej/ab-aductores-abductores.webp","imagen2":""},{"nombre":"Aductores","grupo":"Ab/Aductores","imagen":"img/ej/ab-aductores-aductores.webp","imagen2":""},{"nombre":"Patada en máquina","grupo":"Glúteo","imagen":"img/ej/gluteo-patada-en-maquina.webp","imagen2":""},{"nombre":"Patada en suelo","grupo":"Glúteo","imagen":"img/ej/gluteo-patada-en-suelo.webp","imagen2":""},{"nombre":"Elevación en suelo","grupo":"Glúteo","imagen":"img/ej/gluteo-elevacion-en-suelo.webp","imagen2":""},{"nombre":"Multicadera","grupo":"Glúteo","imagen":"img/ej/gluteo-multicadera.webp","imagen2":""},{"nombre":"Cruce en suelo","grupo":"Glúteo","imagen":"img/ej/gluteo-cruce-en-suelo.webp","imagen2":""},{"nombre":"Patada oblicua","grupo":"Glúteo","imagen":"img/ej/gluteo-patada-oblicua.webp","imagen2":""},{"nombre":"Estiramiento de gemelos","grupo":"Estiramientos","imagen":"img/ej/estiramientos-estiramiento-de-gemelos.webp","imagen2":""},{"nombre":"Estiramiento de cuádriceps","grupo":"Estiramientos","imagen":"img/ej/estiramientos-estiramiento-de-cuadriceps.webp","imagen2":""},{"nombre":"Estiramiento de isquiotibiales","grupo":"Estiramientos","imagen":"img/ej/estiramientos-estiramiento-de-isquiotibiales.webp","imagen2":""},{"nombre":"Estiramiento de oblicuos","grupo":"Estiramientos","imagen":"img/ej/estiramientos-estiramiento-de-oblicuos.webp","imagen2":""},{"nombre":"Estiramiento de pectoral","grupo":"Estiramientos","imagen":"img/ej/estiramientos-estiramiento-de-pectoral.webp","imagen2":""},{"nombre":"Estiramiento de trapecio","grupo":"Estiramientos","imagen":"img/ej/estiramientos-estiramiento-de-trapecio.webp","imagen2":""},{"nombre":"Gemelo de pie","grupo":"Gemelo","imagen":"img/ej/gemelo-gemelo-de-pie.webp","imagen2":"img/ej/gemelo-gemelo-de-pie-b.webp"},{"nombre":"Gemelo sentado","grupo":"Gemelo","imagen":"img/ej/gemelo-gemelo-sentado.webp","imagen2":"img/ej/gemelo-gemelo-sentado-b.webp"},{"nombre":"Máquina de burro","grupo":"Gemelo","imagen":"img/ej/gemelo-maquina-de-burro.webp","imagen2":"img/ej/gemelo-maquina-de-burro-b.webp"},{"nombre":"Gemelo en prensa","grupo":"Gemelo","imagen":"img/ej/gemelo-gemelo-en-prensa.webp","imagen2":"img/ej/gemelo-gemelo-en-prensa-b.webp"},{"nombre":"Gemelo en multipower","grupo":"Gemelo","imagen":"img/ej/gemelo-gemelo-en-multipower.webp","imagen2":"img/ej/gemelo-gemelo-en-multipower-b.webp"},{"nombre":"Curl de antebrazo trasero","grupo":"Antebrazo","imagen":"img/ej/antebrazo-curl-de-antebrazo-trasero.webp","imagen2":"img/ej/antebrazo-curl-de-antebrazo-trasero-b.webp"},{"nombre":"Curl de antebrazo inverso","grupo":"Antebrazo","imagen":"img/ej/antebrazo-curl-de-antebrazo-inverso.webp","imagen2":"img/ej/antebrazo-curl-de-antebrazo-inverso-b.webp"},{"nombre":"Curl de antebrazo","grupo":"Antebrazo","imagen":"img/ej/antebrazo-curl-de-antebrazo.webp","imagen2":"img/ej/antebrazo-curl-de-antebrazo-b.webp"}];
+const POSES = Array.from({ length: 8 }, (_, i) => `img/poses/${i + 1}.webp`);
+
 /* ---------- utilidades ---------- */
 const $ = (s, el = document) => el.querySelector(s);
 const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36));
 const DIAS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 const MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
-const GRUPOS = ["Pecho", "Espalda", "Pierna", "Hombro", "Brazo", "Abdomen", "Cardio"];
-const COLORES = [["red", "Rojo"], ["yellow", "Amarillo"], ["blue", "Azul"], ["black", "Negro"]];
+const GRUPOS = ["Pectoral", "Dorsal", "Hombro", "Bíceps", "Tríceps", "Antebrazo", "Pierna", "Glúteo", "Gemelo", "Ab/Aductores", "Abdomen", "Lumbares", "Cintura", "Aeróbicos", "Estiramientos"];
+const COLORES = [["red", "Rojo"], ["blue", "Azul"], ["yellow", "Amarillo"]];
+const colorOk = c => (COLORES.some(([k]) => k === c) ? c : "blue");
 const pad = n => String(n).padStart(2, "0");
 const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const parse = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
 const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return iso(d); };
-const mondayOf = s => { const d = parse(s); const wd = (d.getDay() + 6) % 7; d.setDate(d.getDate() - wd); return iso(d); };
+const mondayOf = s => { const d = parse(s); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return iso(d); };
 const diffDays = (a, b) => Math.round((parse(b) - parse(a)) / 86400000);
 const dayIdx = s => (parse(s).getDay() + 6) % 7;
 const fechaLarga = s => { const d = parse(s); return `${DIAS[dayIdx(s)]} ${d.getDate()} de ${MESES[d.getMonth()]}`; };
@@ -312,51 +351,62 @@ const fechaCorta = s => { const d = parse(s); return `${d.getDate()} ${MESES[d.g
 const isoWeek = s => { const d = parse(s); d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7)); const w1 = new Date(d.getFullYear(), 0, 4); return 1 + Math.round(((d - w1) / 86400000 - 3 + ((w1.getDay() + 6) % 7)) / 7); };
 const HOY = iso(new Date());
 const isDirectVideo = url => /^blob:|\.(mp4|webm|mov|m4v|ogg)(\?|#|$)/i.test(url || "") || /\/storage\/v1\/object\/public\//.test(url || "");
+const REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 let toastT;
 function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => (t.hidden = true), 3600); }
 
+/* ---------- figura que cambia de pose ---------- */
+function posesHTML(cls = "", start = 0) {
+  return `<div class="poses ${cls}" data-poses data-i="${start}" role="img" aria-label="Pedro Barron cambiando de pose">${POSES.map((p, i) => `<img src="${p}" alt="" loading="${i < 2 ? "eager" : "lazy"}" class="${i === start ? "on" : ""}">`).join("")}</div>`;
+}
+setInterval(() => {
+  if (REDUCE || document.hidden) return;
+  document.querySelectorAll("[data-poses]").forEach(el => {
+    const imgs = el.querySelectorAll("img"); let i = Number(el.dataset.i || 0);
+    imgs[i].classList.remove("on"); i = (i + 1) % imgs.length; imgs[i].classList.add("on"); el.dataset.i = i;
+  });
+}, 1500);
+
+/* Ilustración: si tiene dos cuadros, alterna entre posición inicial y final */
+function ilustracion(ej, tag = true) {
+  if (!ej.imagen) return `<img src="${POSES[0]}" alt="">`;
+  if (ej.imagen2) return `<div class="flip"><img src="${esc(ej.imagen)}" alt="${esc(ej.nombre)}"><img src="${esc(ej.imagen2)}" alt="">${tag ? '<span class="anim-tag">En movimiento</span>' : ""}</div>`;
+  return `<img src="${esc(ej.imagen)}" alt="${esc(ej.nombre)}" loading="lazy">`;
+}
+
 /* ---------- datos de ejemplo (modo demostración) ---------- */
 function seed() {
   const wk = mondayOf(HOY), prev = addDays(wk, -7);
-  const E = (nombre, grupo) => ({ id: uid(), nombre, grupo, video_url: "" });
-  const ej = [
-    E("Press de banca plano", "Pecho"), E("Press inclinado con mancuernas", "Pecho"), E("Aperturas en polea", "Pecho"), E("Fondos en paralelas", "Pecho"), E("Pullover con mancuerna", "Pecho"),
-    E("Dominadas", "Espalda"), E("Remo con barra", "Espalda"), E("Jalón al pecho", "Espalda"), E("Remo a una mano", "Espalda"),
-    E("Sentadilla libre", "Pierna"), E("Prensa inclinada", "Pierna"), E("Zancadas caminando", "Pierna"), E("Curl femoral", "Pierna"), E("Peso muerto rumano", "Pierna"), E("Hip thrust", "Pierna"),
-    E("Press militar", "Hombro"), E("Elevaciones laterales", "Hombro"), E("Face pull", "Hombro"),
-    E("Curl con barra", "Brazo"), E("Curl martillo", "Brazo"), E("Extensión de tríceps en polea", "Brazo"), E("Press francés", "Brazo"),
-    E("Plancha", "Abdomen"), E("Elevación de piernas colgado", "Abdomen"), E("Caminadora inclinada", "Cardio")
-  ];
-  const by = n => ej.find(e => e.nombre === n).id;
+  const ej = CATALOGO.map(c => ({ id: uid(), nombre: c.nombre, grupo: c.grupo, imagen: c.imagen, imagen2: c.imagen2 || "", video_url: "" }));
+  const by = n => { const e = ej.find(x => x.nombre === n); if (!e) throw new Error("Falta " + n); return e.id; };
   const rutinas = [], rex = [];
   const R = (memb, fecha, titulo, color, nombres, opts = {}) => {
     const r = { id: uid(), membresia_id: memb, fecha, titulo, color, descanso: !!opts.descanso, nota: opts.nota || "" };
     rutinas.push(r);
     (nombres || []).forEach((n, i) => rex.push({ id: uid(), rutina_id: r.id, ejercicio_id: by(n), orden: i + 1, series: opts.series || 4, reps: opts.reps || "10-12", descanso_seg: opts.desc || 90, nota: i === 0 && opts.primera ? opts.primera : "" }));
   };
-  const vip = (w) => {
-    R("vip", addDays(w, 0), "Pecho", "red", ["Press de banca plano", "Press inclinado con mancuernas", "Aperturas en polea", "Fondos en paralelas", "Pullover con mancuerna"], { reps: "8-10", primera: "Baja la barra lento, 3 segundos, y toca el pecho sin rebotar.", nota: "Semana de fuerza: sube 2.5 kg en el primer ejercicio si te salen todas las repeticiones." });
-    R("vip", addDays(w, 1), "Espalda", "blue", ["Dominadas", "Remo con barra", "Jalón al pecho", "Remo a una mano", "Face pull"], { reps: "10", primera: "Si no completas 8, usa banda elástica." });
-    R("vip", addDays(w, 2), "Pierna", "black", ["Sentadilla libre", "Prensa inclinada", "Zancadas caminando", "Curl femoral"], { reps: "12", desc: 120 });
-    R("vip", addDays(w, 3), "Hombro", "yellow", ["Press militar", "Elevaciones laterales", "Face pull", "Plancha"], { reps: "12-15" });
-    R("vip", addDays(w, 4), "Brazos", "red", ["Curl con barra", "Curl martillo", "Extensión de tríceps en polea", "Press francés"], { series: 3, reps: "12" });
-    R("vip", addDays(w, 5), "Glúteo y femoral", "blue", ["Hip thrust", "Peso muerto rumano", "Curl femoral", "Elevación de piernas colgado"], { reps: "10-12" });
-    R("vip", addDays(w, 6), "Descanso", "black", [], { descanso: true, nota: "Camina 30 minutos y duerme bien." });
+  const vip = w => {
+    R("vip", addDays(w, 0), "Pecho", "red", ["Press banca", "Press inclinado", "Aperturas planas", "Contractor", "Cruces con polea"], { reps: "8-10", primera: "Baja la barra lento, 3 segundos, y toca el pecho sin rebotar.", nota: "Semana de fuerza: sube 2.5 kg en el primer ejercicio si te salen todas las repeticiones." });
+    R("vip", addDays(w, 1), "Espalda", "blue", ["Jalones al pecho", "Remo con barra", "Remo Gironda", "Remo a una mano", "Jalón tras nuca"], { reps: "10", primera: "Saca el pecho y lleva la barra a la clavícula." });
+    R("vip", addDays(w, 2), "Pierna", "yellow", ["Sentadilla", "Prensa atlética", "Extensiones", "Femoral tumbado", "Gemelo de pie"], { reps: "12", desc: 120 });
+    R("vip", addDays(w, 3), "Hombro", "red", ["Press militar sentado", "Elevaciones laterales", "Pájaro sentado", "Elevaciones frontales"], { reps: "12-15" });
+    R("vip", addDays(w, 4), "Brazos", "blue", ["Curl con barra", "Curl martillo", "Press francés", "Tirón con cuerdas", "Curl de antebrazo"], { series: 3, reps: "12" });
+    R("vip", addDays(w, 5), "Glúteo y abdomen", "yellow", ["Patada en máquina", "Multicadera", "Abductores", "Encogimientos", "Elevación de piernas en tabla"], { reps: "15" });
+    R("vip", addDays(w, 6), "Descanso", "blue", [], { descanso: true, nota: "Camina 30 minutos y duerme bien." });
   };
   vip(wk); vip(prev);
   const bWeek = (w, full) => {
-    R("b", addDays(w, 0), "Torso", "yellow", ["Press de banca plano", "Remo con barra", "Press militar", "Curl con barra"], { series: 3, reps: "12" });
-    R("b", addDays(w, 1), "Pierna", "black", ["Sentadilla libre", "Zancadas caminando", "Curl femoral"], { series: 3, reps: "12" });
+    R("b", addDays(w, 0), "Torso", "red", ["Press banca", "Jalones al pecho", "Press sentado con mancuernas", "Curl con barra"], { series: 3, reps: "12" });
+    R("b", addDays(w, 1), "Pierna", "yellow", ["Sentadilla", "Prensa de placas", "Femoral sentado", "Gemelo sentado"], { series: 3, reps: "12" });
     if (!full) return;
-    R("b", addDays(w, 2), "Descanso", "black", [], { descanso: true });
-    R("b", addDays(w, 3), "Torso", "red", ["Press inclinado con mancuernas", "Jalón al pecho", "Elevaciones laterales", "Extensión de tríceps en polea"], { series: 3, reps: "12" });
-    R("b", addDays(w, 4), "Pierna", "blue", ["Prensa inclinada", "Peso muerto rumano", "Hip thrust"], { series: 3, reps: "12" });
-    R("b", addDays(w, 5), "Cardio y abdomen", "yellow", ["Caminadora inclinada", "Plancha", "Elevación de piernas colgado"], { series: 3, reps: "30 seg" });
-    R("b", addDays(w, 6), "Descanso", "black", [], { descanso: true });
+    R("b", addDays(w, 2), "Descanso", "blue", [], { descanso: true });
+    R("b", addDays(w, 3), "Torso", "blue", ["Press inclinado", "Remo en máquina", "Laterales en polea", "Tirón en polea"], { series: 3, reps: "12" });
+    R("b", addDays(w, 4), "Pierna y glúteo", "red", ["Hack", "Split", "Patada en suelo", "Máquina de burro"], { series: 3, reps: "12" });
+    R("b", addDays(w, 5), "Cardio", "yellow", ["Bicicleta", "Elíptica", "Encogimientos"], { series: 1, reps: "20 min" });
+    R("b", addDays(w, 6), "Descanso", "blue", [], { descanso: true });
   };
   bWeek(wk, false); bWeek(prev, true);
-
   const C = (nombre, whatsapp, memb, venceEn, activo = true) => ({ id: uid(), nombre, whatsapp, membresia_id: memb, vence: addDays(HOY, venceEn), activo });
   const clientes = [
     C("Mariana Ledesma", "462 118 4307", "vip", 24), C("Rodrigo Arteaga", "462 207 9154", "vip", 17), C("Fernanda Olvera", "461 330 2816", "vip", 40),
@@ -364,21 +414,20 @@ function seed() {
     C("Daniela Ríos", "462 173 5590", "b", 21), C("Óscar Villalobos", "462 314 7726", "b", 9), C("Karla Esquivel", "461 402 1183", "b", 30, false), C("Iván Zavala", "462 251 9047", "b", 15)
   ];
   const envios = [];
-  const yesterday = addDays(HOY, -1);
-  [[yesterday, "enviado"], [HOY, "enviado"]].forEach(([f]) => {
+  [addDays(HOY, -1), HOY].forEach(f => {
     ["vip", "b"].forEach(m => {
       const r = rutinas.find(x => x.membresia_id === m && x.fecha === f);
       if (!r || r.descanso) return;
-      clientes.filter(c => c.membresia_id === m && c.activo && c.vence >= f).forEach(c => {
+      clientes.filter(c => c.membresia_id === m && c.activo && c.vence >= f).forEach((c, k) => {
         const fallo = f === HOY && c.nombre === "Paola Muñiz";
-        envios.push({ id: uid(), rutina_id: r.id, cliente_id: c.id, fecha: f, estado: fallo ? "fallo" : "enviado", error: fallo ? "El número no respondió. Revisa que tenga WhatsApp." : "", enviado_at: f + "T06:3" + Math.floor(Math.random() * 9) + ":00" });
+        envios.push({ id: uid(), rutina_id: r.id, cliente_id: c.id, fecha: f, estado: fallo ? "fallo" : "enviado", error: fallo ? "El número no respondió. Revisa que tenga WhatsApp." : "", enviado_at: `${f}T06:3${k}:00` });
       });
     });
   });
   return {
     membresias: [{ id: "vip", nombre: "VIP" }, { id: "b", nombre: "B" }],
     ejercicios: ej, rutinas, rutina_ejercicios: rex, clientes, envios,
-    config: [{ id: 1, marca: "Hierro", hora_envio: "06:30", plantilla: "Buenos días {nombre}. Hoy toca {titulo}. Aquí está tu rutina con los videos:\n{link}", url_vista: "https://tu-sitio.github.io/hierro/" }]
+    config: [{ id: 1, marca: "Pedro Barron", hora_envio: "06:30", plantilla: "Buenos días {nombre}. Hoy toca {titulo}. Aquí está tu rutina con los videos:\n{link}", url_vista: "https://tu-usuario.github.io/pedro-barron/" }]
   };
 }
 
@@ -387,35 +436,13 @@ const DEMO = !CONFIG.SUPABASE_URL || !CONFIG.SUPABASE_ANON_KEY;
 let sb = null;
 const mem = DEMO ? seed() : null;
 const DB = {
-  async all(t) {
-    if (DEMO) return structuredClone(mem[t]);
-    const { data, error } = await sb.from(t).select("*"); if (error) throw error; return data;
-  },
-  async where(t, f, v) {
-    if (DEMO) return structuredClone(mem[t].filter(r => r[f] === v));
-    const { data, error } = await sb.from(t).select("*").eq(f, v); if (error) throw error; return data;
-  },
-  async insert(t, row) {
-    if (DEMO) { const r = { id: uid(), ...row }; mem[t].push(r); return structuredClone(r); }
-    const { data, error } = await sb.from(t).insert(row).select().single(); if (error) throw error; return data;
-  },
-  async insertMany(t, rows) {
-    if (!rows.length) return [];
-    if (DEMO) { const rs = rows.map(r => ({ id: uid(), ...r })); mem[t].push(...rs); return structuredClone(rs); }
-    const { data, error } = await sb.from(t).insert(rows).select(); if (error) throw error; return data;
-  },
-  async update(t, id, patch) {
-    if (DEMO) { const r = mem[t].find(x => x.id === id); Object.assign(r, patch); return structuredClone(r); }
-    const { data, error } = await sb.from(t).update(patch).eq("id", id).select().single(); if (error) throw error; return data;
-  },
-  async remove(t, id) {
-    if (DEMO) { mem[t] = mem[t].filter(x => x.id !== id); return; }
-    const { error } = await sb.from(t).delete().eq("id", id); if (error) throw error;
-  },
-  async removeWhere(t, f, v) {
-    if (DEMO) { mem[t] = mem[t].filter(x => x[f] !== v); return; }
-    const { error } = await sb.from(t).delete().eq(f, v); if (error) throw error;
-  },
+  async all(t) { if (DEMO) return structuredClone(mem[t]); const { data, error } = await sb.from(t).select("*"); if (error) throw error; return data; },
+  async where(t, f, v) { if (DEMO) return structuredClone(mem[t].filter(r => r[f] === v)); const { data, error } = await sb.from(t).select("*").eq(f, v); if (error) throw error; return data; },
+  async insert(t, row) { if (DEMO) { const r = { id: uid(), ...row }; mem[t].push(r); return structuredClone(r); } const { data, error } = await sb.from(t).insert(row).select().single(); if (error) throw error; return data; },
+  async insertMany(t, rows) { if (!rows.length) return []; if (DEMO) { const rs = rows.map(r => ({ id: uid(), ...r })); mem[t].push(...rs); return structuredClone(rs); } const { data, error } = await sb.from(t).insert(rows).select(); if (error) throw error; return data; },
+  async update(t, id, patch) { if (DEMO) { const r = mem[t].find(x => x.id === id); Object.assign(r, patch); return structuredClone(r); } const { data, error } = await sb.from(t).update(patch).eq("id", id).select().single(); if (error) throw error; return data; },
+  async remove(t, id) { if (DEMO) { mem[t] = mem[t].filter(x => x.id !== id); return; } const { error } = await sb.from(t).delete().eq("id", id); if (error) throw error; },
+  async removeWhere(t, f, v) { if (DEMO) { mem[t] = mem[t].filter(x => x[f] !== v); return; } const { error } = await sb.from(t).delete().eq(f, v); if (error) throw error; },
   async upload(file) {
     if (DEMO) return URL.createObjectURL(file);
     const path = `${Date.now()}-${file.name.normalize("NFD").replace(/[^\w.-]/g, "_")}`;
@@ -429,7 +456,7 @@ const DB = {
 const S = {
   view: "semana", memb: "vip", week: mondayOf(HOY), loading: true,
   clientes: [], ejercicios: [], rutinas: [], rex: [], envios: [], membresias: [], config: {},
-  qCli: "", fCli: "todas", fGrupo: "Todos", previewFecha: HOY, envFecha: HOY, edit: null
+  qCli: "", fCli: "todas", fGrupo: "Todos", qEj: "", pickGrupo: "Pectoral", pickQ: "", previewFecha: HOY, envFecha: HOY, edit: null
 };
 async function loadAll() {
   const [membresias, clientes, ejercicios, rutinas, rex, envios, config] = await Promise.all([
@@ -440,8 +467,10 @@ async function loadAll() {
 }
 
 /* ---------- lógica de negocio ---------- */
+const SIN_EJ = { nombre: "Ejercicio eliminado", grupo: "", imagen: "", imagen2: "", video_url: "" };
 const rutinaDe = (memb, fecha) => S.rutinas.find(r => r.membresia_id === memb && r.fecha === fecha);
-const itemsDe = rid => S.rex.filter(x => x.rutina_id === rid).sort((a, b) => a.orden - b.orden).map(x => ({ ...x, ej: S.ejercicios.find(e => e.id === x.ejercicio_id) || { nombre: "Ejercicio eliminado", grupo: "", video_url: "" } }));
+const ejDe = id => S.ejercicios.find(e => e.id === id) || SIN_EJ;
+const itemsDe = rid => S.rex.filter(x => x.rutina_id === rid).sort((a, b) => a.orden - b.orden).map(x => ({ ...x, ej: ejDe(x.ejercicio_id) }));
 function estadoCliente(c) {
   if (!c.activo) return { k: "muted", t: "Pausado", recibe: false };
   const d = diffDays(HOY, c.vence);
@@ -451,28 +480,26 @@ function estadoCliente(c) {
 }
 const receptores = memb => S.clientes.filter(c => c.membresia_id === memb && estadoCliente(c).recibe);
 const membNombre = id => (S.membresias.find(m => m.id === id) || {}).nombre || id;
-const linkCliente = (rutinaId, clienteId) => `${(S.config.url_vista || "").replace(/\/?$/, "")}${(S.config.url_vista || "").includes("?") ? "&" : "?"}r=${rutinaId}${clienteId ? "&c=" + clienteId : ""}`;
-function mensaje(c, r) {
-  return (S.config.plantilla || "").replaceAll("{nombre}", c.nombre.split(" ")[0]).replaceAll("{titulo}", (r?.titulo || "").toLowerCase()).replaceAll("{link}", r ? linkCliente(r.id, c.id) : "");
-}
+const linkCliente = (rutinaId, clienteId) => { const base = S.config.url_vista || ""; return `${base}${base.includes("?") ? "&" : "?"}r=${rutinaId}${clienteId ? "&c=" + clienteId : ""}`; };
+const mensaje = (c, r) => (S.config.plantilla || "").replaceAll("{nombre}", c.nombre.split(" ")[0]).replaceAll("{titulo}", (r?.titulo || "").toLowerCase()).replaceAll("{link}", r ? linkCliente(r.id, c.id) : "");
 
 /* ---------- render principal ---------- */
 function render() {
   const app = $("#app");
-  if (S.loading) { app.innerHTML = shell(`<div class="covers">${Array.from({ length: 4 }, () => '<div class="skel"></div>').join("")}</div>`); return; }
+  if (S.loading) { app.innerHTML = shell(`<div class="loading">${posesHTML()}Calentando...</div>`); return; }
   const views = { semana: vSemana, clientes: vClientes, biblioteca: vBiblioteca, envios: vEnvios, cliente: vPreview, ajustes: vAjustes };
   app.innerHTML = shell((views[S.view] || vSemana)());
 }
 function shell(inner) {
-  const marca = esc(S.config.marca || "Hierro");
-  const nav = [["semana", "La semana"], ["clientes", "Clientes"], ["biblioteca", "Biblioteca"], ["envios", "Envíos"], ["cliente", "Vista del cliente"], ["ajustes", "Ajustes"]];
+  const nav = [["semana", "La semana"], ["clientes", "Clientes"], ["biblioteca", "Ejercicios"], ["envios", "Envíos"], ["cliente", "Vista del cliente"], ["ajustes", "Ajustes"]];
   const membs = S.membresias.map(m => `<button class="memb" data-act="memb" data-id="${esc(m.id)}" aria-pressed="${m.id === S.memb}"><b>${esc(m.nombre)}</b><span>${receptores(m.id).length} reciben rutina</span></button>`).join("");
   return `
-  <div class="strip"><span>La revista de tu entrenamiento</span><span>${DEMO ? '<span class="demo-flag">Modo demostración: datos de ejemplo</span>' : esc(fechaLarga(HOY))}</span></div>
+  <div class="strip"><span>Classic Champion · Cambia tu físico</span><span>${DEMO ? '<span class="demo-flag">Modo demostración: datos de ejemplo</span>' : esc(fechaLarga(HOY))}</span></div>
   <div class="wrap">
     <header class="mast-row">
-      <div><h1 class="mast">${marca}</h1><div class="mast-sub">Panel del entrenador · Semana ${isoWeek(S.week)}</div></div>
-      <div class="memb-switch" role="group" aria-label="Membresía">${membs}</div>
+      <div><img class="lockup" src="img/lockup.webp" alt="${esc(S.config.marca || "Pedro Barron")}. Cambia tu físico"><div class="mast-sub">Panel del entrenador · Semana ${isoWeek(S.week)}</div></div>
+      ${posesHTML("poses-head")}
+      <div class="mast-right"><div class="memb-switch" role="group" aria-label="Membresía">${membs}</div></div>
     </header>
     <nav class="nav" aria-label="Secciones">${nav.map(([k, t]) => `<button data-act="view" data-id="${k}" ${S.view === k ? 'aria-current="page"' : ""}>${t}</button>`).join("")}</nav>
     <main>${inner}</main>
@@ -483,17 +510,14 @@ function shell(inner) {
 function vSemana() {
   const dias = Array.from({ length: 7 }, (_, i) => addDays(S.week, i));
   const rs = dias.map(f => rutinaDe(S.memb, f));
-  const planeados = rs.filter(Boolean).length;
-  const entrenos = rs.filter(r => r && !r.descanso).length;
-  const sinVideo = new Set(rs.filter(Boolean).flatMap(r => itemsDe(r.id)).filter(x => !x.ej.video_url).map(x => x.ej.id)).size;
-  const fin = parse(addDays(S.week, 6));
-  const ini = parse(S.week);
+  const planeados = rs.filter(Boolean).length, entrenos = rs.filter(r => r && !r.descanso).length;
+  const sinVideo = new Set(rs.filter(Boolean).flatMap(r => itemsDe(r.id)).filter(x => !x.ej.video_url).map(x => x.ejercicio_id)).size;
+  const ini = parse(S.week), fin = parse(addDays(S.week, 6));
   const rango = ini.getMonth() === fin.getMonth() ? `${ini.getDate()} al ${fin.getDate()} de ${MESES[fin.getMonth()]}` : `${ini.getDate()} ${MESES[ini.getMonth()]} al ${fin.getDate()} ${MESES[fin.getMonth()]}`;
   const prevTiene = dias.some(f => rutinaDe(S.memb, addDays(f, -7)));
-  const covers = dias.map((f, i) => coverCard(f, rs[i])).join("");
   return `
   <div class="section-head">
-    <div><h2 class="headline">Rutina ${esc(membNombre(S.memb))}: semana del ${rango}</h2>
+    <div><h2 class="headline">Rutina ${esc(membNombre(S.memb))}: ${rango}</h2>
     <p class="dek">Toca un día para armar su rutina. Cada mañana a las ${esc(S.config.hora_envio || "06:30")} se manda la rutina de ese día a los clientes activos de la membresía ${esc(membNombre(S.memb))}.</p></div>
     <div class="toolbar">
       <div class="week-nav"><button class="btn small" data-act="week" data-n="-7" aria-label="Semana anterior">◀</button><button class="btn small" data-act="week" data-n="0">Esta semana</button><button class="btn small" data-act="week" data-n="7" aria-label="Semana siguiente">▶</button></div>
@@ -504,54 +528,55 @@ function vSemana() {
     <div><b>${planeados}/7</b><span>días planeados</span></div>
     <div><b>${entrenos}</b><span>días de entrenamiento</span></div>
     <div><b>${receptores(S.memb).length}</b><span>clientes reciben la rutina</span></div>
-    <div><b style="color:${sinVideo ? "var(--bad)" : "inherit"}">${sinVideo}</b><span>ejercicios sin video</span></div>
+    <div><b class="${sinVideo ? "alert" : ""}">${sinVideo}</b><span>ejercicios sin video propio</span></div>
   </div>
-  <div class="covers">${covers}</div>`;
+  <div class="covers">${dias.map((f, i) => coverCard(f, rs[i], i)).join("")}</div>`;
 }
-function coverCard(f, r) {
+function coverCard(f, r, i) {
   const d = parse(f);
   const band = `<div class="band"><span>${DIAS[dayIdx(f)]}</span><span>${d.getDate()} ${MESES[d.getMonth()].slice(0, 3)}</span></div>`;
   const hoy = f === HOY ? '<span class="burst" aria-hidden="true">¡HOY!</span>' : "";
+  const base = `style="--i:${i}" data-act="edit" data-f="${f}"`;
   const todayCls = f === HOY ? " today" : "";
-  if (!r) return `<button class="cover empty${todayCls}" data-act="edit" data-f="${f}">${band}<div class="body"><p class="title">Sin rutina</p><p class="more">Toca para armar este día</p></div></button>`;
-  if (r.descanso) return `<button class="cover rest${todayCls}" data-act="edit" data-f="${f}">${band}${hoy}<div class="body"><p class="title">${esc(r.titulo || "Descanso")}</p>${r.nota ? `<p class="more">${esc(r.nota)}</p>` : ""}<div class="foot"><span class="chip muted">No se envía</span></div></div></button>`;
+  if (!r) return `<button class="cover empty${todayCls}" ${base}>${band}<div class="body"><p class="title">Sin rutina</p><p class="more">Toca para armar este día</p></div></button>`;
+  if (r.descanso) return `<button class="cover rest${todayCls}" ${base}>${band}${hoy}<div class="body"><p class="title">${esc(r.titulo || "Descanso")}</p>${r.nota ? `<p class="more">${esc(r.nota)}</p>` : ""}<div class="foot"><span class="chip muted">No se envía</span></div><img class="rest-fig" src="${POSES[6]}" alt=""></div></button>`;
   const items = itemsDe(r.id);
-  const show = items.slice(0, 4);
-  const faltan = items.filter(x => !x.ej.video_url).length;
   const env = S.envios.filter(e => e.rutina_id === r.id);
   const ok = env.filter(e => e.estado === "enviado").length, bad = env.filter(e => e.estado === "fallo").length;
   let estado;
-  if (f < HOY) estado = env.length ? `<span class="chip">${ok} enviados${bad ? `, ${bad} falló` : ""}</span>` : `<span class="chip">Sin registro</span>`;
-  else if (f === HOY) estado = env.length ? `<span class="chip">${ok}/${env.length} enviados</span>` : `<span class="chip">Pendiente</span>`;
-  else estado = `<span class="chip">Sale ${esc(S.config.hora_envio || "")}</span>`;
-  return `<button class="cover c-${esc(r.color || "red")}${todayCls}" data-act="edit" data-f="${f}">${band}${hoy}
+  if (f < HOY) estado = env.length ? `<span class="chip ${bad ? "warn" : "ok"}">${ok} enviados${bad ? `, ${bad} falló` : ""}</span>` : `<span class="chip muted">Sin registro</span>`;
+  else if (f === HOY) estado = env.length ? `<span class="chip ${bad ? "warn" : "ok"}">${ok}/${env.length} enviados</span>` : `<span class="chip warn">Pendiente</span>`;
+  else estado = `<span class="chip info">Sale ${esc(S.config.hora_envio || "")}</span>`;
+  return `<button class="cover c-${colorOk(r.color)}${todayCls}" ${base}>${band}${hoy}
     <div class="body"><p class="title">${esc(r.titulo)}</p>
-      <ul>${show.map(x => `<li>${esc(x.ej.nombre)}</li>`).join("")}</ul>
+      ${items.length ? `<div class="thumbs">${items.slice(0, 4).map(x => `<span>${x.ej.imagen ? `<img src="${esc(x.ej.imagen)}" alt="" loading="lazy">` : ""}</span>`).join("")}</div>` : ""}
+      <ul>${items.slice(0, 4).map(x => `<li>${esc(x.ej.nombre)}</li>`).join("")}</ul>
       ${items.length > 4 ? `<span class="more">y ${items.length - 4} más</span>` : ""}
       ${!items.length ? `<span class="more">Aún sin ejercicios</span>` : ""}
-      <div class="foot"><span>${items.length} ejercicios${faltan ? ` · ${faltan} sin video` : ""}</span>${estado}</div>
+      <div class="foot"><span>${items.length} ejercicios</span>${estado}</div>
     </div></button>`;
 }
 
 /* ---------- editor de un día ---------- */
 function openEditor(f) {
   const r = rutinaDe(S.memb, f);
-  S.edit = r ? { id: r.id, fecha: f, titulo: r.titulo, color: r.color || "red", descanso: !!r.descanso, nota: r.nota || "",
+  S.edit = r ? { id: r.id, fecha: f, titulo: r.titulo, color: colorOk(r.color), descanso: !!r.descanso, nota: r.nota || "",
     items: itemsDe(r.id).map(x => ({ k: uid(), ejercicio_id: x.ejercicio_id, series: x.series, reps: x.reps, descanso_seg: x.descanso_seg, nota: x.nota || "" })) }
-    : { id: null, fecha: f, titulo: "", color: COLORES[dayIdx(f) % 4][0], descanso: false, nota: "", items: [] };
-  const dlg = $("#dlg");
-  dlg.innerHTML = editorHTML();
-  dlg.showModal();
+    : { id: null, fecha: f, titulo: "", color: COLORES[dayIdx(f) % 3][0], descanso: false, nota: "", items: [] };
+  S.pickQ = "";
+  const dlg = $("#dlg"); dlg.innerHTML = editorHTML(); dlg.showModal();
   setTimeout(() => $("#ed-titulo")?.focus(), 30);
+}
+function pickerGridHTML() {
+  const q = S.pickQ.trim().toLowerCase();
+  const list = S.ejercicios.filter(e => q ? e.nombre.toLowerCase().includes(q) : e.grupo === S.pickGrupo);
+  if (!list.length) return `<p class="dek" style="padding:8px;margin:0">No hay ejercicios que coincidan.</p>`;
+  return list.map(e => `<button type="button" class="pick" data-act="ex-add" data-id="${e.id}" title="Agregar ${esc(e.nombre)}">${e.imagen ? `<img src="${esc(e.imagen)}" alt="" loading="lazy">` : ""}<span>${esc(e.nombre)}</span></button>`).join("");
 }
 function editorHTML() {
   const e = S.edit;
-  const opts = GRUPOS.map(g => {
-    const list = S.ejercicios.filter(x => x.grupo === g);
-    return list.length ? `<optgroup label="${g}">${list.map(x => `<option value="${x.id}">${esc(x.nombre)}${x.video_url ? "" : " (sin video)"}</option>`).join("")}</optgroup>` : "";
-  }).join("");
   return `
-  <form method="dialog" id="ed-form" novalidate>
+  <form id="ed-form" novalidate>
   <div class="dlg-head"><h3 id="dlg-title">${esc(fechaLarga(e.fecha))} · ${esc(membNombre(S.memb))}</h3><button type="button" class="btn small" data-act="close">Cerrar</button></div>
   <div class="dlg-body">
     <div class="grid2">
@@ -560,11 +585,14 @@ function editorHTML() {
     </div>
     <label class="toggle"><input type="checkbox" id="ed-desc" data-e="descanso" ${e.descanso ? "checked" : ""}> Día de descanso (ese día no se manda nada)</label>
     <div class="field"><label for="ed-nota">Nota del entrenador</label><textarea id="ed-nota" data-e="nota" placeholder="Ej. Semana de fuerza, sube peso en el primer ejercicio.">${esc(e.nota)}</textarea><span class="help">Aparece en un recuadro en la portada del cliente.</span></div>
-    <div id="ed-ex" ${e.descanso ? "hidden" : ""}>
-      <div class="field" style="margin-bottom:10px"><label for="ed-add">Ejercicios en orden</label>
-        <div class="add-row"><select id="ed-add">${opts || '<option value="">Primero agrega ejercicios en la Biblioteca</option>'}</select><button type="button" class="btn primary" data-act="ex-add" ${opts ? "" : "disabled"}>Agregar</button></div>
+    <div id="ed-ex" ${e.descanso ? "hidden" : ""} style="display:grid;gap:12px">
+      <div class="field"><label for="pk-q">Agrega ejercicios tocando su dibujo</label>
+        <div class="picker">
+          <div class="picker-top"><select id="pk-grupo" data-pk="grupo" aria-label="Grupo muscular">${GRUPOS.map(g => `<option ${g === S.pickGrupo ? "selected" : ""}>${g}</option>`).join("")}</select><input type="search" id="pk-q" data-pk="q" placeholder="O busca por nombre" value="${esc(S.pickQ)}"></div>
+          <div class="picker-grid" id="pk-grid">${pickerGridHTML()}</div>
+        </div>
       </div>
-      <div class="ex-list" id="ed-list">${exListHTML()}</div>
+      <div class="field"><label>Rutina del día, en orden</label><div class="ex-list" id="ed-list">${exListHTML()}</div></div>
     </div>
   </div>
   <div class="dlg-foot">
@@ -575,13 +603,14 @@ function editorHTML() {
 }
 function exListHTML() {
   const e = S.edit;
-  if (!e.items.length) return `<div class="empty-state"><h4>Sin ejercicios</h4><p>Elige un ejercicio de la lista y toca Agregar. Puedes cambiar el orden después.</p></div>`;
+  if (!e.items.length) return `<div class="empty-state">${posesHTML()}<h4>Sin ejercicios</h4><p>Toca un dibujo de arriba para agregarlo. Después puedes cambiar el orden.</p></div>`;
   return e.items.map((it, i) => {
-    const ej = S.ejercicios.find(x => x.id === it.ejercicio_id) || { nombre: "Ejercicio eliminado", video_url: "" };
+    const ej = ejDe(it.ejercicio_id);
     return `<div class="ex-row">
       <span class="ex-num" aria-hidden="true">${i + 1}</span>
+      ${ej.imagen ? `<img class="ex-img" src="${esc(ej.imagen)}" alt="">` : '<span class="ex-img"></span>'}
       <div style="min-width:0">
-        <div class="ex-name">${esc(ej.nombre)} ${ej.video_url ? "" : '<span class="chip bad">Sin video</span>'}</div>
+        <div class="ex-name">${esc(ej.nombre)}</div>
         <div class="ex-fields">
           <div class="field"><label for="s-${it.k}">Series</label><input type="number" min="1" max="12" id="s-${it.k}" data-it="${it.k}" data-k="series" value="${esc(it.series)}"></div>
           <div class="field"><label for="r-${it.k}">Repeticiones</label><input type="text" id="r-${it.k}" data-it="${it.k}" data-k="reps" value="${esc(it.reps)}" placeholder="10-12"></div>
@@ -611,8 +640,7 @@ async function saveDay() {
   } catch (err) { toast("No se pudo guardar: " + err.message); }
 }
 async function deleteDay() {
-  const e = S.edit;
-  try { await DB.removeWhere("rutina_ejercicios", "rutina_id", e.id); await DB.remove("rutinas", e.id); await loadAll(); $("#dlg").close(); render(); toast("Día borrado."); }
+  try { await DB.removeWhere("rutina_ejercicios", "rutina_id", S.edit.id); await DB.remove("rutinas", S.edit.id); await loadAll(); $("#dlg").close(); render(); toast("Día borrado."); }
   catch (err) { toast("No se pudo borrar: " + err.message); }
 }
 async function copyWeek() {
@@ -632,8 +660,8 @@ async function copyWeek() {
 
 /* ---------- vista: clientes ---------- */
 function vClientes() {
-  const q = S.qCli.trim().toLowerCase();
-  const list = S.clientes.filter(c => (S.fCli === "todas" || c.membresia_id === S.fCli) && (!q || c.nombre.toLowerCase().includes(q) || c.whatsapp.replace(/\D/g, "").includes(q.replace(/\D/g, "") || "~"))).sort((a, b) => a.nombre.localeCompare(b.nombre));
+  const q = S.qCli.trim().toLowerCase(), qd = q.replace(/\D/g, "");
+  const list = S.clientes.filter(c => (S.fCli === "todas" || c.membresia_id === S.fCli) && (!q || c.nombre.toLowerCase().includes(q) || (qd && c.whatsapp.replace(/\D/g, "").includes(qd)))).sort((a, b) => a.nombre.localeCompare(b.nombre));
   const rows = list.map(c => {
     const st = estadoCliente(c);
     return `<tr><td class="cell-name">${esc(c.nombre)}</td><td class="num">${esc(c.whatsapp)}</td><td>${esc(membNombre(c.membresia_id))}</td><td class="num">${esc(fechaCorta(c.vence))}</td><td><span class="chip ${st.k}">${esc(st.t)}</span></td>
@@ -643,9 +671,9 @@ function vClientes() {
   return `
   <div class="section-head"><div><h2 class="headline">Clientes</h2><p class="dek">Solo reciben rutina los clientes activos con membresía vigente. Al vencer, el envío se detiene solo.</p></div>
     <button class="btn primary" data-act="cli-new">Nuevo cliente</button></div>
-  <div class="toolbar" style="margin-bottom:14px"><div class="field" style="flex:1;min-width:200px;max-width:360px"><label for="q-cli" class="sr" hidden>Buscar</label><input type="search" id="q-cli" data-f="qCli" value="${esc(S.qCli)}" placeholder="Buscar por nombre o teléfono" aria-label="Buscar cliente"></div><div class="filters" style="margin:0">${filtros}</div></div>
+  <div class="toolbar" style="margin-bottom:14px"><div style="flex:1;min-width:200px;max-width:360px"><input type="search" id="q-cli" data-f="qCli" value="${esc(S.qCli)}" placeholder="Buscar por nombre o teléfono" aria-label="Buscar cliente"></div><div class="filters" style="margin:0">${filtros}</div></div>
   ${list.length ? `<div class="table-wrap"><table><thead><tr><th>Nombre</th><th>WhatsApp</th><th>Membresía</th><th>Vence</th><th>Estado</th><th><span hidden>Acciones</span></th></tr></thead><tbody>${rows}</tbody></table></div>`
-    : `<div class="empty-state"><h4>${S.clientes.length ? "Nadie coincide" : "Aún no hay clientes"}</h4><p>${S.clientes.length ? "Prueba con otro nombre o quita el filtro de membresía." : "Agrega a tu primer cliente con su WhatsApp y su membresía para que empiece a recibir rutinas."}</p>${S.clientes.length ? "" : '<button class="btn primary" data-act="cli-new">Nuevo cliente</button>'}</div>`}`;
+    : `<div class="empty-state">${posesHTML()}<h4>${S.clientes.length ? "Nadie coincide" : "Aún no hay clientes"}</h4><p>${S.clientes.length ? "Prueba con otro nombre o quita el filtro de membresía." : "Agrega a tu primer cliente con su WhatsApp y su membresía para que empiece a recibir rutinas."}</p>${S.clientes.length ? "" : '<button class="btn primary" data-act="cli-new">Nuevo cliente</button>'}</div>`}`;
 }
 function openCliente(id) {
   const c = S.clientes.find(x => x.id === id) || { id: null, nombre: "", whatsapp: "", membresia_id: S.memb, vence: addDays(HOY, 30), activo: true };
@@ -669,48 +697,49 @@ function openCliente(id) {
   $("#cli-form").addEventListener("submit", async ev => {
     ev.preventDefault();
     const row = { nombre: $("#c-nombre").value.trim(), whatsapp: $("#c-wa").value.trim(), membresia_id: $("#c-memb").value, vence: $("#c-vence").value, activo: $("#c-activo").checked };
-    const er = $("#c-err");
-    if (!row.nombre) { er.textContent = "Escribe el nombre del cliente."; er.hidden = false; $("#c-nombre").focus(); return; }
-    if (row.whatsapp.replace(/\D/g, "").length < 10) { er.textContent = "El WhatsApp debe tener 10 dígitos."; er.hidden = false; $("#c-wa").focus(); return; }
-    if (!row.vence) { er.textContent = "Elige hasta qué fecha está pagada la membresía."; er.hidden = false; return; }
+    const er = $("#c-err"); const fail = (m, el) => { er.textContent = m; er.hidden = false; el?.focus(); };
+    if (!row.nombre) return fail("Escribe el nombre del cliente.", $("#c-nombre"));
+    if (row.whatsapp.replace(/\D/g, "").length < 10) return fail("El WhatsApp debe tener 10 dígitos.", $("#c-wa"));
+    if (!row.vence) return fail("Elige hasta qué fecha está pagada la membresía.");
     try { c.id ? await DB.update("clientes", c.id, row) : await DB.insert("clientes", row); await loadAll(); dlg.close(); render(); toast("Cliente guardado."); }
-    catch (err) { er.textContent = "No se pudo guardar: " + err.message; er.hidden = false; }
+    catch (err) { fail("No se pudo guardar: " + err.message); }
   });
 }
 
-/* ---------- vista: biblioteca ---------- */
-function usoDe(ejId) { return new Set(S.rex.filter(x => x.ejercicio_id === ejId).map(x => x.rutina_id)).size; }
-function mediaHTML(ej, big) {
-  if (ej.video_url && isDirectVideo(ej.video_url)) return `<video src="${esc(ej.video_url)}" ${big ? "controls playsinline" : 'muted playsinline preload="metadata"'}></video>`;
-  if (ej.video_url) return `<div class="halftone">${esc(ej.nombre)}<small><a href="${esc(ej.video_url)}" target="_blank" rel="noopener" style="color:#fff">Abrir video</a></small></div>`;
-  return `<div class="halftone">${esc(ej.nombre)}<small>${big ? "Video en camino" : "Falta subir video"}</small></div>`;
-}
+/* ---------- vista: ejercicios (sus láminas) ---------- */
+const usoDe = ejId => new Set(S.rex.filter(x => x.ejercicio_id === ejId).map(x => x.rutina_id)).size;
 function vBiblioteca() {
-  const list = S.ejercicios.filter(e => S.fGrupo === "Todos" || e.grupo === S.fGrupo).sort((a, b) => a.grupo.localeCompare(b.grupo) || a.nombre.localeCompare(b.nombre));
-  const faltan = S.ejercicios.filter(e => !e.video_url).length;
+  const q = S.qEj.trim().toLowerCase();
+  const grupos = (S.fGrupo === "Todos" ? GRUPOS : [S.fGrupo]).concat(S.fGrupo === "Todos" ? ["Otro"] : []);
+  const conVideo = S.ejercicios.filter(e => e.video_url).length;
+  const sheets = grupos.map(g => {
+    const list = S.ejercicios.filter(e => (g === "Otro" ? !GRUPOS.includes(e.grupo) : e.grupo === g) && (!q || e.nombre.toLowerCase().includes(q))).sort((a, b) => a.nombre.localeCompare(b.nombre));
+    if (!list.length) return "";
+    return `<section class="sheet"><div class="sheet-head"><h3>${esc(g)}</h3><span>${list.length} ejercicios</span></div><div class="lib">${list.map(e => `
+      <button class="lib-item" data-act="ej-edit" data-id="${e.id}"><div class="lib-media">${ilustracion(e)}</div><h4>${esc(e.nombre)}</h4>
+      <div class="lib-meta">${e.video_url ? '<span class="chip ok">Con video</span>' : '<span class="chip muted">Solo dibujo</span>'}${usoDe(e.id) ? `<span>En ${usoDe(e.id)} rutinas</span>` : ""}</div></button>`).join("")}</div></section>`;
+  }).join("");
   return `
-  <div class="section-head"><div><h2 class="headline">Biblioteca de ejercicios</h2><p class="dek">Sube cada video una sola vez y reúsalo en todas las rutinas. ${faltan ? `<b>${faltan} ejercicios aún no tienen video.</b>` : "Todos los ejercicios tienen video."}</p></div>
-    <button class="btn primary" data-act="ej-new">Nuevo ejercicio</button></div>
+  <div class="section-head"><div><h2 class="headline">Ejercicios</h2><p class="dek">Tus láminas, ejercicio por ejercicio. Cada uno ya tiene su dibujo; toca uno para agregarle tu video. ${conVideo} de ${S.ejercicios.length} tienen video.</p></div>
+    <div class="toolbar"><input type="search" id="q-ej" data-f="qEj" value="${esc(S.qEj)}" placeholder="Buscar ejercicio" aria-label="Buscar ejercicio" style="width:220px"><button class="btn primary" data-act="ej-new">Nuevo ejercicio</button></div></div>
   <div class="filters">${["Todos", ...GRUPOS].map(g => `<button class="pill" data-act="fgrupo" data-id="${g}" aria-pressed="${S.fGrupo === g}">${g}</button>`).join("")}</div>
-  ${list.length ? `<div class="lib">${list.map(e => `<article class="lib-item"><div class="lib-media">${mediaHTML(e)}</div><div class="lib-body"><h4>${esc(e.nombre)}</h4>
-    <div class="lib-meta"><span class="chip muted">${esc(e.grupo)}</span>${e.video_url ? '<span class="chip ok">Con video</span>' : '<span class="chip bad">Sin video</span>'}<span>En ${usoDe(e.id)} rutinas</span></div>
-    <div class="row-actions"><button class="btn small" data-act="ej-edit" data-id="${e.id}">${e.video_url ? "Editar" : "Subir video"}</button></div></div></article>`).join("")}</div>`
-    : `<div class="empty-state"><h4>Nada en ${esc(S.fGrupo)}</h4><p>Agrega el primer ejercicio de este grupo con su video.</p><button class="btn primary" data-act="ej-new">Nuevo ejercicio</button></div>`}`;
+  ${sheets || `<div class="empty-state">${posesHTML()}<h4>Nada por aquí</h4><p>Prueba con otro nombre o agrega un ejercicio nuevo.</p><button class="btn primary" data-act="ej-new">Nuevo ejercicio</button></div>`}`;
 }
 function openEjercicio(id) {
-  const e = S.ejercicios.find(x => x.id === id) || { id: null, nombre: "", grupo: S.fGrupo !== "Todos" ? S.fGrupo : "Pecho", video_url: "" };
+  const e = S.ejercicios.find(x => x.id === id) || { id: null, nombre: "", grupo: S.fGrupo !== "Todos" ? S.fGrupo : "Pectoral", imagen: "", imagen2: "", video_url: "" };
   const enUso = e.id ? usoDe(e.id) : 0;
   const dlg = $("#dlg");
   dlg.innerHTML = `<form id="ej-form" novalidate>
-    <div class="dlg-head"><h3 id="dlg-title">${e.id ? "Editar ejercicio" : "Nuevo ejercicio"}</h3><button type="button" class="btn small" data-act="close">Cerrar</button></div>
+    <div class="dlg-head"><h3 id="dlg-title">${e.id ? esc(e.nombre) : "Nuevo ejercicio"}</h3><button type="button" class="btn small" data-act="close">Cerrar</button></div>
     <div class="dlg-body">
+      ${e.imagen ? `<div class="art-media" style="max-width:320px;aspect-ratio:1">${ilustracion(e)}</div>` : ""}
       <div class="grid2">
-        <div class="field"><label for="j-nombre">Nombre del ejercicio</label><input type="text" id="j-nombre" value="${esc(e.nombre)}" placeholder="Ej. Press de banca plano" required></div>
+        <div class="field"><label for="j-nombre">Nombre del ejercicio</label><input type="text" id="j-nombre" value="${esc(e.nombre)}" placeholder="Ej. Press banca" required></div>
         <div class="field"><label for="j-grupo">Grupo muscular</label><select id="j-grupo">${GRUPOS.map(g => `<option ${g === e.grupo ? "selected" : ""}>${g}</option>`).join("")}</select></div>
       </div>
-      <div class="field"><label for="j-file">Video desde el celular o la compu</label><input type="file" id="j-file" accept="video/*"><span class="help">MP4 de menos de 50 MB. Graba en vertical y de 20 a 40 segundos para que cargue rápido.</span></div>
+      <div class="field"><label for="j-file">Video desde el celular o la compu</label><input type="file" id="j-file" accept="video/*"><span class="help">MP4 de menos de 50 MB. Graba en vertical, de 20 a 40 segundos, para que cargue rápido.</span></div>
       <div class="field"><label for="j-url">O pega un link de video</label><input type="url" id="j-url" value="${esc(e.video_url && !e.video_url.startsWith("blob:") ? e.video_url : "")}" placeholder="https://..."><span class="help">Un link de YouTube también sirve: el cliente verá un botón para abrirlo.</span></div>
-      ${e.video_url ? `<div class="lib-media" style="max-width:360px">${mediaHTML(e, true)}</div>` : ""}
+      ${e.video_url && isDirectVideo(e.video_url) ? `<div class="art-media" style="max-width:360px"><video src="${esc(e.video_url)}" controls playsinline></video></div>` : ""}
       <span class="err" id="j-err" hidden></span>
     </div>
     <div class="dlg-foot"><div>${e.id ? `<button type="button" class="btn ghost" data-act="ej-del" data-id="${e.id}" data-armed="0" ${enUso ? `disabled title="Se usa en ${enUso} rutinas"` : ""}>Eliminar</button>` : ""}</div>
@@ -728,7 +757,7 @@ function openEjercicio(id) {
     try {
       if (file) video_url = await DB.upload(file);
       const row = { nombre, grupo, video_url };
-      e.id ? await DB.update("ejercicios", e.id, row) : await DB.insert("ejercicios", row);
+      e.id ? await DB.update("ejercicios", e.id, row) : await DB.insert("ejercicios", { ...row, imagen: "", imagen2: "" });
       await loadAll(); dlg.close(); render(); toast(file ? "Video subido y ejercicio guardado." : "Ejercicio guardado.");
     } catch (err) { er.textContent = "No se pudo guardar: " + err.message; er.hidden = false; btn.disabled = false; btn.textContent = "Guardar"; }
   });
@@ -738,35 +767,32 @@ function openEjercicio(id) {
 function vEnvios() {
   const f = S.envFecha;
   const blocks = S.membresias.map(m => {
-    const r = rutinaDe(m.id, f);
-    const env = S.envios.filter(e => r && e.rutina_id === r.id);
-    const destinatarios = receptores(m.id);
+    const r = rutinaDe(m.id, f), env = S.envios.filter(e => r && e.rutina_id === r.id), dest = receptores(m.id);
     let body;
     if (!r) body = `<p class="dek" style="margin:0">No hay rutina armada para este día.</p>`;
     else if (r.descanso) body = `<p class="dek" style="margin:0">Día de descanso. No se envía nada.</p>`;
     else {
-      const filas = destinatarios.map(c => {
+      const filas = dest.map(c => {
         const e = env.find(x => x.cliente_id === c.id);
         const chip = !e ? '<span class="chip muted">Pendiente</span>' : e.estado === "enviado" ? '<span class="chip ok">Enviado</span>' : e.estado === "fallo" ? '<span class="chip bad">Falló</span>' : '<span class="chip warn">En cola</span>';
-        const hora = e?.enviado_at ? e.enviado_at.slice(11, 16) : "";
-        return `<tr><td class="cell-name">${esc(c.nombre)}</td><td class="num">${esc(c.whatsapp)}</td><td>${chip}${e?.error ? `<div class="err" style="margin-top:4px">${esc(e.error)}</div>` : ""}</td><td class="num">${hora}</td>
+        return `<tr><td class="cell-name">${esc(c.nombre)}</td><td class="num">${esc(c.whatsapp)}</td><td>${chip}${e?.error ? `<div class="err" style="margin-top:4px">${esc(e.error)}</div>` : ""}</td><td class="num">${e?.enviado_at ? e.enviado_at.slice(11, 16) : ""}</td>
         <td><div class="row-actions">${e && e.estado === "fallo" ? `<button class="btn small" data-act="resend" data-id="${e.id}">Reenviar</button>` : ""}</div></td></tr>`;
       }).join("");
-      const sinEnviar = destinatarios.filter(c => !env.find(x => x.cliente_id === c.id)).length;
+      const sinEnviar = dest.filter(c => !env.find(x => x.cliente_id === c.id)).length;
       body = `<div class="toolbar" style="justify-content:space-between"><span><b>${esc(r.titulo)}</b> · ${itemsDe(r.id).length} ejercicios</span>
         ${f >= HOY && sinEnviar ? `<button class="btn primary small" data-act="send-now" data-id="${r.id}" data-m="${esc(m.id)}">Enviar ahora a ${sinEnviar}</button>` : ""}</div>
-        ${destinatarios.length ? `<div class="table-wrap"><table style="min-width:560px"><thead><tr><th>Cliente</th><th>WhatsApp</th><th>Estado</th><th>Hora</th><th><span hidden>Acciones</span></th></tr></thead><tbody>${filas}</tbody></table></div>` : `<p class="dek" style="margin:0">No hay clientes activos en esta membresía.</p>`}`;
+        ${dest.length ? `<div class="table-wrap"><table style="min-width:560px"><thead><tr><th>Cliente</th><th>WhatsApp</th><th>Estado</th><th>Hora</th><th><span hidden>Acciones</span></th></tr></thead><tbody>${filas}</tbody></table></div>` : `<p class="dek" style="margin:0">No hay clientes activos en esta membresía.</p>`}`;
     }
     return `<section class="panel"><h3>Membresía ${esc(m.nombre)}</h3>${body}</section>`;
   }).join("");
-  const ejemploC = receptores(S.memb)[0], ejemploR = rutinaDe(S.memb, f) || rutinaDe(S.memb, HOY);
+  const ejC = receptores(S.memb)[0], ejR = rutinaDe(S.memb, f) || rutinaDe(S.memb, HOY);
   return `
   <div class="section-head"><div><h2 class="headline">Envíos por WhatsApp</h2><p class="dek">Cada cliente recibe un solo mensaje con el link a su rutina del día. Así WhatsApp no ve muchos archivos repetidos y el número corre menos riesgo de bloqueo.</p></div>
     <div class="toolbar"><button class="btn small" data-act="envday" data-n="-1" aria-label="Día anterior">◀</button><input type="date" id="env-fecha" data-f="envFecha" value="${f}" aria-label="Fecha" style="width:auto"><button class="btn small" data-act="envday" data-n="1" aria-label="Día siguiente">▶</button></div></div>
   <div class="send-grid">
     <div style="display:grid;gap:18px">${blocks}</div>
     <aside class="panel"><h3>Así le llega</h3>
-      ${ejemploC && ejemploR && !ejemploR.descanso ? `<div class="msg-preview">${esc(mensaje(ejemploC, ejemploR))}</div>` : `<p class="dek" style="margin:0">Arma una rutina para ver el mensaje de ejemplo.</p>`}
+      ${ejC && ejR && !ejR.descanso ? `<div class="msg-preview">${esc(mensaje(ejC, ejR))}</div>` : `<p class="dek" style="margin:0">Arma una rutina para ver el mensaje de ejemplo.</p>`}
       <div class="callout">El envío lo hace el script de OpenWA en tu computadora: revisa la cola cada minuto, manda con pausas al azar y marca aquí si salió o falló. Hora diaria: <b>${esc(S.config.hora_envio)}</b>. Se cambia en Ajustes.</div>
     </aside>
   </div>`;
@@ -777,7 +803,6 @@ async function sendNow(rid, memb) {
   try {
     const ins = await DB.insertMany("envios", rows);
     if (DEMO) {
-      // Simulación: en el sistema real el script de OpenWA cambia el estado.
       ins.forEach(r => { const m = mem.envios.find(x => x.id === r.id); m.estado = "enviado"; m.enviado_at = `${S.envFecha}T${new Date().toTimeString().slice(0, 8)}`; });
       toast(`Simulado: ${rows.length} mensajes enviados. En tu sistema real quedan en cola para OpenWA.`);
     } else toast(`${rows.length} mensajes en cola. El script de OpenWA los manda en el siguiente minuto.`);
@@ -791,48 +816,57 @@ async function resend(id) {
   } catch (err) { toast("No se pudo reenviar: " + err.message); }
 }
 
-/* ---------- vista: cliente (portada) ---------- */
-function clientePage(r, items, marca, opts = {}) {
-  const f = r.fecha, d = parse(f);
-  const color = r.descanso ? "black" : (r.color || "red");
+/* ---------- página del cliente (portada + ejercicios) ---------- */
+function mediaCliente(ej) {
+  const dibujo = ilustracion(ej, false);
+  if (ej.video_url && isDirectVideo(ej.video_url)) return `<div class="art-media"><video src="${esc(ej.video_url)}" controls playsinline preload="metadata" poster=""></video></div><details><summary style="cursor:pointer;font-size:13px;color:var(--blue);font-weight:600">Ver el dibujo</summary><div class="art-media" style="margin-top:6px">${dibujo}</div></details>`;
+  if (ej.video_url) return `<div class="art-media">${dibujo}</div><a class="btn small" href="${esc(ej.video_url)}" target="_blank" rel="noopener" style="justify-self:start;text-decoration:none">Ver video</a>`;
+  return `<div class="art-media">${dibujo}</div>`;
+}
+function clientePage(r, items, marca, estiramientos, opts = {}) {
+  const f = r.fecha, d = parse(f), color = colorOk(r.color);
   const totalSeries = items.reduce((a, x) => a + (Number(x.series) || 0), 0);
   const cover = `
-  <div class="mag c-${esc(color)}${r.descanso ? " rest-day" : ""}">
+  <div class="mag c-${color}">
     <div class="mag-top"><span>${opts.saludo ? esc(opts.saludo) : "Tu rutina de hoy"}</span><span>${esc(DIAS[dayIdx(f)])} ${d.getDate()} ${MESES[d.getMonth()].slice(0, 3)}</span></div>
-    <div class="mag-mast">${esc(marca)}</div>
-    <div class="mag-tag">La revista de tu entrenamiento</div>
-    <h1 class="mag-title${r.titulo.length > 8 ? " long" : ""}">${esc(r.titulo)}</h1>
-    ${r.descanso ? "" : `<div class="mag-burst" aria-hidden="true">${items.length}<br>ejercicios</div>`}
-    ${r.descanso ? "" : `<ul class="mag-lines">${items.slice(0, 6).map(x => `<li><span>${esc(x.ej.nombre)}<small>${esc(x.series)}×${esc(x.reps)}</small></span></li>`).join("")}</ul>`}
+    <img class="mag-lockup" src="img/lockup.webp" alt="${esc(marca)}. Cambia tu físico">
+    <h1 class="mag-title${r.titulo.length > 9 ? " long" : ""}">${esc(r.titulo)}</h1>
+    ${r.descanso ? `<div class="rest-figure">${posesHTML("", 5)}</div>` : `
+    <div class="mag-burst" aria-hidden="true">${items.length}<br>ejercicios</div>
+    <div class="mag-stage">
+      <ul class="mag-lines">${items.slice(0, 6).map(x => `<li><span>${esc(x.ej.nombre)}<small>${esc(x.series)} × ${esc(x.reps)}</small></span></li>`).join("")}</ul>
+      <div class="mag-figure">${posesHTML()}</div>
+    </div>`}
     ${r.nota ? `<div class="mag-box"><b>Nota del entrenador</b>${esc(r.nota)}</div>` : ""}
-    <div class="mag-foot"><div class="barcode"><i></i>${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}</div>${r.descanso ? `<div class="sets">Recupera<br>y vuelve<br>mañana</div>` : `<div class="sets">${totalSeries} series<br>en total</div>`}</div>
+    <div class="mag-foot"><div class="barcode"><i></i>${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}</div><div class="sets">${r.descanso ? "Recupera y<br>vuelve mañana" : `${totalSeries} series<br>en total`}</div></div>
   </div>`;
   const arts = r.descanso ? "" : `
   <div class="articles"><h3>Los ejercicios</h3>
     ${items.map((x, i) => `<article class="art">
       <div class="art-head"><span class="art-num">${i + 1}</span><span class="art-name">${esc(x.ej.nombre)}</span></div>
-      <div class="art-media">${mediaHTML(x.ej, true)}</div>
+      ${mediaCliente(x.ej)}
       <div class="specs"><div><b>${esc(x.series)}</b><span>Series</span></div><div><b>${esc(x.reps)}</b><span>Repeticiones</span></div><div><b>${Number(x.descanso_seg) >= 60 ? `${Math.floor(x.descanso_seg / 60)}:${pad(x.descanso_seg % 60)}` : esc(x.descanso_seg) + "s"}</b><span>Descanso</span></div></div>
       ${x.nota ? `<p class="art-note">${esc(x.nota)}</p>` : ""}
     </article>`).join("")}
-  </div>`;
+  </div>
+  ${estiramientos.length ? `<div class="stretch"><h3>Al terminar</h3><p>Realiza estiramientos al finalizar el entrenamiento.</p><div class="stretch-row">${estiramientos.map(e => `<figure><img src="${esc(e.imagen)}" alt="" loading="lazy"><figcaption>${esc(e.nombre.replace(/^Estiramiento de /, ""))}</figcaption></figure>`).join("")}</div></div>` : ""}`;
   return `<div class="client">${cover}${arts}<div class="client-foot">¿Dudas con algún ejercicio? Contesta el mensaje de WhatsApp y tu entrenador te responde.</div></div>`;
 }
+const estiramientosDe = list => list.filter(e => e.grupo === "Estiramientos" && e.imagen);
 function vPreview() {
   const dias = Array.from({ length: 7 }, (_, i) => addDays(S.week, i));
   if (!dias.includes(S.previewFecha)) S.previewFecha = dias.includes(HOY) ? HOY : dias[0];
-  const r = rutinaDe(S.memb, S.previewFecha);
-  const c = receptores(S.memb)[0];
+  const r = rutinaDe(S.memb, S.previewFecha), c = receptores(S.memb)[0];
   const chips = dias.map(f => `<button class="pill" data-act="pv" data-id="${f}" aria-pressed="${f === S.previewFecha}">${DIAS[dayIdx(f)].slice(0, 3)}</button>`).join("");
-  const phone = r ? clientePage(r, itemsDe(r.id), S.config.marca || "Hierro", { saludo: c ? `Para ${c.nombre.split(" ")[0]}` : "" })
-    : `<div class="empty-state" style="margin:20px"><h4>Sin rutina</h4><p>Este día aún no tiene rutina. Ármala en La semana.</p><button class="btn primary" data-act="edit" data-f="${S.previewFecha}">Armar ${DIAS[dayIdx(S.previewFecha)]}</button></div>`;
+  const phone = r ? clientePage(r, itemsDe(r.id), S.config.marca || "Pedro Barron", estiramientosDe(S.ejercicios), { saludo: c ? `Para ${c.nombre.split(" ")[0]}` : "" })
+    : `<div class="empty-state" style="margin:20px">${posesHTML()}<h4>Sin rutina</h4><p>Este día aún no tiene rutina. Ármala en La semana.</p><button class="btn primary" data-act="edit" data-f="${S.previewFecha}">Armar ${DIAS[dayIdx(S.previewFecha)]}</button></div>`;
   return `
   <div class="preview-layout">
     <div>
       <h2 class="headline">Lo que ve tu cliente</h2>
-      <p class="dek">Es la página que abre desde el link de WhatsApp: una portada con la rutina del día y abajo cada ejercicio con su video. Se ve igual en cualquier celular, sin instalar nada.</p>
+      <p class="dek">Es la página que abre desde el link de WhatsApp: una portada con la rutina del día, cada ejercicio con su dibujo o su video, y los estiramientos al final. Se ve en cualquier celular sin instalar nada.</p>
       <div class="filters" style="margin-top:16px">${chips}</div>
-      ${r ? `<div class="panel" style="margin-top:8px"><h3>Link de este día</h3><code style="overflow-wrap:anywhere;font-size:13px">${esc(linkCliente(r.id, c?.id))}</code><div class="toolbar"><button class="btn small" data-act="copy-link" data-id="${r.id}">Copiar link</button></div></div>` : ""}
+      ${r ? `<div class="panel" style="margin-top:8px"><h3>Link de este día</h3><code style="overflow-wrap:anywhere;font-size:13px">${esc(linkCliente(r.id, c?.id))}</code><div class="toolbar"><button class="btn small" data-act="copy-link">Copiar link</button></div></div>` : ""}
     </div>
     <div class="phone">${phone}</div>
   </div>`;
@@ -842,13 +876,13 @@ function vPreview() {
 function vAjustes() {
   const c = S.config;
   return `
-  <div class="section-head"><div><h2 class="headline">Ajustes</h2><p class="dek">Nombre de la marca, hora de envío y el mensaje que reciben los clientes.</p></div></div>
+  <div class="section-head"><div><h2 class="headline">Ajustes</h2><p class="dek">Hora de envío y el mensaje que reciben los clientes.</p></div></div>
   <form id="cfg-form" class="panel" style="max-width:720px" novalidate>
     <div class="grid2">
-      <div class="field"><label for="cfg-marca">Nombre de la marca</label><input type="text" id="cfg-marca" value="${esc(c.marca)}" maxlength="14"><span class="help">Sale como el título gigante de la revista. Corto se ve mejor.</span></div>
+      <div class="field"><label for="cfg-marca">Nombre del entrenador</label><input type="text" id="cfg-marca" value="${esc(c.marca)}" maxlength="30"><span class="help">Se usa en el título de la pestaña y en los textos de la página.</span></div>
       <div class="field"><label for="cfg-hora">Hora de envío diario</label><input type="time" id="cfg-hora" value="${esc(c.hora_envio)}"></div>
     </div>
-    <div class="field"><label for="cfg-url">Dirección de la página del cliente</label><input type="url" id="cfg-url" value="${esc(c.url_vista)}" placeholder="https://tu-usuario.github.io/hierro/"><span class="help">Donde publiques este mismo archivo. El link de cada día se arma con esta dirección.</span></div>
+    <div class="field"><label for="cfg-url">Dirección de la página del cliente</label><input type="url" id="cfg-url" value="${esc(c.url_vista)}" placeholder="https://tu-usuario.github.io/pedro-barron/"><span class="help">Donde publiques este mismo archivo. El link de cada día se arma con esta dirección.</span></div>
     <div class="field"><label for="cfg-plantilla">Mensaje de WhatsApp</label><textarea id="cfg-plantilla" rows="4">${esc(c.plantilla)}</textarea><span class="help">Usa {nombre}, {titulo} y {link}. Se reemplazan por el nombre del cliente, el título del día y el link de su rutina.</span></div>
     <span class="err" id="cfg-err" hidden></span>
     <div class="toolbar"><button type="submit" class="btn primary">Guardar ajustes</button>${!DEMO ? '<button type="button" class="btn ghost" data-act="logout">Cerrar sesión</button>' : ""}</div>
@@ -856,7 +890,7 @@ function vAjustes() {
 }
 async function saveConfig(ev) {
   ev.preventDefault();
-  const row = { marca: $("#cfg-marca").value.trim() || "Hierro", hora_envio: $("#cfg-hora").value || "06:30", url_vista: $("#cfg-url").value.trim(), plantilla: $("#cfg-plantilla").value };
+  const row = { marca: $("#cfg-marca").value.trim() || "Pedro Barron", hora_envio: $("#cfg-hora").value || "06:30", url_vista: $("#cfg-url").value.trim(), plantilla: $("#cfg-plantilla").value };
   if (!row.plantilla.includes("{link}")) { const er = $("#cfg-err"); er.textContent = "El mensaje debe incluir {link} para que el cliente pueda abrir su rutina."; er.hidden = false; return; }
   try { await DB.update("config", S.config.id || 1, row); await loadAll(); render(); toast("Ajustes guardados."); }
   catch (err) { toast("No se pudo guardar: " + err.message); }
@@ -882,7 +916,7 @@ document.addEventListener("click", async ev => {
     case "edit": openEditor(b.dataset.f); break;
     case "close": $("#dlg").close(); break;
     case "color": S.edit.color = id; document.querySelectorAll(".swatch").forEach(s => s.setAttribute("aria-pressed", s.dataset.id === id)); break;
-    case "ex-add": { const v = $("#ed-add").value; if (!v) return; S.edit.items.push({ k: uid(), ejercicio_id: v, series: 4, reps: "10-12", descanso_seg: 90, nota: "" }); refreshExList(); break; }
+    case "ex-add": S.edit.items.push({ k: uid(), ejercicio_id: id, series: 4, reps: "10-12", descanso_seg: 90, nota: "" }); refreshExList(); toast(`${ejDe(id).nombre} agregado.`); break;
     case "ex-up": case "ex-down": { const it = S.edit.items, i = it.findIndex(x => x.k === id), j = a === "ex-up" ? i - 1 : i + 1; [it[i], it[j]] = [it[j], it[i]]; refreshExList(); break; }
     case "ex-del": S.edit.items = S.edit.items.filter(x => x.k !== id); refreshExList(); break;
     case "save-day": b.disabled = true; await saveDay(); b.disabled = false; break;
@@ -904,6 +938,7 @@ document.addEventListener("click", async ev => {
     case "logout": await sb.auth.signOut(); location.reload(); break;
   }
 });
+let qT;
 document.addEventListener("input", ev => {
   const t = ev.target;
   if (t.dataset.e && S.edit) {
@@ -912,51 +947,51 @@ document.addEventListener("input", ev => {
     if (t.dataset.e === "titulo") $("#ed-err").hidden = true;
   }
   if (t.dataset.it && S.edit) { const it = S.edit.items.find(x => x.k === t.dataset.it); if (it) it[t.dataset.k] = t.value; }
+  if (t.dataset.pk) { if (t.dataset.pk === "grupo") { S.pickGrupo = t.value; S.pickQ = ""; $("#pk-q").value = ""; } else S.pickQ = t.value; $("#pk-grid").innerHTML = pickerGridHTML(); }
+  if (t.dataset.f === "qCli" || t.dataset.f === "qEj") {
+    S[t.dataset.f] = t.value; clearTimeout(qT);
+    qT = setTimeout(() => { const pos = t.selectionStart, idSel = "#" + t.id; render(); const q = $(idSel); q.focus(); q.setSelectionRange(pos, pos); }, 200);
+  }
 });
 document.addEventListener("change", ev => {
   const t = ev.target;
   if (t.dataset.f === "envFecha" && t.value) { S.envFecha = t.value; render(); }
-});
-let qT;
-document.addEventListener("input", ev => {
-  if (ev.target.dataset.f !== "qCli") return;
-  S.qCli = ev.target.value; clearTimeout(qT);
-  qT = setTimeout(() => { const pos = ev.target.selectionStart; render(); const q = $("#q-cli"); q.focus(); q.setSelectionRange(pos, pos); }, 180);
+  if (t.dataset.pk === "grupo") { S.pickGrupo = t.value; S.pickQ = ""; $("#pk-q").value = ""; $("#pk-grid").innerHTML = pickerGridHTML(); }
 });
 document.addEventListener("submit", ev => { if (ev.target.id === "cfg-form") saveConfig(ev); if (ev.target.id === "ed-form") ev.preventDefault(); });
 
 /* ---------- arranque ---------- */
 function loadScript(src) { return new Promise((ok, no) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = () => no(new Error("No cargó " + src)); document.head.appendChild(s); }); }
 async function publicClient(rid) {
-  // Página pública: la abre el cliente desde WhatsApp. Solo lee la rutina.
   const app = $("#app");
-  app.innerHTML = `<div class="client-standalone"><div class="skel" style="min-height:560px"></div></div>`;
+  app.innerHTML = `<div class="client-standalone"><div class="loading">${posesHTML()}Cargando tu rutina...</div></div>`;
   try {
-    let r, items, marca = "Hierro";
-    if (DEMO) { await loadAll(); r = S.rutinas.find(x => x.id === rid); items = r ? itemsDe(r.id) : []; marca = S.config.marca; }
+    let r, items, marca = "Pedro Barron", estir = [];
+    if (DEMO) { await loadAll(); r = S.rutinas.find(x => x.id === rid); items = r ? itemsDe(r.id) : []; marca = S.config.marca; estir = estiramientosDe(S.ejercicios); }
     else {
       r = (await DB.where("rutinas", "id", rid))[0];
       const rex = r ? await DB.where("rutina_ejercicios", "rutina_id", rid) : [];
       const ids = [...new Set(rex.map(x => x.ejercicio_id))];
       const { data: ej } = ids.length ? await sb.from("ejercicios").select("*").in("id", ids) : { data: [] };
+      const { data: st } = await sb.from("ejercicios").select("*").eq("grupo", "Estiramientos");
       const { data: cfg } = await sb.from("config").select("marca").limit(1);
-      marca = cfg?.[0]?.marca || marca;
-      items = rex.sort((a, b) => a.orden - b.orden).map(x => ({ ...x, ej: ej.find(e => e.id === x.ejercicio_id) || { nombre: "Ejercicio", video_url: "" } }));
+      marca = cfg?.[0]?.marca || marca; estir = estiramientosDe(st || []);
+      items = rex.sort((a, b) => a.orden - b.orden).map(x => ({ ...x, ej: ej.find(e => e.id === x.ejercicio_id) || SIN_EJ }));
     }
     document.title = r ? `${r.titulo} | ${marca}` : marca;
-    app.innerHTML = r ? `<div class="client-standalone">${clientePage(r, items, marca)}</div>`
-      : `<div class="client-standalone"><div class="empty-state" style="margin:40px 0"><h4>Rutina no encontrada</h4><p>El link puede estar incompleto. Pídele a tu entrenador que te lo reenvíe.</p></div></div>`;
+    app.innerHTML = r ? `<div class="client-standalone">${clientePage(r, items, marca, estir)}</div>`
+      : `<div class="client-standalone"><div class="empty-state" style="margin:40px 16px">${posesHTML()}<h4>Rutina no encontrada</h4><p>El link puede estar incompleto. Pídele a tu entrenador que te lo reenvíe.</p></div></div>`;
   } catch (err) {
-    app.innerHTML = `<div class="client-standalone"><div class="empty-state" style="margin:40px 0"><h4>No cargó tu rutina</h4><p>Revisa tu conexión y vuelve a abrir el link.</p></div></div>`;
+    app.innerHTML = `<div class="client-standalone"><div class="empty-state" style="margin:40px 16px"><h4>No cargó tu rutina</h4><p>Revisa tu conexión y vuelve a abrir el link.</p></div></div>`;
   }
 }
-function loginView(msg = "") {
-  $("#app").innerHTML = `<div class="strip"><span>La revista de tu entrenamiento</span><span>Panel del entrenador</span></div>
+function loginView() {
+  $("#app").innerHTML = `<div class="strip"><span>Classic Champion · Cambia tu físico</span><span>Panel del entrenador</span></div>
   <div class="wrap"><form class="login panel" id="login-form" novalidate>
-    <h1 class="mast" style="font-size:72px">${esc(S.config.marca || "Hierro")}</h1>
+    <img class="lockup" src="img/lockup.webp" alt="Pedro Barron. Cambia tu físico" style="width:100%">
     <div class="field"><label for="l-mail">Correo</label><input type="email" id="l-mail" autocomplete="username" required></div>
     <div class="field"><label for="l-pass">Contraseña</label><input type="password" id="l-pass" autocomplete="current-password" required></div>
-    <span class="err" id="l-err" ${msg ? "" : "hidden"}>${esc(msg)}</span>
+    <span class="err" id="l-err" hidden></span>
     <button class="btn primary" type="submit">Entrar</button>
   </form></div>`;
   $("#login-form").addEventListener("submit", async ev => {
