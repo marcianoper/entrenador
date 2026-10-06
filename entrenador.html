@@ -1,544 +1,985 @@
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Panel del Entrenador</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://js.stripe.com/clover/stripe.js"></script>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Hierro Rutinas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,700;1,800;1,900&family=Barlow:wght@400;500;600;700&display=swap">
 <style>
-  :root{--bg:#0f1115;--card:#181b22;--card2:#20242d;--line:#2c313c;--txt:#eef0f4;--muted:#8a91a0;--acc:#ff6a2b;--ok:#36c26b;--bad:#e5484d}
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-  .hidden{display:none!important}
-  .muted{color:var(--muted)}
-  input,select,textarea{width:100%;background:var(--card2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit}
-  textarea{min-height:60px;resize:vertical}
-  label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
-  button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:10px 14px;font:inherit;font-weight:600;cursor:pointer}
-  button.sec{background:var(--card2);border:1px solid var(--line);color:var(--txt);font-weight:500}
-  button.mini{padding:6px 10px;font-size:13px}
-  button:disabled{opacity:.5;cursor:not-allowed}
-  .row{display:flex;gap:8px;align-items:center}
-  .end{justify-content:flex-end}
-  .wrap{max-width:1100px;margin:0 auto;padding:16px}
-  header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px}
-  header h1{font-size:20px;margin:0}
-  header select{width:auto;min-width:140px}
-  .tabs{display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--line)}
-  .tabs button{background:none;color:var(--muted);border-radius:0;border-bottom:2px solid transparent;padding:10px 12px}
-  .tabs button.on{color:var(--txt);border-bottom-color:var(--acc)}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
-  .grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:14px}
-  .dia{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;min-height:96px}
-  .dia:hover{border-color:var(--muted)}
-  .dia.hoy{box-shadow:inset 0 3px 0 var(--acc)}
-  .dia.sel{border-color:var(--acc)}
-  .dn{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-  .dt{font-weight:700;margin:6px 0 4px}
-  .dc{font-size:12px;color:var(--muted)}
-  .edhead{display:flex;justify-content:space-between;align-items:center}
-  .edhead h2{margin:0;font-size:18px}
-  .ej{display:flex;gap:10px;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}
-  .ejnum{width:28px;height:28px;border-radius:50%;background:var(--acc);display:grid;place-items:center;font-weight:700;flex:none}
-  .ejbody{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
-  .ejact{display:flex;flex-direction:column;gap:4px}
-  .ej video{width:100%;max-width:320px;border-radius:8px;background:#000}
-  .file{display:inline-block;margin:0;color:var(--txt);background:var(--card);border:1px dashed var(--muted);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:14px}
-  .file input{display:none}
-  table{width:100%;border-collapse:collapse}
-  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
-  th{font-size:12px;color:var(--muted);text-transform:uppercase}
-  .pill{font-size:12px;padding:3px 8px;border-radius:99px;display:inline-block}
-  .p-ok{background:#1d3b29;color:#7be3a2}.p-bad{background:#3b1d1f;color:#f3a1a4}.p-n{background:var(--card2);color:var(--muted)}
-  .formcli{display:grid;grid-template-columns:2fr 1.4fr 1fr auto;gap:8px;align-items:end;margin-bottom:14px}
-  .formcli label{margin-top:0}
-  .center{min-height:100vh;display:grid;place-items:center;padding:16px}
-  .login{width:100%;max-width:360px}
-  #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#000;border:1px solid var(--line);padding:10px 16px;border-radius:10px;opacity:0;transition:.25s;pointer-events:none;z-index:9}
-  #toast.on{opacity:1}
-  .stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
-  .stat b{font-size:22px;display:block}
-
-  .payback{position:fixed;inset:0;background:rgba(0,0,0,.72);display:grid;place-items:center;padding:16px;z-index:50}
-  .paymodal{width:min(760px,100%);max-height:92vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
-  .payhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
-  .payhead h2{margin:0;font-size:18px}
-  .paymeta{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 12px}
-  .paytag{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
-  .testbadge{display:inline-block;background:#5b3b00;color:#ffd37a;border:1px solid #8d5d00;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:700}
-  #checkout{min-height:420px}
-  @media (max-width:800px){
-    .grid7{grid-template-columns:repeat(2,1fr)}
-    .formcli{grid-template-columns:1fr}
-    .hide-m{display:none}
+/* Concepto: portada de revista de culturismo 70s-90s. Masthead gigante con sombra de imprenta,
+   cada día de la semana es una "portada" a color con cover lines y viñetas cuadradas. */
+:root{
+  --paper:#ecebe7;      /* papel de revista, gris frío */
+  --paper-2:#f8f7f4;    /* superficie de formularios */
+  --ink:#151515;        /* tinta de imprenta */
+  --ink-2:#4a4844;      /* texto secundario */
+  --rule:#151515;
+  --rule-soft:#c9c7c1;
+  --red:#d3241c;        /* rojo Muscle Builder */
+  --yellow:#f6c500;     /* amarillo de titular */
+  --blue:#1d3c9a;       /* azul real de franja */
+  --on-color:#ffffff;
+  --mast:#d3241c;
+  --mast-shadow:#151515;
+  --ok:#1c7a3e; --ok-bg:#d8efdf;
+  --warn:#8a5a00; --warn-bg:#fbeec2;
+  --bad:#b0201a; --bad-bg:#f8d9d6;
+  --muted-bg:#dddbd5;
+  --f-mast:"Bowlby One","Arial Black",Impact,sans-serif;
+  --f-cond:"Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;
+  --f-body:"Barlow","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#121110; --paper-2:#1c1b19; --ink:#f1efe9; --ink-2:#b5b1a8; --rule:#f1efe9; --rule-soft:#3a3835;
+    --red:#e2342a; --yellow:#f7c815; --blue:#3a62d4; --mast:#f7c815; --mast-shadow:#e2342a;
+    --ok:#7fd69c; --ok-bg:#163522; --warn:#f3cd6a; --warn-bg:#3a2d0b; --bad:#ff8f86; --bad-bg:#3d1613; --muted-bg:#2a2826;
+    color-scheme:dark;
   }
+}
+:root[data-theme="dark"]{
+  --paper:#121110; --paper-2:#1c1b19; --ink:#f1efe9; --ink-2:#b5b1a8; --rule:#f1efe9; --rule-soft:#3a3835;
+  --red:#e2342a; --yellow:#f7c815; --blue:#3a62d4; --mast:#f7c815; --mast-shadow:#e2342a;
+  --ok:#7fd69c; --ok-bg:#163522; --warn:#f3cd6a; --warn-bg:#3a2d0b; --bad:#ff8f86; --bad-bg:#3d1613; --muted-bg:#2a2826;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.wrap{max-width:1320px;margin:0 auto;padding-inline:clamp(16px,3vw,32px);padding-block:0 64px}
+
+/* Franja superior */
+.strip{background:var(--blue);color:#fff;font-family:var(--f-cond);font-weight:800;font-style:italic;text-transform:uppercase;letter-spacing:.06em;font-size:14px;padding:6px clamp(16px,3vw,32px);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.demo-flag{background:var(--yellow);color:#151515;padding:0 8px;font-style:normal}
+
+/* Masthead */
+.mast-row{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;padding-block:18px 10px;border-bottom:4px solid var(--rule)}
+.mast{font-family:var(--f-mast);color:var(--mast);font-size:clamp(64px,13vw,168px);line-height:.82;margin:0;letter-spacing:-.01em;text-shadow:5px 5px 0 var(--mast-shadow);text-transform:uppercase;overflow-wrap:anywhere}
+.mast-sub{font-family:var(--f-cond);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:15px;margin-top:10px}
+.memb-switch{display:flex;gap:10px}
+.memb{border:3px solid var(--rule);background:var(--paper-2);padding:8px 14px;cursor:pointer;text-align:left;min-width:120px;transition:transform .12s}
+.memb:active{transform:translateY(1px)}
+.memb b{display:block;font-family:var(--f-cond);font-weight:900;font-style:italic;font-size:30px;line-height:1;text-transform:uppercase}
+.memb span{font-size:13px;color:var(--ink-2)}
+.memb[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#fff}
+.memb[aria-pressed="true"] span{color:#fff}
+
+/* Navegación tipo cover lines */
+.nav{display:flex;gap:6px;overflow-x:auto;padding-block:12px;border-bottom:1px solid var(--rule-soft);margin-bottom:24px;scrollbar-width:thin}
+.nav button{background:none;border:0;cursor:pointer;font-family:var(--f-cond);font-weight:800;font-style:italic;text-transform:uppercase;font-size:20px;padding:4px 12px;white-space:nowrap;letter-spacing:.01em}
+.nav button:hover{color:var(--red)}
+.nav button[aria-current="page"]{background:var(--yellow);color:#151515;box-shadow:3px 3px 0 var(--rule)}
+
+/* Tipografía */
+h2.headline{font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(34px,5vw,54px);line-height:.95;margin:0;text-wrap:balance}
+.dek{color:var(--ink-2);max-width:62ch;margin:6px 0 0}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* Botones */
+.btn{border:2px solid var(--rule);background:var(--paper-2);padding:8px 14px;font-family:var(--f-cond);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:16px;cursor:pointer;white-space:nowrap;transition:transform .1s, box-shadow .1s}
+.btn:hover{box-shadow:3px 3px 0 var(--rule)}
+.btn:active{transform:translate(1px,1px);box-shadow:none}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.btn.primary:hover{box-shadow:3px 3px 0 var(--rule)}
+.btn.small{padding:4px 10px;font-size:14px}
+.btn.ghost{border-color:transparent;background:none}
+.btn.ghost:hover{box-shadow:none;color:var(--red)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn.danger-armed{background:var(--bad);border-color:var(--bad);color:#fff}
+
+/* Semana: portadas */
+.week-nav{display:flex;align-items:center;gap:6px}
+.week-label{font-family:var(--f-cond);font-weight:800;font-size:20px;text-transform:uppercase;padding:0 6px}
+.covers{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.cover{position:relative;border:3px solid var(--rule);min-height:300px;display:flex;flex-direction:column;cursor:pointer;text-align:left;padding:0;background:var(--paper-2);transition:transform .15s, box-shadow .15s;overflow:hidden}
+.cover:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--rule)}
+.cover::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(0,0,0,.13) 1px,transparent 1.4px);background-size:6px 6px;mix-blend-mode:multiply;opacity:.6}
+.cover .band{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;font-family:var(--f-cond);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:14px;background:var(--ink);color:var(--paper)}
+.cover .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px;flex:1;position:relative;z-index:1}
+.cover .title{font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:44px;line-height:.9;margin:0;overflow-wrap:anywhere;text-shadow:2px 2px 0 rgba(0,0,0,.25)}
+.cover ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.cover li{font-family:var(--f-cond);font-weight:700;text-transform:uppercase;font-size:16px;line-height:1.1;display:flex;gap:8px;align-items:baseline}
+.cover li::before{content:"";width:9px;height:9px;flex:none;background:var(--bullet,var(--yellow));transform:translateY(-1px)}
+.cover .more{font-family:var(--f-cond);font-weight:700;font-style:italic;font-size:15px;opacity:.85}
+.cover .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;font-weight:600}
+.c-red{background:#d3241c;color:#fff;--bullet:#f6c500}
+.c-yellow{background:#f6c500;color:#151515;--bullet:#d3241c}
+.c-yellow .title{text-shadow:2px 2px 0 rgba(255,255,255,.4)}
+.c-blue{background:#1d3c9a;color:#fff;--bullet:#f6c500}
+.c-black{background:#151515;color:#fff;--bullet:#f6c500}
+.c-black::after{background-image:radial-gradient(rgba(255,255,255,.08) 1px,transparent 1.4px);mix-blend-mode:normal}
+.cover.rest{background:repeating-linear-gradient(-45deg,var(--paper-2) 0 12px,var(--muted-bg) 12px 24px);color:var(--ink-2)}
+.cover.empty{border-style:dashed;background:var(--paper-2);color:var(--ink-2)}
+.cover.empty .title{font-size:28px;color:var(--ink-2);text-shadow:none}
+.cover.today{outline:4px solid var(--yellow);outline-offset:3px}
+.cover.today .title{padding-right:64px}
+.burst{position:absolute;right:-6px;top:30px;width:84px;height:84px;background:var(--yellow);color:#d3241c;display:grid;place-items:center;font-family:var(--f-cond);font-weight:900;font-style:italic;font-size:22px;clip-path:polygon(50% 0%,61% 18%,79% 9%,78% 30%,98% 33%,84% 50%,98% 67%,78% 70%,79% 91%,61% 82%,50% 100%,39% 82%,21% 91%,22% 70%,2% 67%,16% 50%,2% 33%,22% 30%,21% 9%,39% 18%);transform:rotate(12deg);z-index:2}
+.c-yellow .burst{background:#d3241c;color:#f6c500}
+
+/* Chips */
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:2px 8px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.chip.ok{background:var(--ok-bg);color:var(--ok)}
+.chip.warn{background:var(--warn-bg);color:var(--warn)}
+.chip.bad{background:var(--bad-bg);color:var(--bad)}
+.chip.muted{background:var(--muted-bg);color:var(--ink-2)}
+.cover .chip{background:rgba(0,0,0,.28);color:#fff}
+.c-yellow .chip{background:rgba(0,0,0,.12);color:#151515}
+
+/* Resumen de semana */
+.summary{display:flex;gap:28px;flex-wrap:wrap;margin:0 0 22px;padding:12px 0;border-top:1px solid var(--rule-soft);border-bottom:1px solid var(--rule-soft)}
+.summary div{display:flex;flex-direction:column}
+.summary b{font-family:var(--f-cond);font-weight:900;font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
+.summary span{font-size:13px;color:var(--ink-2)}
+
+/* Formularios */
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:14px}
+.field .help{font-size:13px;color:var(--ink-2)}
+input[type=text],input[type=tel],input[type=date],input[type=time],input[type=number],input[type=url],input[type=email],input[type=password],input[type=search],select,textarea{width:100%;border:2px solid var(--rule);background:var(--paper-2);padding:8px 10px;border-radius:0}
+textarea{resize:vertical;min-height:72px}
+input::placeholder,textarea::placeholder{color:var(--ink-2);opacity:.8}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.err{color:var(--bad);font-size:13px;font-weight:600}
+
+/* Diálogo */
+dialog{border:4px solid var(--rule);background:var(--paper);color:var(--ink);padding:0;width:min(760px,calc(100vw - 24px));max-height:calc(100dvh - 24px);box-shadow:10px 10px 0 var(--rule)}
+dialog::backdrop{background:rgba(10,10,10,.55)}
+.dlg-head{position:sticky;top:0;z-index:2;background:var(--red);color:#fff;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dlg-head h3{margin:0;font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:30px;line-height:1}
+.dlg-head .btn{background:transparent;border-color:#fff;color:#fff}
+.dlg-body{padding:18px;display:grid;gap:18px}
+.dlg-foot{position:sticky;bottom:0;background:var(--paper);border-top:2px solid var(--rule);padding:12px 18px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.swatches{display:flex;gap:8px}
+.swatch{width:40px;height:40px;border:3px solid var(--rule);cursor:pointer}
+.swatch[aria-pressed="true"]{box-shadow:0 0 0 3px var(--paper),0 0 0 6px var(--rule)}
+.toggle{display:flex;gap:10px;align-items:center;font-weight:600}
+.toggle input{width:20px;height:20px;accent-color:var(--red)}
+
+.ex-list{display:grid;gap:10px;counter-reset:ex}
+.ex-row{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:start;border:2px solid var(--rule);background:var(--paper-2);padding:10px}
+.ex-num{font-family:var(--f-mast);font-size:28px;line-height:1;color:var(--red)}
+.ex-name{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;font-size:20px;line-height:1.1}
+.ex-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.ex-fields .field label{font-size:12px}
+.ex-fields input{padding:6px 8px}
+.ex-note{margin-top:8px}
+.ex-actions{display:flex;flex-direction:column;gap:4px}
+.add-row{display:grid;grid-template-columns:1fr auto;gap:8px}
+
+/* Tablas */
+.table-wrap{overflow-x:auto;border:3px solid var(--rule);background:var(--paper-2)}
+table{border-collapse:collapse;width:100%;min-width:720px}
+th{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:14px;text-align:left;padding:10px 12px;background:var(--ink);color:var(--paper)}
+td{padding:10px 12px;border-top:1px solid var(--rule-soft);vertical-align:middle}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.cell-name{font-weight:700}
+.row-actions{display:flex;gap:4px;justify-content:flex-end}
+
+/* Biblioteca */
+.lib{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.lib-item{border:3px solid var(--rule);background:var(--paper-2);display:flex;flex-direction:column}
+.lib-media{aspect-ratio:4/3;max-width:100%;background:#151515;position:relative;overflow:hidden}
+.lib-media video{width:100%;height:100%;object-fit:cover;display:block}
+.halftone{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:12px;color:#f6c500;font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:26px;line-height:.95;background:radial-gradient(rgba(246,197,0,.22) 1.2px,transparent 1.6px) 0 0/7px 7px,#151515}
+.halftone small{display:block;font-size:13px;font-style:normal;font-weight:700;color:#fff;letter-spacing:.06em;margin-top:6px}
+.lib-body{padding:10px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.lib-body h4{margin:0;font-family:var(--f-cond);font-weight:800;text-transform:uppercase;font-size:19px;line-height:1.1}
+.lib-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--ink-2)}
+.lib-body .row-actions{margin-top:auto;justify-content:flex-start}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.pill{border:2px solid var(--rule);background:transparent;padding:3px 12px;font-family:var(--f-cond);font-weight:700;text-transform:uppercase;cursor:pointer;font-size:15px}
+.pill[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+
+/* Envíos */
+.send-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:start}
+.panel{border:3px solid var(--rule);background:var(--paper-2);padding:16px;display:grid;gap:14px}
+.panel h3{margin:0;font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:26px;line-height:1}
+.msg-preview{background:#dcf8c6;color:#111;padding:10px 12px;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere;border-radius:2px 10px 10px 10px;max-width:42ch;box-shadow:0 1px 0 rgba(0,0,0,.15)}
+.callout{border-left:6px solid var(--yellow);background:var(--paper-2);padding:10px 14px;font-size:14px}
+
+/* Vista del cliente: portada */
+.preview-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:28px;align-items:start}
+.phone{max-width:430px;width:100%;margin-inline:auto;border:10px solid #151515;border-radius:28px;overflow:hidden;background:var(--paper);box-shadow:8px 8px 0 var(--rule-soft)}
+.client{background:var(--paper);color:var(--ink)}
+.mag{position:relative;overflow:hidden;color:#fff;background:#151515;min-height:560px;display:flex;flex-direction:column}
+.mag.c-red{background:#d3241c}.mag.c-yellow{background:#f6c500;color:#151515}.mag.c-blue{background:#1d3c9a}.mag.c-black{background:#151515}
+.mag::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.18) 1.2px,transparent 1.7px);background-size:7px 7px;pointer-events:none}
+.mag.c-black::before{background-image:radial-gradient(rgba(255,255,255,.07) 1.2px,transparent 1.7px)}
+.mag > *{position:relative}
+.mag-top{background:var(--blue);color:#fff;font-family:var(--f-cond);font-weight:800;font-style:italic;text-transform:uppercase;font-size:13px;letter-spacing:.06em;padding:5px 14px;display:flex;justify-content:space-between;gap:8px}
+.mag-mast{font-family:var(--f-mast);font-size:clamp(58px,19vw,92px);line-height:.85;padding:10px 12px 0;color:#f6c500;text-shadow:4px 4px 0 #151515;text-transform:uppercase;overflow-wrap:anywhere}
+.mag.c-yellow .mag-mast{color:#d3241c}
+.mag.c-black .mag-mast{text-shadow:4px 4px 0 #d3241c}
+.mag-tag{font-family:var(--f-cond);font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.08em;padding:4px 14px 0}
+.mag-title{font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(48px,15vw,76px);line-height:.85;padding:22px 14px 0;margin:0;text-shadow:3px 3px 0 rgba(0,0,0,.3);overflow-wrap:break-word;hyphens:manual}
+.mag-title.long{font-size:clamp(38px,11vw,56px)}
+.mag-lines{list-style:none;margin:16px 14px 0;padding:0;display:grid;gap:6px;max-width:78%}
+.mag-lines li{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;font-size:19px;line-height:1.05;display:flex;gap:8px;align-items:baseline}
+.mag-lines li::before{content:"";width:11px;height:11px;flex:none;background:#f6c500}
+.mag.c-yellow .mag-lines li::before{background:#d3241c}
+.mag-lines li small{font-size:15px;font-weight:700;opacity:.85;margin-left:4px;white-space:nowrap}
+.mag-box{margin:18px 14px 0;border:2px solid currentColor;padding:8px 10px;max-width:72%;font-family:var(--f-cond);font-weight:700;font-size:16px;line-height:1.15}
+.mag-box b{display:block;text-transform:uppercase;font-size:13px;letter-spacing:.08em}
+.mag-burst{position:absolute;right:10px;bottom:84px;width:104px;height:104px;background:#f6c500;color:#d3241c;display:grid;place-items:center;text-align:center;font-family:var(--f-cond);font-weight:900;font-style:italic;font-size:20px;line-height:.9;clip-path:polygon(50% 0%,61% 18%,79% 9%,78% 30%,98% 33%,84% 50%,98% 67%,78% 70%,79% 91%,61% 82%,50% 100%,39% 82%,21% 91%,22% 70%,2% 67%,16% 50%,2% 33%,22% 30%,21% 9%,39% 18%);transform:rotate(-10deg)}
+.mag.c-yellow .mag-burst{background:#d3241c;color:#f6c500}
+.mag-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;padding:18px 14px 14px;gap:10px}
+.barcode{background:#fff;padding:5px 6px 2px;color:#151515;font-family:var(--f-body);font-size:9px;letter-spacing:.12em;text-align:center}
+.barcode i{display:block;width:96px;height:34px;background:repeating-linear-gradient(90deg,#151515 0 2px,#fff 2px 3px,#151515 3px 4px,#fff 4px 7px,#151515 7px 10px,#fff 10px 11px,#151515 11px 12px,#fff 12px 15px)}
+.mag-foot .sets{font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:22px;text-align:right;line-height:.95}
+.mag.rest-day{background:#151515}
+.articles{padding:20px 14px 28px;display:grid;gap:22px}
+.articles h3{margin:0;font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:32px;line-height:1;border-bottom:4px solid var(--rule);padding-bottom:6px}
+.art{display:grid;gap:8px}
+.art-head{display:flex;gap:10px;align-items:baseline}
+.art-num{font-family:var(--f-mast);font-size:34px;line-height:1;color:var(--red)}
+.art-name{font-family:var(--f-cond);font-weight:800;text-transform:uppercase;font-size:24px;line-height:1.05}
+.art-media{aspect-ratio:16/10;max-width:100%;background:#151515;position:relative;overflow:hidden}
+.art-media video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
+.specs{display:flex;gap:0;border:2px solid var(--rule)}
+.specs div{flex:1;padding:6px 8px;border-right:2px solid var(--rule);min-width:0}
+.specs div:last-child{border-right:0}
+.specs b{display:block;font-family:var(--f-cond);font-weight:900;font-size:24px;line-height:1;font-variant-numeric:tabular-nums}
+.specs span{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);font-weight:600}
+.art-note{font-size:14px;border-left:4px solid var(--yellow);padding-left:10px;margin:0}
+.client-foot{padding:16px 14px 26px;font-size:13px;color:var(--ink-2);border-top:1px solid var(--rule-soft)}
+.client-standalone{max-width:520px;margin:0 auto}
+
+/* Vacíos y avisos */
+.empty-state{border:3px dashed var(--rule-soft);padding:32px 20px;text-align:center;display:grid;gap:10px;justify-items:center}
+.empty-state h4{margin:0;font-family:var(--f-cond);font-weight:900;font-style:italic;text-transform:uppercase;font-size:28px}
+.empty-state p{margin:0;color:var(--ink-2);max-width:48ch}
+.skel{background:linear-gradient(90deg,var(--muted-bg),var(--paper-2),var(--muted-bg));background-size:200% 100%;animation:sh 1.2s infinite;min-height:300px;border:3px solid var(--rule-soft)}
+@keyframes sh{to{background-position:-200% 0}}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;font-weight:600;font-size:14px;max-width:calc(100vw - 32px);z-index:50;box-shadow:4px 4px 0 var(--red)}
+
+/* Login */
+.login{max-width:420px;margin:40px auto;display:grid;gap:14px}
+
+@media (max-width:900px){
+  .send-grid,.preview-layout{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .mast-row{grid-template-columns:1fr}
+  .memb{flex:1;min-width:0}
+  .ex-row{grid-template-columns:34px 1fr}
+  .ex-actions{grid-column:1/-1;flex-direction:row;flex-wrap:wrap}
+  .ex-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .nav button{font-size:18px}
+  .dlg-head h3{font-size:22px}
+  .cover{min-height:240px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
 </style>
-</head>
-<body>
+</head><body>
 
-<!-- LOGIN -->
-<div id="login" class="center hidden">
-  <div class="card login">
-    <h2 style="margin-top:0">🏋️ Panel del Entrenador</h2>
-    <label>Correo</label><input id="lgEmail" type="email" autocomplete="username">
-    <label>Contraseña</label><input id="lgPass" type="password" autocomplete="current-password">
-    <div style="margin-top:14px"><button id="btnLogin" style="width:100%">Entrar</button></div>
-  </div>
-</div>
-
-<!-- APP -->
-<div id="app" class="wrap hidden">
-  <header>
-    <h1>🏋️ Panel del Entrenador</h1>
-    <div class="row">
-      <select id="selMem"></select>
-      <button id="btnNuevaMem" class="sec mini">+ Membresía</button>
-      <button id="btnSalir" class="sec mini">Salir</button>
-    </div>
-  </header>
-
-  <nav class="tabs">
-    <button data-tab="semana" class="on">📅 Semana</button>
-    <button data-tab="clientes">👥 Clientes</button>
-    <button data-tab="hoy">✅ Hoy</button>
-  </nav>
-
-  <section id="tab-semana">
-    <div id="semana" class="grid7"></div>
-    <div id="editor" class="card hidden"></div>
-  </section>
-
-  <section id="tab-clientes" class="hidden">
-    <div class="card" style="margin-bottom:14px">
-      <div class="formcli">
-        <div><label>Nombre</label><input id="cNombre" placeholder="Juan Pérez"></div>
-        <div><label>WhatsApp (10 dígitos)</label><input id="cTel" inputmode="numeric" placeholder="4621234567"></div>
-        <div><label>Vence (opcional)</label><input id="cVence" type="date"></div>
-        <div class="row"><button id="btnCli">Agregar</button><button id="btnCliCancel" class="sec hidden">Cancelar</button></div>
-      </div>
-    </div>
-    <div class="card"><div id="listaClientes"></div></div>
-  </section>
-
-  <section id="tab-hoy" class="hidden">
-    <div id="hoy"></div>
-  </section>
-</div>
-
-<div id="toast"></div>
-
-<div id="payBack" class="payback hidden">
-  <div class="paymodal">
-    <div class="payhead">
-      <div>
-        <h2>💳 Pago con tarjeta</h2>
-        <span class="testbadge">🧪 MODO PRUEBA · $10 MXN</span>
-      </div>
-      <button id="btnCerrarPago" class="sec mini">✕ Cerrar</button>
-    </div>
-    <div class="paymeta">
-      <div class="paytag"><span class="muted">Cliente</span><div id="payCliente">—</div></div>
-      <div class="paytag"><span class="muted">Membresía</span><div id="payMembresia">—</div></div>
-      <div class="paytag"><span class="muted">Importe</span><div><b>$10.00 MXN</b></div></div>
-    </div>
-    <div id="checkout"></div>
-  </div>
-</div>
-
+<div id="app"></div>
+<div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
+<dialog id="dlg" aria-labelledby="dlg-title"></dialog>
 
 <script>
-/* ======================= CONFIGURACIÓN ======================= */
-const SUPABASE_URL      = 'https://rcegikeiaxptolrduguc.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8';
-const URL_RUTINA        = 'https://marcianoper.github.io/entrenador/rutina.html'; // donde publiques rutina.html
-const LIMITE_MB         = 50;   // límite por archivo del plan gratis de Supabase
-const STRIPE_PUBLISHABLE_KEY = 'pk_test_51UN3dBB5gxh1rTOztfjv7g6MFUaxqkxSZeTa32fRktz6hNIDIhxKEnBNnfJx6Ew9mE657b3omLjyAK3FOctKjxni00kONxMH35';
-/* ============================================================= */
-
-const TZ   = 'America/Mexico_City';
-const DIAS = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-const sb   = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const $    = s => document.querySelector(s);
-
-let membresias = [], memId = null, rutinas = {}, clientes = [];
-let diaEdit = null, ed = { titulo: '', notas: '' }, ejs = [], borrarVideos = [], subiendo = 0;
-let editCliId = null;
-let stripeInstance = null;
-let stripeCheckout = null;
+/* =====================================================================
+   CONFIGURACIÓN
+   Deja estos dos valores vacíos para usar el modo demostración.
+   Para conectarlo a tu proyecto: pega la URL y la clave "anon public"
+   de Supabase (Settings > API) y corre el archivo hierro_supabase.sql.
+   ===================================================================== */
+const CONFIG = {
+  SUPABASE_URL: "",
+  SUPABASE_ANON_KEY: "",
+  BUCKET_VIDEOS: "videos"
+};
 
 /* ---------- utilidades ---------- */
-function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('on'), 2600); }
-function esc(s) { return (s ?? '').toString().replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
-function hoyMX() { return new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date()); }
-function diaHoy() { const w = new Intl.DateTimeFormat('en-US', { timeZone: TZ, weekday: 'short' }).format(new Date()); return { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 }[w]; }
-function fallo(error, msg) { if (error) { console.error(error); toast('⚠️ ' + (msg || error.message)); return true; } return false; }
-function guardarLocal(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-function leerLocal(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+const $ = (s, el = document) => el.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36));
+const DIAS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+const MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+const GRUPOS = ["Pecho", "Espalda", "Pierna", "Hombro", "Brazo", "Abdomen", "Cardio"];
+const COLORES = [["red", "Rojo"], ["yellow", "Amarillo"], ["blue", "Azul"], ["black", "Negro"]];
+const pad = n => String(n).padStart(2, "0");
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parse = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return iso(d); };
+const mondayOf = s => { const d = parse(s); const wd = (d.getDay() + 6) % 7; d.setDate(d.getDate() - wd); return iso(d); };
+const diffDays = (a, b) => Math.round((parse(b) - parse(a)) / 86400000);
+const dayIdx = s => (parse(s).getDay() + 6) % 7;
+const fechaLarga = s => { const d = parse(s); return `${DIAS[dayIdx(s)]} ${d.getDate()} de ${MESES[d.getMonth()]}`; };
+const fechaCorta = s => { const d = parse(s); return `${d.getDate()} ${MESES[d.getMonth()].slice(0, 3)}`; };
+const isoWeek = s => { const d = parse(s); d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7)); const w1 = new Date(d.getFullYear(), 0, 4); return 1 + Math.round(((d - w1) / 86400000 - 3 + ((w1.getDay() + 6) % 7)) / 7); };
+const HOY = iso(new Date());
+const isDirectVideo = url => /^blob:|\.(mp4|webm|mov|m4v|ogg)(\?|#|$)/i.test(url || "") || /\/storage\/v1\/object\/public\//.test(url || "");
 
-/* ---------- sesión ---------- */
-async function init() {
-  const { data: { session } } = await sb.auth.getSession();
-  session ? entrar() : $('#login').classList.remove('hidden');
-}
-$('#btnLogin').onclick = async () => {
-  const { error } = await sb.auth.signInWithPassword({ email: $('#lgEmail').value.trim(), password: $('#lgPass').value });
-  if (fallo(error, 'Correo o contraseña incorrectos')) return;
-  entrar();
-};
-$('#lgPass').addEventListener('keydown', e => { if (e.key === 'Enter') $('#btnLogin').click(); });
-$('#btnSalir').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+let toastT;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => (t.hidden = true), 3600); }
 
-async function entrar() {
-  $('#login').classList.add('hidden');
-  $('#app').classList.remove('hidden');
-  await cargarMembresias();
-}
+/* ---------- datos de ejemplo (modo demostración) ---------- */
+function seed() {
+  const wk = mondayOf(HOY), prev = addDays(wk, -7);
+  const E = (nombre, grupo) => ({ id: uid(), nombre, grupo, video_url: "" });
+  const ej = [
+    E("Press de banca plano", "Pecho"), E("Press inclinado con mancuernas", "Pecho"), E("Aperturas en polea", "Pecho"), E("Fondos en paralelas", "Pecho"), E("Pullover con mancuerna", "Pecho"),
+    E("Dominadas", "Espalda"), E("Remo con barra", "Espalda"), E("Jalón al pecho", "Espalda"), E("Remo a una mano", "Espalda"),
+    E("Sentadilla libre", "Pierna"), E("Prensa inclinada", "Pierna"), E("Zancadas caminando", "Pierna"), E("Curl femoral", "Pierna"), E("Peso muerto rumano", "Pierna"), E("Hip thrust", "Pierna"),
+    E("Press militar", "Hombro"), E("Elevaciones laterales", "Hombro"), E("Face pull", "Hombro"),
+    E("Curl con barra", "Brazo"), E("Curl martillo", "Brazo"), E("Extensión de tríceps en polea", "Brazo"), E("Press francés", "Brazo"),
+    E("Plancha", "Abdomen"), E("Elevación de piernas colgado", "Abdomen"), E("Caminadora inclinada", "Cardio")
+  ];
+  const by = n => ej.find(e => e.nombre === n).id;
+  const rutinas = [], rex = [];
+  const R = (memb, fecha, titulo, color, nombres, opts = {}) => {
+    const r = { id: uid(), membresia_id: memb, fecha, titulo, color, descanso: !!opts.descanso, nota: opts.nota || "" };
+    rutinas.push(r);
+    (nombres || []).forEach((n, i) => rex.push({ id: uid(), rutina_id: r.id, ejercicio_id: by(n), orden: i + 1, series: opts.series || 4, reps: opts.reps || "10-12", descanso_seg: opts.desc || 90, nota: i === 0 && opts.primera ? opts.primera : "" }));
+  };
+  const vip = (w) => {
+    R("vip", addDays(w, 0), "Pecho", "red", ["Press de banca plano", "Press inclinado con mancuernas", "Aperturas en polea", "Fondos en paralelas", "Pullover con mancuerna"], { reps: "8-10", primera: "Baja la barra lento, 3 segundos, y toca el pecho sin rebotar.", nota: "Semana de fuerza: sube 2.5 kg en el primer ejercicio si te salen todas las repeticiones." });
+    R("vip", addDays(w, 1), "Espalda", "blue", ["Dominadas", "Remo con barra", "Jalón al pecho", "Remo a una mano", "Face pull"], { reps: "10", primera: "Si no completas 8, usa banda elástica." });
+    R("vip", addDays(w, 2), "Pierna", "black", ["Sentadilla libre", "Prensa inclinada", "Zancadas caminando", "Curl femoral"], { reps: "12", desc: 120 });
+    R("vip", addDays(w, 3), "Hombro", "yellow", ["Press militar", "Elevaciones laterales", "Face pull", "Plancha"], { reps: "12-15" });
+    R("vip", addDays(w, 4), "Brazos", "red", ["Curl con barra", "Curl martillo", "Extensión de tríceps en polea", "Press francés"], { series: 3, reps: "12" });
+    R("vip", addDays(w, 5), "Glúteo y femoral", "blue", ["Hip thrust", "Peso muerto rumano", "Curl femoral", "Elevación de piernas colgado"], { reps: "10-12" });
+    R("vip", addDays(w, 6), "Descanso", "black", [], { descanso: true, nota: "Camina 30 minutos y duerme bien." });
+  };
+  vip(wk); vip(prev);
+  const bWeek = (w, full) => {
+    R("b", addDays(w, 0), "Torso", "yellow", ["Press de banca plano", "Remo con barra", "Press militar", "Curl con barra"], { series: 3, reps: "12" });
+    R("b", addDays(w, 1), "Pierna", "black", ["Sentadilla libre", "Zancadas caminando", "Curl femoral"], { series: 3, reps: "12" });
+    if (!full) return;
+    R("b", addDays(w, 2), "Descanso", "black", [], { descanso: true });
+    R("b", addDays(w, 3), "Torso", "red", ["Press inclinado con mancuernas", "Jalón al pecho", "Elevaciones laterales", "Extensión de tríceps en polea"], { series: 3, reps: "12" });
+    R("b", addDays(w, 4), "Pierna", "blue", ["Prensa inclinada", "Peso muerto rumano", "Hip thrust"], { series: 3, reps: "12" });
+    R("b", addDays(w, 5), "Cardio y abdomen", "yellow", ["Caminadora inclinada", "Plancha", "Elevación de piernas colgado"], { series: 3, reps: "30 seg" });
+    R("b", addDays(w, 6), "Descanso", "black", [], { descanso: true });
+  };
+  bWeek(wk, false); bWeek(prev, true);
 
-/* ---------- membresías ---------- */
-async function cargarMembresias(seleccionar) {
-  const { data, error } = await sb.from('ent_membresias').select('*').order('nombre');
-  if (fallo(error)) return;
-  membresias = data;
-  const guardada = seleccionar || leerLocal('memId');
-  memId = (membresias.find(m => m.id === guardada) || membresias[0] || {}).id || null;
-  $('#selMem').innerHTML = membresias.map(m => `<option value="${m.id}" ${m.id === memId ? 'selected' : ''}>${esc(m.nombre)}</option>`).join('');
-  cargarTodo();
-}
-$('#selMem').onchange = e => { memId = e.target.value; guardarLocal('memId', memId); cerrarEditor(); cargarTodo(); };
-$('#btnNuevaMem').onclick = async () => {
-  const nombre = (prompt('Nombre de la nueva membresía (ej. "B", "Básica"):') || '').trim();
-  if (!nombre) return;
-  const { data, error } = await sb.from('ent_membresias').insert({ nombre }).select().single();
-  if (fallo(error, 'No se pudo crear (¿ya existe ese nombre?)')) return;
-  guardarLocal('memId', data.id);
-  cargarMembresias(data.id);
-  toast('Membresía creada');
-};
-
-function cargarTodo() { if (!memId) return; renderSemana(); renderClientes(); renderHoy(); }
-
-/* ---------- pestañas ---------- */
-document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
-  document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
-  ['semana', 'clientes', 'hoy'].forEach(t => $('#tab-' + t).classList.toggle('hidden', t !== b.dataset.tab));
-  if (b.dataset.tab === 'hoy') renderHoy();
-});
-
-/* ======================= SEMANA ======================= */
-async function renderSemana() {
-  const { data, error } = await sb.from('ent_rutinas_dia').select('id,dia,titulo,notas,ejercicios:ent_ejercicios(id)').eq('membresia_id', memId);
-  if (fallo(error)) return;
-  rutinas = {}; data.forEach(r => rutinas[r.dia] = r);
-  const hoy = diaHoy();
-  $('#semana').innerHTML = [1, 2, 3, 4, 5, 6, 7].map(d => {
-    const r = rutinas[d], n = r?.ejercicios?.length || 0;
-    return `<div class="dia ${d === hoy ? 'hoy' : ''} ${d === diaEdit ? 'sel' : ''}" data-dia="${d}">
-      <div class="dn">${DIAS[d]}${d === hoy ? ' · hoy' : ''}</div>
-      <div class="dt">${r?.titulo ? esc(r.titulo) : '<span class="muted">Descanso</span>'}</div>
-      <div class="dc">${n} ejercicio${n === 1 ? '' : 's'}</div></div>`;
-  }).join('');
-}
-$('#semana').onclick = e => { const el = e.target.closest('.dia'); if (el) abrirDia(+el.dataset.dia); };
-
-async function abrirDia(d) {
-  if (subiendo) return toast('Espera a que termine de subir el video');
-  diaEdit = d; borrarVideos = [];
-  const r = rutinas[d];
-  ed = { titulo: r?.titulo || '', notas: r?.notas || '' };
-  ejs = [];
-  if (r) {
-    const { data, error } = await sb.from('ent_ejercicios').select('*').eq('rutina_id', r.id).order('orden');
-    if (fallo(error)) return;
-    ejs = data.map(e => ({ ...e }));
-  }
-  renderEditor(); renderSemana();
-  $('#editor').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-function cerrarEditor() { diaEdit = null; $('#editor').classList.add('hidden'); renderSemana(); }
-
-function renderEditor() {
-  const el = $('#editor'); el.classList.remove('hidden');
-  el.innerHTML = `
-    <div class="edhead"><h2>${DIAS[diaEdit]}</h2><button class="sec mini" data-act="cerrar">✕ Cerrar</button></div>
-    <label>Tema del día <span class="muted">(déjalo vacío si es descanso)</span></label>
-    <input id="edTitulo" value="${esc(ed.titulo)}" placeholder="Ej. Pecho y tríceps">
-    <label>Indicaciones generales (opcional)</label>
-    <textarea id="edNotas" placeholder="Ej. Calienta 10 min antes. Descanso de 60 s entre series.">${esc(ed.notas)}</textarea>
-    <div>${ejs.map((e, i) => `
-      <div class="ej">
-        <div class="ejnum">${i + 1}</div>
-        <div class="ejbody">
-          <input data-f="nombre" data-i="${i}" value="${esc(e.nombre)}" placeholder="Nombre del ejercicio (ej. Press de banca)">
-          <div class="row">
-            <input data-f="series" data-i="${i}" value="${esc(e.series)}" type="number" min="1" placeholder="Series">
-            <input data-f="reps" data-i="${i}" value="${esc(e.reps)}" placeholder="Reps (ej. 10-12)">
-          </div>
-          <input data-f="nota" data-i="${i}" value="${esc(e.nota)}" placeholder="Nota (opcional)">
-          ${e.video_url ? `<video src="${esc(e.video_url)}" controls playsinline preload="metadata"></video>` : ''}
-          <div class="row">
-            <label class="file">🎥 ${e.video_url ? 'Cambiar video' : 'Subir video'}<input type="file" accept="video/*" data-up="${i}"></label>
-            <span class="muted" id="st${i}"></span>
-          </div>
-        </div>
-        <div class="ejact">
-          <button class="sec mini" data-act="subir" data-i="${i}" title="Subir">↑</button>
-          <button class="sec mini" data-act="bajar" data-i="${i}" title="Bajar">↓</button>
-          <button class="sec mini" data-act="borrar" data-i="${i}" title="Eliminar">🗑</button>
-        </div>
-      </div>`).join('')}
-    </div>
-    <div class="row" style="margin-top:12px;justify-content:space-between">
-      <button class="sec" data-act="agregar">+ Agregar ejercicio</button>
-      <button id="btnGuardarDia" data-act="guardar" ${subiendo ? 'disabled' : ''}>💾 Guardar ${DIAS[diaEdit]}</button>
-    </div>`;
-}
-
-$('#editor').addEventListener('input', e => {
-  const t = e.target;
-  if (t.id === 'edTitulo') ed.titulo = t.value;
-  else if (t.id === 'edNotas') ed.notas = t.value;
-  else if (t.dataset.f) ejs[+t.dataset.i][t.dataset.f] = t.value;
-});
-
-$('#editor').addEventListener('click', e => {
-  const b = e.target.closest('[data-act]'); if (!b) return;
-  const i = +b.dataset.i, act = b.dataset.act;
-  if (act === 'cerrar') return cerrarEditor();
-  if (act === 'guardar') return guardarDia();
-  if (act === 'agregar') { ejs.push({ nombre: '', series: '', reps: '', nota: '' }); return renderEditor(); }
-  if (act === 'borrar') {
-    if (!confirm('¿Eliminar este ejercicio?')) return;
-    if (ejs[i].video_path) borrarVideos.push(ejs[i].video_path);
-    ejs.splice(i, 1); return renderEditor();
-  }
-  if (act === 'subir' && i > 0) { [ejs[i - 1], ejs[i]] = [ejs[i], ejs[i - 1]]; return renderEditor(); }
-  if (act === 'bajar' && i < ejs.length - 1) { [ejs[i + 1], ejs[i]] = [ejs[i], ejs[i + 1]]; return renderEditor(); }
-});
-
-$('#editor').addEventListener('change', async e => {
-  const inp = e.target; if (!inp.dataset.up) return;
-  const i = +inp.dataset.up, file = inp.files[0]; if (!file) return;
-  if (file.size > LIMITE_MB * 1024 * 1024) return toast(`El video pesa ${(file.size / 1048576).toFixed(0)} MB. Máximo ${LIMITE_MB} MB: comprímelo primero.`);
-  const ej = ejs[i];
-  const ext = (file.name.split('.').pop() || 'mp4').toLowerCase();
-  const path = `${memId}/${crypto.randomUUID()}.${ext}`;
-  subiendo++; $('#st' + i).textContent = '⏳ Subiendo…'; $('#btnGuardarDia').disabled = true;
-  const { error } = await sb.storage.from('entrenador-videos').upload(path, file, { contentType: file.type || 'video/mp4' });
-  subiendo--;
-  if (fallo(error, 'No se pudo subir el video')) { renderEditor(); return; }
-  if (ej.video_path) borrarVideos.push(ej.video_path);
-  ej.video_path = path;
-  ej.video_url = sb.storage.from('entrenador-videos').getPublicUrl(path).data.publicUrl;
-  if (!ej.nombre) ej.nombre = file.name.replace(/\.[^.]+$/, '');
-  renderEditor(); toast('Video subido ✔ — no olvides Guardar');
-});
-
-async function guardarDia() {
-  if (subiendo) return toast('Espera a que termine de subir el video');
-  const btn = $('#btnGuardarDia'); btn.disabled = true; btn.textContent = 'Guardando…';
-  const { data: r, error } = await sb.from('ent_rutinas_dia')
-    .upsert({ membresia_id: memId, dia: diaEdit, titulo: ed.titulo.trim() || null, notas: ed.notas.trim() || null, updated_at: new Date().toISOString() },
-            { onConflict: 'membresia_id,dia' })
-    .select().single();
-  if (fallo(error)) { renderEditor(); return; }
-
-  const del = await sb.from('ent_ejercicios').delete().eq('rutina_id', r.id);
-  if (fallo(del.error)) { renderEditor(); return; }
-
-  const filas = ejs.filter(e => (e.nombre || '').trim() || e.video_url).map((e, i) => ({
-    rutina_id: r.id, orden: i + 1,
-    nombre: (e.nombre || '').trim() || `Ejercicio ${i + 1}`,
-    series: e.series ? parseInt(e.series) : null,
-    reps: (e.reps ?? '').toString().trim() || null,
-    nota: (e.nota || '').trim() || null,
-    video_path: e.video_path || null, video_url: e.video_url || null
-  }));
-  if (filas.length) {
-    const ins = await sb.from('ent_ejercicios').insert(filas);
-    if (fallo(ins.error)) { renderEditor(); return; }
-  }
-  if (borrarVideos.length) { await sb.storage.from('entrenador-videos').remove(borrarVideos); borrarVideos = []; }
-  toast(`${DIAS[diaEdit]} guardado ✔`);
-  await renderSemana(); await abrirDia(diaEdit);
-}
-
-
-/* ======================= PAGOS STRIPE ======================= */
-async function abrirPago(c) {
-  try {
-    if (!STRIPE_PUBLISHABLE_KEY || STRIPE_PUBLISHABLE_KEY.includes('REEMPLAZA_AQUI')) {
-      return toast('⚠️ Falta configurar la pk_test de Stripe');
-    }
-
-    const mem = membresias.find(m => m.id === memId);
-    $('#payCliente').textContent = c.nombre || 'Cliente';
-    $('#payMembresia').textContent = mem?.nombre || 'Membresía';
-    $('#payBack').classList.remove('hidden');
-    $('#checkout').innerHTML = '<p class="muted">Cargando pago seguro…</p>';
-
-    if (stripeCheckout) {
-      try { stripeCheckout.destroy(); } catch {}
-      stripeCheckout = null;
-    }
-
-    const { data, error } = await sb.functions.invoke('create-checkout-session', {
-      body: {
-        cliente_id: c.id,
-        membresia_id: memId,
-        nombre_cliente: c.nombre
-      }
+  const C = (nombre, whatsapp, memb, venceEn, activo = true) => ({ id: uid(), nombre, whatsapp, membresia_id: memb, vence: addDays(HOY, venceEn), activo });
+  const clientes = [
+    C("Mariana Ledesma", "462 118 4307", "vip", 24), C("Rodrigo Arteaga", "462 207 9154", "vip", 17), C("Fernanda Olvera", "461 330 2816", "vip", 40),
+    C("Héctor Saucedo", "462 145 6672", "vip", 3), C("Paola Muñiz", "462 190 3348", "vip", 12), C("Luis Ángel Cervantes", "461 288 0571", "vip", -4),
+    C("Daniela Ríos", "462 173 5590", "b", 21), C("Óscar Villalobos", "462 314 7726", "b", 9), C("Karla Esquivel", "461 402 1183", "b", 30, false), C("Iván Zavala", "462 251 9047", "b", 15)
+  ];
+  const envios = [];
+  const yesterday = addDays(HOY, -1);
+  [[yesterday, "enviado"], [HOY, "enviado"]].forEach(([f]) => {
+    ["vip", "b"].forEach(m => {
+      const r = rutinas.find(x => x.membresia_id === m && x.fecha === f);
+      if (!r || r.descanso) return;
+      clientes.filter(c => c.membresia_id === m && c.activo && c.vence >= f).forEach(c => {
+        const fallo = f === HOY && c.nombre === "Paola Muñiz";
+        envios.push({ id: uid(), rutina_id: r.id, cliente_id: c.id, fecha: f, estado: fallo ? "fallo" : "enviado", error: fallo ? "El número no respondió. Revisa que tenga WhatsApp." : "", enviado_at: f + "T06:3" + Math.floor(Math.random() * 9) + ":00" });
+      });
     });
+  });
+  return {
+    membresias: [{ id: "vip", nombre: "VIP" }, { id: "b", nombre: "B" }],
+    ejercicios: ej, rutinas, rutina_ejercicios: rex, clientes, envios,
+    config: [{ id: 1, marca: "Hierro", hora_envio: "06:30", plantilla: "Buenos días {nombre}. Hoy toca {titulo}. Aquí está tu rutina con los videos:\n{link}", url_vista: "https://tu-sitio.github.io/hierro/" }]
+  };
+}
 
+/* ---------- capa de datos: demo en memoria o Supabase ---------- */
+const DEMO = !CONFIG.SUPABASE_URL || !CONFIG.SUPABASE_ANON_KEY;
+let sb = null;
+const mem = DEMO ? seed() : null;
+const DB = {
+  async all(t) {
+    if (DEMO) return structuredClone(mem[t]);
+    const { data, error } = await sb.from(t).select("*"); if (error) throw error; return data;
+  },
+  async where(t, f, v) {
+    if (DEMO) return structuredClone(mem[t].filter(r => r[f] === v));
+    const { data, error } = await sb.from(t).select("*").eq(f, v); if (error) throw error; return data;
+  },
+  async insert(t, row) {
+    if (DEMO) { const r = { id: uid(), ...row }; mem[t].push(r); return structuredClone(r); }
+    const { data, error } = await sb.from(t).insert(row).select().single(); if (error) throw error; return data;
+  },
+  async insertMany(t, rows) {
+    if (!rows.length) return [];
+    if (DEMO) { const rs = rows.map(r => ({ id: uid(), ...r })); mem[t].push(...rs); return structuredClone(rs); }
+    const { data, error } = await sb.from(t).insert(rows).select(); if (error) throw error; return data;
+  },
+  async update(t, id, patch) {
+    if (DEMO) { const r = mem[t].find(x => x.id === id); Object.assign(r, patch); return structuredClone(r); }
+    const { data, error } = await sb.from(t).update(patch).eq("id", id).select().single(); if (error) throw error; return data;
+  },
+  async remove(t, id) {
+    if (DEMO) { mem[t] = mem[t].filter(x => x.id !== id); return; }
+    const { error } = await sb.from(t).delete().eq("id", id); if (error) throw error;
+  },
+  async removeWhere(t, f, v) {
+    if (DEMO) { mem[t] = mem[t].filter(x => x[f] !== v); return; }
+    const { error } = await sb.from(t).delete().eq(f, v); if (error) throw error;
+  },
+  async upload(file) {
+    if (DEMO) return URL.createObjectURL(file);
+    const path = `${Date.now()}-${file.name.normalize("NFD").replace(/[^\w.-]/g, "_")}`;
+    const { error } = await sb.storage.from(CONFIG.BUCKET_VIDEOS).upload(path, file, { contentType: file.type });
     if (error) throw error;
-    if (!data?.clientSecret) throw new Error('La función no devolvió clientSecret');
-
-    stripeInstance = Stripe(STRIPE_PUBLISHABLE_KEY);
-
-    stripeCheckout = await stripeInstance.initEmbeddedCheckout({
-      clientSecret: data.clientSecret,
-      onComplete: async () => {
-        toast('Pago completado. Confirmando con Stripe…');
-        await cerrarPago();
-        setTimeout(() => {
-          renderClientes();
-          renderHoy();
-        }, 1600);
-      }
-    });
-
-    $('#checkout').innerHTML = '';
-    stripeCheckout.mount('#checkout');
-  } catch (err) {
-    console.error(err);
-    $('#checkout').innerHTML =
-      `<p style="color:#f3a1a4">⚠️ ${esc(err?.message || 'No se pudo iniciar el pago')}</p>`;
-    toast('⚠️ No se pudo iniciar Stripe');
-  }
-}
-
-async function cerrarPago() {
-  if (stripeCheckout) {
-    try { stripeCheckout.destroy(); } catch {}
-    stripeCheckout = null;
-  }
-  $('#checkout').innerHTML = '';
-  $('#payBack').classList.add('hidden');
-}
-
-$('#btnCerrarPago').onclick = cerrarPago;
-$('#payBack').addEventListener('click', e => {
-  if (e.target.id === 'payBack') cerrarPago();
-});
-
-/* ======================= CLIENTES ======================= */
-async function renderClientes() {
-  const { data, error } = await sb.from('ent_clientes').select('*').eq('membresia_id', memId).order('nombre');
-  if (fallo(error)) return;
-  clientes = data;
-  const hoy = hoyMX();
-  $('#listaClientes').innerHTML = !clientes.length ? '<p class="muted">Aún no hay clientes en esta membresía.</p>' : `
-    <table><thead><tr><th>Cliente</th><th class="hide-m">WhatsApp</th><th>Estado</th><th></th></tr></thead><tbody>
-    ${clientes.map(c => {
-      const vencido = c.vence && c.vence < hoy;
-      const estado = !c.activo ? '<span class="pill p-n">Pausado</span>' : vencido ? '<span class="pill p-bad">Vencido</span>' : '<span class="pill p-ok">Activo</span>';
-      return `<tr>
-        <td><b>${esc(c.nombre)}</b><div class="muted" style="font-size:12px">${c.vence ? 'Vence ' + c.vence : 'Sin vencimiento'}</div></td>
-        <td class="hide-m">${esc(c.telefono)}</td>
-        <td>${estado}</td>
-        <td><div class="row end" style="flex-wrap:wrap">
-          <button class="mini" data-c="cobrar" data-id="${c.id}">💳 Cobrar</button>
-          <button class="sec mini" data-c="link" data-id="${c.id}">🔗 Link</button>
-          <button class="sec mini" data-c="pausa" data-id="${c.id}">${c.activo ? '⏸' : '▶️'}</button>
-          <button class="sec mini" data-c="editar" data-id="${c.id}">✏️</button>
-          <button class="sec mini" data-c="borrar" data-id="${c.id}">🗑</button>
-        </div></td></tr>`;
-    }).join('')}</tbody></table>`;
-}
-
-$('#listaClientes').onclick = async e => {
-  const b = e.target.closest('[data-c]'); if (!b) return;
-  const c = clientes.find(x => x.id === b.dataset.id);
-  if (b.dataset.c === 'cobrar') return abrirPago(c);
-  if (b.dataset.c === 'link') {
-    const url = `${URL_RUTINA}?t=${c.token}`;
-    try { await navigator.clipboard.writeText(url); toast('Link copiado ✔'); } catch { prompt('Copia el link:', url); }
-  }
-  if (b.dataset.c === 'pausa') {
-    const { error } = await sb.from('ent_clientes').update({ activo: !c.activo }).eq('id', c.id);
-    if (!fallo(error)) { toast(c.activo ? 'Cliente pausado' : 'Cliente activado'); renderClientes(); }
-  }
-  if (b.dataset.c === 'editar') {
-    editCliId = c.id;
-    $('#cNombre').value = c.nombre; $('#cTel').value = c.telefono; $('#cVence').value = c.vence || '';
-    $('#btnCli').textContent = 'Guardar cambios'; $('#btnCliCancel').classList.remove('hidden');
-    $('#cNombre').focus();
-  }
-  if (b.dataset.c === 'borrar') {
-    if (!confirm(`¿Eliminar a ${c.nombre}? Se borra también su historial.`)) return;
-    const { error } = await sb.from('ent_clientes').delete().eq('id', c.id);
-    if (!fallo(error)) { toast('Cliente eliminado'); renderClientes(); }
+    return sb.storage.from(CONFIG.BUCKET_VIDEOS).getPublicUrl(path).data.publicUrl;
   }
 };
 
-function limpiarFormCli() {
-  editCliId = null; $('#cNombre').value = ''; $('#cTel').value = ''; $('#cVence').value = '';
-  $('#btnCli').textContent = 'Agregar'; $('#btnCliCancel').classList.add('hidden');
-}
-$('#btnCliCancel').onclick = limpiarFormCli;
-$('#btnCli').onclick = async () => {
-  const nombre = $('#cNombre').value.trim();
-  const telefono = $('#cTel').value.replace(/\D/g, '');
-  const vence = $('#cVence').value || null;
-  if (!nombre) return toast('Escribe el nombre');
-  if (telefono.length !== 10 && telefono.length !== 12) return toast('El WhatsApp debe tener 10 dígitos');
-  const q = editCliId
-    ? sb.from('ent_clientes').update({ nombre, telefono, vence }).eq('id', editCliId)
-    : sb.from('ent_clientes').insert({ nombre, telefono, vence, membresia_id: memId });
-  const { error } = await q;
-  if (fallo(error)) return;
-  toast(editCliId ? 'Cliente actualizado ✔' : 'Cliente agregado ✔');
-  limpiarFormCli(); renderClientes();
+/* ---------- estado ---------- */
+const S = {
+  view: "semana", memb: "vip", week: mondayOf(HOY), loading: true,
+  clientes: [], ejercicios: [], rutinas: [], rex: [], envios: [], membresias: [], config: {},
+  qCli: "", fCli: "todas", fGrupo: "Todos", previewFecha: HOY, envFecha: HOY, edit: null
 };
+async function loadAll() {
+  const [membresias, clientes, ejercicios, rutinas, rex, envios, config] = await Promise.all([
+    DB.all("membresias"), DB.all("clientes"), DB.all("ejercicios"), DB.all("rutinas"), DB.all("rutina_ejercicios"), DB.all("envios"), DB.all("config")
+  ]);
+  Object.assign(S, { membresias, clientes, ejercicios, rutinas, rex, envios, config: config[0] || {}, loading: false });
+  if (!S.membresias.find(m => m.id === S.memb) && S.membresias[0]) S.memb = S.membresias[0].id;
+}
 
-/* ======================= HOY ======================= */
-async function renderHoy() {
-  const hoy = hoyMX(), d = diaHoy();
-  const { data: cls, error } = await sb.from('ent_clientes').select('id,nombre,activo,vence').eq('membresia_id', memId).order('nombre');
-  if (fallo(error)) return;
-  const ids = cls.map(c => c.id);
-  let env = [], comp = [];
-  if (ids.length) {
-    const a = await sb.from('ent_envios').select('cliente_id,estado,detalle').eq('fecha', hoy).in('cliente_id', ids);
-    const b = await sb.from('ent_completados').select('cliente_id').eq('fecha', hoy).in('cliente_id', ids);
-    env = a.data || []; comp = (b.data || []).map(x => x.cliente_id);
-  }
-  const r = rutinas[d];
-  const activos = cls.filter(c => c.activo && !(c.vence && c.vence < hoy));
-  const enviados = env.filter(x => x.estado === 'enviado').length;
-  const terminaron = activos.filter(c => comp.includes(c.id)).length;
-  $('#hoy').innerHTML = `
-    <div class="stats">
-      <div class="stat"><span class="muted">${DIAS[d]} · ${hoy}</span><b>${r?.titulo ? esc(r.titulo) : 'Descanso'}</b></div>
-      <div class="stat"><span class="muted">WhatsApp enviados</span><b>${enviados} / ${activos.length}</b></div>
-      <div class="stat"><span class="muted">Terminaron</span><b>${terminaron} / ${activos.length}</b></div>
-      <div class="stat"><button class="sec mini" onclick="renderHoy()">↻ Actualizar</button></div>
+/* ---------- lógica de negocio ---------- */
+const rutinaDe = (memb, fecha) => S.rutinas.find(r => r.membresia_id === memb && r.fecha === fecha);
+const itemsDe = rid => S.rex.filter(x => x.rutina_id === rid).sort((a, b) => a.orden - b.orden).map(x => ({ ...x, ej: S.ejercicios.find(e => e.id === x.ejercicio_id) || { nombre: "Ejercicio eliminado", grupo: "", video_url: "" } }));
+function estadoCliente(c) {
+  if (!c.activo) return { k: "muted", t: "Pausado", recibe: false };
+  const d = diffDays(HOY, c.vence);
+  if (d < 0) return { k: "bad", t: `Vencida hace ${-d} d`, recibe: false };
+  if (d <= 5) return { k: "warn", t: d === 0 ? "Vence hoy" : `Vence en ${d} d`, recibe: true };
+  return { k: "ok", t: "Activo", recibe: true };
+}
+const receptores = memb => S.clientes.filter(c => c.membresia_id === memb && estadoCliente(c).recibe);
+const membNombre = id => (S.membresias.find(m => m.id === id) || {}).nombre || id;
+const linkCliente = (rutinaId, clienteId) => `${(S.config.url_vista || "").replace(/\/?$/, "")}${(S.config.url_vista || "").includes("?") ? "&" : "?"}r=${rutinaId}${clienteId ? "&c=" + clienteId : ""}`;
+function mensaje(c, r) {
+  return (S.config.plantilla || "").replaceAll("{nombre}", c.nombre.split(" ")[0]).replaceAll("{titulo}", (r?.titulo || "").toLowerCase()).replaceAll("{link}", r ? linkCliente(r.id, c.id) : "");
+}
+
+/* ---------- render principal ---------- */
+function render() {
+  const app = $("#app");
+  if (S.loading) { app.innerHTML = shell(`<div class="covers">${Array.from({ length: 4 }, () => '<div class="skel"></div>').join("")}</div>`); return; }
+  const views = { semana: vSemana, clientes: vClientes, biblioteca: vBiblioteca, envios: vEnvios, cliente: vPreview, ajustes: vAjustes };
+  app.innerHTML = shell((views[S.view] || vSemana)());
+}
+function shell(inner) {
+  const marca = esc(S.config.marca || "Hierro");
+  const nav = [["semana", "La semana"], ["clientes", "Clientes"], ["biblioteca", "Biblioteca"], ["envios", "Envíos"], ["cliente", "Vista del cliente"], ["ajustes", "Ajustes"]];
+  const membs = S.membresias.map(m => `<button class="memb" data-act="memb" data-id="${esc(m.id)}" aria-pressed="${m.id === S.memb}"><b>${esc(m.nombre)}</b><span>${receptores(m.id).length} reciben rutina</span></button>`).join("");
+  return `
+  <div class="strip"><span>La revista de tu entrenamiento</span><span>${DEMO ? '<span class="demo-flag">Modo demostración: datos de ejemplo</span>' : esc(fechaLarga(HOY))}</span></div>
+  <div class="wrap">
+    <header class="mast-row">
+      <div><h1 class="mast">${marca}</h1><div class="mast-sub">Panel del entrenador · Semana ${isoWeek(S.week)}</div></div>
+      <div class="memb-switch" role="group" aria-label="Membresía">${membs}</div>
+    </header>
+    <nav class="nav" aria-label="Secciones">${nav.map(([k, t]) => `<button data-act="view" data-id="${k}" ${S.view === k ? 'aria-current="page"' : ""}>${t}</button>`).join("")}</nav>
+    <main>${inner}</main>
+  </div>`;
+}
+
+/* ---------- vista: semana ---------- */
+function vSemana() {
+  const dias = Array.from({ length: 7 }, (_, i) => addDays(S.week, i));
+  const rs = dias.map(f => rutinaDe(S.memb, f));
+  const planeados = rs.filter(Boolean).length;
+  const entrenos = rs.filter(r => r && !r.descanso).length;
+  const sinVideo = new Set(rs.filter(Boolean).flatMap(r => itemsDe(r.id)).filter(x => !x.ej.video_url).map(x => x.ej.id)).size;
+  const fin = parse(addDays(S.week, 6));
+  const ini = parse(S.week);
+  const rango = ini.getMonth() === fin.getMonth() ? `${ini.getDate()} al ${fin.getDate()} de ${MESES[fin.getMonth()]}` : `${ini.getDate()} ${MESES[ini.getMonth()]} al ${fin.getDate()} ${MESES[fin.getMonth()]}`;
+  const prevTiene = dias.some(f => rutinaDe(S.memb, addDays(f, -7)));
+  const covers = dias.map((f, i) => coverCard(f, rs[i])).join("");
+  return `
+  <div class="section-head">
+    <div><h2 class="headline">Rutina ${esc(membNombre(S.memb))}: semana del ${rango}</h2>
+    <p class="dek">Toca un día para armar su rutina. Cada mañana a las ${esc(S.config.hora_envio || "06:30")} se manda la rutina de ese día a los clientes activos de la membresía ${esc(membNombre(S.memb))}.</p></div>
+    <div class="toolbar">
+      <div class="week-nav"><button class="btn small" data-act="week" data-n="-7" aria-label="Semana anterior">◀</button><button class="btn small" data-act="week" data-n="0">Esta semana</button><button class="btn small" data-act="week" data-n="7" aria-label="Semana siguiente">▶</button></div>
+      <button class="btn" data-act="copy-week" ${prevTiene ? "" : "disabled"} title="Copia los días vacíos desde la semana anterior">Copiar semana anterior</button>
     </div>
-    <div class="card">${!cls.length ? '<p class="muted">Sin clientes.</p>' : `
-      <table><thead><tr><th>Cliente</th><th>WhatsApp</th><th>Terminó</th></tr></thead><tbody>
-      ${cls.map(c => {
-        const e = env.find(x => x.cliente_id === c.id);
-        const inactivo = !c.activo || (c.vence && c.vence < hoy);
-        const w = inactivo ? '<span class="pill p-n">No aplica</span>'
-          : !e ? '<span class="pill p-n">Pendiente</span>'
-          : e.estado === 'enviado' ? '<span class="pill p-ok">Enviado</span>'
-          : `<span class="pill p-bad" title="${esc(e.detalle)}">Error</span>`;
-        return `<tr><td>${esc(c.nombre)}</td><td>${w}</td><td>${comp.includes(c.id) ? '✅' : '<span class="muted">—</span>'}</td></tr>`;
-      }).join('')}</tbody></table>`}</div>`;
+  </div>
+  <div class="summary">
+    <div><b>${planeados}/7</b><span>días planeados</span></div>
+    <div><b>${entrenos}</b><span>días de entrenamiento</span></div>
+    <div><b>${receptores(S.memb).length}</b><span>clientes reciben la rutina</span></div>
+    <div><b style="color:${sinVideo ? "var(--bad)" : "inherit"}">${sinVideo}</b><span>ejercicios sin video</span></div>
+  </div>
+  <div class="covers">${covers}</div>`;
+}
+function coverCard(f, r) {
+  const d = parse(f);
+  const band = `<div class="band"><span>${DIAS[dayIdx(f)]}</span><span>${d.getDate()} ${MESES[d.getMonth()].slice(0, 3)}</span></div>`;
+  const hoy = f === HOY ? '<span class="burst" aria-hidden="true">¡HOY!</span>' : "";
+  const todayCls = f === HOY ? " today" : "";
+  if (!r) return `<button class="cover empty${todayCls}" data-act="edit" data-f="${f}">${band}<div class="body"><p class="title">Sin rutina</p><p class="more">Toca para armar este día</p></div></button>`;
+  if (r.descanso) return `<button class="cover rest${todayCls}" data-act="edit" data-f="${f}">${band}${hoy}<div class="body"><p class="title">${esc(r.titulo || "Descanso")}</p>${r.nota ? `<p class="more">${esc(r.nota)}</p>` : ""}<div class="foot"><span class="chip muted">No se envía</span></div></div></button>`;
+  const items = itemsDe(r.id);
+  const show = items.slice(0, 4);
+  const faltan = items.filter(x => !x.ej.video_url).length;
+  const env = S.envios.filter(e => e.rutina_id === r.id);
+  const ok = env.filter(e => e.estado === "enviado").length, bad = env.filter(e => e.estado === "fallo").length;
+  let estado;
+  if (f < HOY) estado = env.length ? `<span class="chip">${ok} enviados${bad ? `, ${bad} falló` : ""}</span>` : `<span class="chip">Sin registro</span>`;
+  else if (f === HOY) estado = env.length ? `<span class="chip">${ok}/${env.length} enviados</span>` : `<span class="chip">Pendiente</span>`;
+  else estado = `<span class="chip">Sale ${esc(S.config.hora_envio || "")}</span>`;
+  return `<button class="cover c-${esc(r.color || "red")}${todayCls}" data-act="edit" data-f="${f}">${band}${hoy}
+    <div class="body"><p class="title">${esc(r.titulo)}</p>
+      <ul>${show.map(x => `<li>${esc(x.ej.nombre)}</li>`).join("")}</ul>
+      ${items.length > 4 ? `<span class="more">y ${items.length - 4} más</span>` : ""}
+      ${!items.length ? `<span class="more">Aún sin ejercicios</span>` : ""}
+      <div class="foot"><span>${items.length} ejercicios${faltan ? ` · ${faltan} sin video` : ""}</span>${estado}</div>
+    </div></button>`;
 }
 
-init();
+/* ---------- editor de un día ---------- */
+function openEditor(f) {
+  const r = rutinaDe(S.memb, f);
+  S.edit = r ? { id: r.id, fecha: f, titulo: r.titulo, color: r.color || "red", descanso: !!r.descanso, nota: r.nota || "",
+    items: itemsDe(r.id).map(x => ({ k: uid(), ejercicio_id: x.ejercicio_id, series: x.series, reps: x.reps, descanso_seg: x.descanso_seg, nota: x.nota || "" })) }
+    : { id: null, fecha: f, titulo: "", color: COLORES[dayIdx(f) % 4][0], descanso: false, nota: "", items: [] };
+  const dlg = $("#dlg");
+  dlg.innerHTML = editorHTML();
+  dlg.showModal();
+  setTimeout(() => $("#ed-titulo")?.focus(), 30);
+}
+function editorHTML() {
+  const e = S.edit;
+  const opts = GRUPOS.map(g => {
+    const list = S.ejercicios.filter(x => x.grupo === g);
+    return list.length ? `<optgroup label="${g}">${list.map(x => `<option value="${x.id}">${esc(x.nombre)}${x.video_url ? "" : " (sin video)"}</option>`).join("")}</optgroup>` : "";
+  }).join("");
+  return `
+  <form method="dialog" id="ed-form" novalidate>
+  <div class="dlg-head"><h3 id="dlg-title">${esc(fechaLarga(e.fecha))} · ${esc(membNombre(S.memb))}</h3><button type="button" class="btn small" data-act="close">Cerrar</button></div>
+  <div class="dlg-body">
+    <div class="grid2">
+      <div class="field"><label for="ed-titulo">Título del día</label><input type="text" id="ed-titulo" data-e="titulo" value="${esc(e.titulo)}" placeholder="Ej. Pecho" maxlength="28" required><span class="help">Es el titular grande de la portada que ve el cliente.</span><span class="err" id="ed-err" hidden></span></div>
+      <div class="field"><label>Color de portada</label><div class="swatches" role="group" aria-label="Color de portada">${COLORES.map(([c, n]) => `<button type="button" class="swatch c-${c}" data-act="color" data-id="${c}" aria-pressed="${e.color === c}" aria-label="${n}" title="${n}"></button>`).join("")}</div></div>
+    </div>
+    <label class="toggle"><input type="checkbox" id="ed-desc" data-e="descanso" ${e.descanso ? "checked" : ""}> Día de descanso (ese día no se manda nada)</label>
+    <div class="field"><label for="ed-nota">Nota del entrenador</label><textarea id="ed-nota" data-e="nota" placeholder="Ej. Semana de fuerza, sube peso en el primer ejercicio.">${esc(e.nota)}</textarea><span class="help">Aparece en un recuadro en la portada del cliente.</span></div>
+    <div id="ed-ex" ${e.descanso ? "hidden" : ""}>
+      <div class="field" style="margin-bottom:10px"><label for="ed-add">Ejercicios en orden</label>
+        <div class="add-row"><select id="ed-add">${opts || '<option value="">Primero agrega ejercicios en la Biblioteca</option>'}</select><button type="button" class="btn primary" data-act="ex-add" ${opts ? "" : "disabled"}>Agregar</button></div>
+      </div>
+      <div class="ex-list" id="ed-list">${exListHTML()}</div>
+    </div>
+  </div>
+  <div class="dlg-foot">
+    <div>${e.id ? `<button type="button" class="btn ghost" data-act="del-day" data-armed="0">Borrar este día</button>` : ""}</div>
+    <div class="toolbar"><button type="button" class="btn" data-act="close">Cancelar</button><button type="button" class="btn primary" data-act="save-day">Guardar día</button></div>
+  </div>
+  </form>`;
+}
+function exListHTML() {
+  const e = S.edit;
+  if (!e.items.length) return `<div class="empty-state"><h4>Sin ejercicios</h4><p>Elige un ejercicio de la lista y toca Agregar. Puedes cambiar el orden después.</p></div>`;
+  return e.items.map((it, i) => {
+    const ej = S.ejercicios.find(x => x.id === it.ejercicio_id) || { nombre: "Ejercicio eliminado", video_url: "" };
+    return `<div class="ex-row">
+      <span class="ex-num" aria-hidden="true">${i + 1}</span>
+      <div style="min-width:0">
+        <div class="ex-name">${esc(ej.nombre)} ${ej.video_url ? "" : '<span class="chip bad">Sin video</span>'}</div>
+        <div class="ex-fields">
+          <div class="field"><label for="s-${it.k}">Series</label><input type="number" min="1" max="12" id="s-${it.k}" data-it="${it.k}" data-k="series" value="${esc(it.series)}"></div>
+          <div class="field"><label for="r-${it.k}">Repeticiones</label><input type="text" id="r-${it.k}" data-it="${it.k}" data-k="reps" value="${esc(it.reps)}" placeholder="10-12"></div>
+          <div class="field"><label for="d-${it.k}">Descanso (seg)</label><input type="number" min="0" step="15" id="d-${it.k}" data-it="${it.k}" data-k="descanso_seg" value="${esc(it.descanso_seg)}"></div>
+        </div>
+        <div class="field ex-note"><label for="n-${it.k}">Indicación (opcional)</label><input type="text" id="n-${it.k}" data-it="${it.k}" data-k="nota" value="${esc(it.nota)}" placeholder="Ej. Baja lento, 3 segundos"></div>
+      </div>
+      <div class="ex-actions">
+        <button type="button" class="btn small" data-act="ex-up" data-id="${it.k}" ${i === 0 ? "disabled" : ""} aria-label="Subir">▲</button>
+        <button type="button" class="btn small" data-act="ex-down" data-id="${it.k}" ${i === e.items.length - 1 ? "disabled" : ""} aria-label="Bajar">▼</button>
+        <button type="button" class="btn small ghost" data-act="ex-del" data-id="${it.k}">Quitar</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+const refreshExList = () => { $("#ed-list").innerHTML = exListHTML(); };
+async function saveDay() {
+  const e = S.edit;
+  if (!e.titulo.trim()) { const er = $("#ed-err"); er.textContent = "Escribe un título, por ejemplo Pecho o Descanso."; er.hidden = false; $("#ed-titulo").focus(); return; }
+  if (!e.descanso && !e.items.length) { toast("Agrega al menos un ejercicio o marca el día como descanso."); return; }
+  const row = { membresia_id: S.memb, fecha: e.fecha, titulo: e.titulo.trim(), color: e.color, descanso: e.descanso, nota: e.nota.trim() };
+  try {
+    const r = e.id ? await DB.update("rutinas", e.id, row) : await DB.insert("rutinas", row);
+    await DB.removeWhere("rutina_ejercicios", "rutina_id", r.id);
+    if (!e.descanso) await DB.insertMany("rutina_ejercicios", e.items.map((it, i) => ({ rutina_id: r.id, ejercicio_id: it.ejercicio_id, orden: i + 1, series: Number(it.series) || 1, reps: String(it.reps || ""), descanso_seg: Number(it.descanso_seg) || 0, nota: it.nota || "" })));
+    await loadAll(); $("#dlg").close(); render(); toast(`${fechaLarga(e.fecha)} guardado.`);
+  } catch (err) { toast("No se pudo guardar: " + err.message); }
+}
+async function deleteDay() {
+  const e = S.edit;
+  try { await DB.removeWhere("rutina_ejercicios", "rutina_id", e.id); await DB.remove("rutinas", e.id); await loadAll(); $("#dlg").close(); render(); toast("Día borrado."); }
+  catch (err) { toast("No se pudo borrar: " + err.message); }
+}
+async function copyWeek() {
+  let n = 0;
+  try {
+    for (let i = 0; i < 7; i++) {
+      const f = addDays(S.week, i), src = rutinaDe(S.memb, addDays(f, -7));
+      if (!src || rutinaDe(S.memb, f)) continue;
+      const r = await DB.insert("rutinas", { membresia_id: S.memb, fecha: f, titulo: src.titulo, color: src.color, descanso: src.descanso, nota: src.nota });
+      await DB.insertMany("rutina_ejercicios", itemsDe(src.id).map(x => ({ rutina_id: r.id, ejercicio_id: x.ejercicio_id, orden: x.orden, series: x.series, reps: x.reps, descanso_seg: x.descanso_seg, nota: x.nota })));
+      n++;
+    }
+    await loadAll(); render();
+    toast(n ? `Se copiaron ${n} días. Los días que ya tenían rutina no se tocaron.` : "Esta semana ya tiene todos los días armados.");
+  } catch (err) { toast("No se pudo copiar: " + err.message); }
+}
+
+/* ---------- vista: clientes ---------- */
+function vClientes() {
+  const q = S.qCli.trim().toLowerCase();
+  const list = S.clientes.filter(c => (S.fCli === "todas" || c.membresia_id === S.fCli) && (!q || c.nombre.toLowerCase().includes(q) || c.whatsapp.replace(/\D/g, "").includes(q.replace(/\D/g, "") || "~"))).sort((a, b) => a.nombre.localeCompare(b.nombre));
+  const rows = list.map(c => {
+    const st = estadoCliente(c);
+    return `<tr><td class="cell-name">${esc(c.nombre)}</td><td class="num">${esc(c.whatsapp)}</td><td>${esc(membNombre(c.membresia_id))}</td><td class="num">${esc(fechaCorta(c.vence))}</td><td><span class="chip ${st.k}">${esc(st.t)}</span></td>
+      <td><div class="row-actions"><button class="btn small" data-act="cli-edit" data-id="${c.id}">Editar</button><button class="btn small ghost" data-act="cli-toggle" data-id="${c.id}">${c.activo ? "Pausar" : "Reactivar"}</button></div></td></tr>`;
+  }).join("");
+  const filtros = [["todas", "Todas"], ...S.membresias.map(m => [m.id, m.nombre])].map(([k, t]) => `<button class="pill" data-act="fcli" data-id="${esc(k)}" aria-pressed="${S.fCli === k}">${esc(t)}</button>`).join("");
+  return `
+  <div class="section-head"><div><h2 class="headline">Clientes</h2><p class="dek">Solo reciben rutina los clientes activos con membresía vigente. Al vencer, el envío se detiene solo.</p></div>
+    <button class="btn primary" data-act="cli-new">Nuevo cliente</button></div>
+  <div class="toolbar" style="margin-bottom:14px"><div class="field" style="flex:1;min-width:200px;max-width:360px"><label for="q-cli" class="sr" hidden>Buscar</label><input type="search" id="q-cli" data-f="qCli" value="${esc(S.qCli)}" placeholder="Buscar por nombre o teléfono" aria-label="Buscar cliente"></div><div class="filters" style="margin:0">${filtros}</div></div>
+  ${list.length ? `<div class="table-wrap"><table><thead><tr><th>Nombre</th><th>WhatsApp</th><th>Membresía</th><th>Vence</th><th>Estado</th><th><span hidden>Acciones</span></th></tr></thead><tbody>${rows}</tbody></table></div>`
+    : `<div class="empty-state"><h4>${S.clientes.length ? "Nadie coincide" : "Aún no hay clientes"}</h4><p>${S.clientes.length ? "Prueba con otro nombre o quita el filtro de membresía." : "Agrega a tu primer cliente con su WhatsApp y su membresía para que empiece a recibir rutinas."}</p>${S.clientes.length ? "" : '<button class="btn primary" data-act="cli-new">Nuevo cliente</button>'}</div>`}`;
+}
+function openCliente(id) {
+  const c = S.clientes.find(x => x.id === id) || { id: null, nombre: "", whatsapp: "", membresia_id: S.memb, vence: addDays(HOY, 30), activo: true };
+  const dlg = $("#dlg");
+  dlg.innerHTML = `<form id="cli-form" novalidate>
+    <div class="dlg-head"><h3 id="dlg-title">${c.id ? "Editar cliente" : "Nuevo cliente"}</h3><button type="button" class="btn small" data-act="close">Cerrar</button></div>
+    <div class="dlg-body">
+      <div class="field"><label for="c-nombre">Nombre completo</label><input type="text" id="c-nombre" value="${esc(c.nombre)}" required autocomplete="off"></div>
+      <div class="grid2">
+        <div class="field"><label for="c-wa">WhatsApp</label><input type="tel" id="c-wa" value="${esc(c.whatsapp)}" placeholder="462 118 4307" inputmode="tel"><span class="help">10 dígitos. Se agrega el 52 de México al enviar.</span></div>
+        <div class="field"><label for="c-memb">Membresía</label><select id="c-memb">${S.membresias.map(m => `<option value="${esc(m.id)}" ${m.id === c.membresia_id ? "selected" : ""}>${esc(m.nombre)}</option>`).join("")}</select></div>
+        <div class="field"><label for="c-vence">Membresía pagada hasta</label><input type="date" id="c-vence" value="${esc(c.vence)}"></div>
+      </div>
+      <label class="toggle"><input type="checkbox" id="c-activo" ${c.activo ? "checked" : ""}> Activo (recibe rutinas)</label>
+      <span class="err" id="c-err" hidden></span>
+    </div>
+    <div class="dlg-foot"><div>${c.id ? `<button type="button" class="btn ghost" data-act="cli-del" data-id="${c.id}" data-armed="0">Eliminar cliente</button>` : ""}</div>
+      <div class="toolbar"><button type="button" class="btn" data-act="close">Cancelar</button><button type="submit" class="btn primary">Guardar</button></div></div>
+  </form>`;
+  dlg.showModal();
+  $("#cli-form").addEventListener("submit", async ev => {
+    ev.preventDefault();
+    const row = { nombre: $("#c-nombre").value.trim(), whatsapp: $("#c-wa").value.trim(), membresia_id: $("#c-memb").value, vence: $("#c-vence").value, activo: $("#c-activo").checked };
+    const er = $("#c-err");
+    if (!row.nombre) { er.textContent = "Escribe el nombre del cliente."; er.hidden = false; $("#c-nombre").focus(); return; }
+    if (row.whatsapp.replace(/\D/g, "").length < 10) { er.textContent = "El WhatsApp debe tener 10 dígitos."; er.hidden = false; $("#c-wa").focus(); return; }
+    if (!row.vence) { er.textContent = "Elige hasta qué fecha está pagada la membresía."; er.hidden = false; return; }
+    try { c.id ? await DB.update("clientes", c.id, row) : await DB.insert("clientes", row); await loadAll(); dlg.close(); render(); toast("Cliente guardado."); }
+    catch (err) { er.textContent = "No se pudo guardar: " + err.message; er.hidden = false; }
+  });
+}
+
+/* ---------- vista: biblioteca ---------- */
+function usoDe(ejId) { return new Set(S.rex.filter(x => x.ejercicio_id === ejId).map(x => x.rutina_id)).size; }
+function mediaHTML(ej, big) {
+  if (ej.video_url && isDirectVideo(ej.video_url)) return `<video src="${esc(ej.video_url)}" ${big ? "controls playsinline" : 'muted playsinline preload="metadata"'}></video>`;
+  if (ej.video_url) return `<div class="halftone">${esc(ej.nombre)}<small><a href="${esc(ej.video_url)}" target="_blank" rel="noopener" style="color:#fff">Abrir video</a></small></div>`;
+  return `<div class="halftone">${esc(ej.nombre)}<small>${big ? "Video en camino" : "Falta subir video"}</small></div>`;
+}
+function vBiblioteca() {
+  const list = S.ejercicios.filter(e => S.fGrupo === "Todos" || e.grupo === S.fGrupo).sort((a, b) => a.grupo.localeCompare(b.grupo) || a.nombre.localeCompare(b.nombre));
+  const faltan = S.ejercicios.filter(e => !e.video_url).length;
+  return `
+  <div class="section-head"><div><h2 class="headline">Biblioteca de ejercicios</h2><p class="dek">Sube cada video una sola vez y reúsalo en todas las rutinas. ${faltan ? `<b>${faltan} ejercicios aún no tienen video.</b>` : "Todos los ejercicios tienen video."}</p></div>
+    <button class="btn primary" data-act="ej-new">Nuevo ejercicio</button></div>
+  <div class="filters">${["Todos", ...GRUPOS].map(g => `<button class="pill" data-act="fgrupo" data-id="${g}" aria-pressed="${S.fGrupo === g}">${g}</button>`).join("")}</div>
+  ${list.length ? `<div class="lib">${list.map(e => `<article class="lib-item"><div class="lib-media">${mediaHTML(e)}</div><div class="lib-body"><h4>${esc(e.nombre)}</h4>
+    <div class="lib-meta"><span class="chip muted">${esc(e.grupo)}</span>${e.video_url ? '<span class="chip ok">Con video</span>' : '<span class="chip bad">Sin video</span>'}<span>En ${usoDe(e.id)} rutinas</span></div>
+    <div class="row-actions"><button class="btn small" data-act="ej-edit" data-id="${e.id}">${e.video_url ? "Editar" : "Subir video"}</button></div></div></article>`).join("")}</div>`
+    : `<div class="empty-state"><h4>Nada en ${esc(S.fGrupo)}</h4><p>Agrega el primer ejercicio de este grupo con su video.</p><button class="btn primary" data-act="ej-new">Nuevo ejercicio</button></div>`}`;
+}
+function openEjercicio(id) {
+  const e = S.ejercicios.find(x => x.id === id) || { id: null, nombre: "", grupo: S.fGrupo !== "Todos" ? S.fGrupo : "Pecho", video_url: "" };
+  const enUso = e.id ? usoDe(e.id) : 0;
+  const dlg = $("#dlg");
+  dlg.innerHTML = `<form id="ej-form" novalidate>
+    <div class="dlg-head"><h3 id="dlg-title">${e.id ? "Editar ejercicio" : "Nuevo ejercicio"}</h3><button type="button" class="btn small" data-act="close">Cerrar</button></div>
+    <div class="dlg-body">
+      <div class="grid2">
+        <div class="field"><label for="j-nombre">Nombre del ejercicio</label><input type="text" id="j-nombre" value="${esc(e.nombre)}" placeholder="Ej. Press de banca plano" required></div>
+        <div class="field"><label for="j-grupo">Grupo muscular</label><select id="j-grupo">${GRUPOS.map(g => `<option ${g === e.grupo ? "selected" : ""}>${g}</option>`).join("")}</select></div>
+      </div>
+      <div class="field"><label for="j-file">Video desde el celular o la compu</label><input type="file" id="j-file" accept="video/*"><span class="help">MP4 de menos de 50 MB. Graba en vertical y de 20 a 40 segundos para que cargue rápido.</span></div>
+      <div class="field"><label for="j-url">O pega un link de video</label><input type="url" id="j-url" value="${esc(e.video_url && !e.video_url.startsWith("blob:") ? e.video_url : "")}" placeholder="https://..."><span class="help">Un link de YouTube también sirve: el cliente verá un botón para abrirlo.</span></div>
+      ${e.video_url ? `<div class="lib-media" style="max-width:360px">${mediaHTML(e, true)}</div>` : ""}
+      <span class="err" id="j-err" hidden></span>
+    </div>
+    <div class="dlg-foot"><div>${e.id ? `<button type="button" class="btn ghost" data-act="ej-del" data-id="${e.id}" data-armed="0" ${enUso ? `disabled title="Se usa en ${enUso} rutinas"` : ""}>Eliminar</button>` : ""}</div>
+      <div class="toolbar"><button type="button" class="btn" data-act="close">Cancelar</button><button type="submit" class="btn primary" id="j-save">Guardar</button></div></div>
+  </form>`;
+  dlg.showModal();
+  $("#ej-form").addEventListener("submit", async ev => {
+    ev.preventDefault();
+    const er = $("#j-err"), btn = $("#j-save");
+    const nombre = $("#j-nombre").value.trim(), grupo = $("#j-grupo").value, file = $("#j-file").files[0];
+    let video_url = $("#j-url").value.trim() || (e.video_url.startsWith("blob:") ? e.video_url : "");
+    if (!nombre) { er.textContent = "Escribe el nombre del ejercicio."; er.hidden = false; return; }
+    if (file && file.size > 50 * 1024 * 1024) { er.textContent = "El video pesa más de 50 MB. Recórtalo o grábalo en menor calidad."; er.hidden = false; return; }
+    btn.disabled = true; btn.textContent = file ? "Subiendo video..." : "Guardando...";
+    try {
+      if (file) video_url = await DB.upload(file);
+      const row = { nombre, grupo, video_url };
+      e.id ? await DB.update("ejercicios", e.id, row) : await DB.insert("ejercicios", row);
+      await loadAll(); dlg.close(); render(); toast(file ? "Video subido y ejercicio guardado." : "Ejercicio guardado.");
+    } catch (err) { er.textContent = "No se pudo guardar: " + err.message; er.hidden = false; btn.disabled = false; btn.textContent = "Guardar"; }
+  });
+}
+
+/* ---------- vista: envíos ---------- */
+function vEnvios() {
+  const f = S.envFecha;
+  const blocks = S.membresias.map(m => {
+    const r = rutinaDe(m.id, f);
+    const env = S.envios.filter(e => r && e.rutina_id === r.id);
+    const destinatarios = receptores(m.id);
+    let body;
+    if (!r) body = `<p class="dek" style="margin:0">No hay rutina armada para este día.</p>`;
+    else if (r.descanso) body = `<p class="dek" style="margin:0">Día de descanso. No se envía nada.</p>`;
+    else {
+      const filas = destinatarios.map(c => {
+        const e = env.find(x => x.cliente_id === c.id);
+        const chip = !e ? '<span class="chip muted">Pendiente</span>' : e.estado === "enviado" ? '<span class="chip ok">Enviado</span>' : e.estado === "fallo" ? '<span class="chip bad">Falló</span>' : '<span class="chip warn">En cola</span>';
+        const hora = e?.enviado_at ? e.enviado_at.slice(11, 16) : "";
+        return `<tr><td class="cell-name">${esc(c.nombre)}</td><td class="num">${esc(c.whatsapp)}</td><td>${chip}${e?.error ? `<div class="err" style="margin-top:4px">${esc(e.error)}</div>` : ""}</td><td class="num">${hora}</td>
+        <td><div class="row-actions">${e && e.estado === "fallo" ? `<button class="btn small" data-act="resend" data-id="${e.id}">Reenviar</button>` : ""}</div></td></tr>`;
+      }).join("");
+      const sinEnviar = destinatarios.filter(c => !env.find(x => x.cliente_id === c.id)).length;
+      body = `<div class="toolbar" style="justify-content:space-between"><span><b>${esc(r.titulo)}</b> · ${itemsDe(r.id).length} ejercicios</span>
+        ${f >= HOY && sinEnviar ? `<button class="btn primary small" data-act="send-now" data-id="${r.id}" data-m="${esc(m.id)}">Enviar ahora a ${sinEnviar}</button>` : ""}</div>
+        ${destinatarios.length ? `<div class="table-wrap"><table style="min-width:560px"><thead><tr><th>Cliente</th><th>WhatsApp</th><th>Estado</th><th>Hora</th><th><span hidden>Acciones</span></th></tr></thead><tbody>${filas}</tbody></table></div>` : `<p class="dek" style="margin:0">No hay clientes activos en esta membresía.</p>`}`;
+    }
+    return `<section class="panel"><h3>Membresía ${esc(m.nombre)}</h3>${body}</section>`;
+  }).join("");
+  const ejemploC = receptores(S.memb)[0], ejemploR = rutinaDe(S.memb, f) || rutinaDe(S.memb, HOY);
+  return `
+  <div class="section-head"><div><h2 class="headline">Envíos por WhatsApp</h2><p class="dek">Cada cliente recibe un solo mensaje con el link a su rutina del día. Así WhatsApp no ve muchos archivos repetidos y el número corre menos riesgo de bloqueo.</p></div>
+    <div class="toolbar"><button class="btn small" data-act="envday" data-n="-1" aria-label="Día anterior">◀</button><input type="date" id="env-fecha" data-f="envFecha" value="${f}" aria-label="Fecha" style="width:auto"><button class="btn small" data-act="envday" data-n="1" aria-label="Día siguiente">▶</button></div></div>
+  <div class="send-grid">
+    <div style="display:grid;gap:18px">${blocks}</div>
+    <aside class="panel"><h3>Así le llega</h3>
+      ${ejemploC && ejemploR && !ejemploR.descanso ? `<div class="msg-preview">${esc(mensaje(ejemploC, ejemploR))}</div>` : `<p class="dek" style="margin:0">Arma una rutina para ver el mensaje de ejemplo.</p>`}
+      <div class="callout">El envío lo hace el script de OpenWA en tu computadora: revisa la cola cada minuto, manda con pausas al azar y marca aquí si salió o falló. Hora diaria: <b>${esc(S.config.hora_envio)}</b>. Se cambia en Ajustes.</div>
+    </aside>
+  </div>`;
+}
+async function sendNow(rid, memb) {
+  const ya = new Set(S.envios.filter(e => e.rutina_id === rid).map(e => e.cliente_id));
+  const rows = receptores(memb).filter(c => !ya.has(c.id)).map(c => ({ rutina_id: rid, cliente_id: c.id, fecha: S.envFecha, estado: "pendiente", error: "", enviado_at: null }));
+  try {
+    const ins = await DB.insertMany("envios", rows);
+    if (DEMO) {
+      // Simulación: en el sistema real el script de OpenWA cambia el estado.
+      ins.forEach(r => { const m = mem.envios.find(x => x.id === r.id); m.estado = "enviado"; m.enviado_at = `${S.envFecha}T${new Date().toTimeString().slice(0, 8)}`; });
+      toast(`Simulado: ${rows.length} mensajes enviados. En tu sistema real quedan en cola para OpenWA.`);
+    } else toast(`${rows.length} mensajes en cola. El script de OpenWA los manda en el siguiente minuto.`);
+    await loadAll(); render();
+  } catch (err) { toast("No se pudo poner en cola: " + err.message); }
+}
+async function resend(id) {
+  try {
+    await DB.update("envios", id, DEMO ? { estado: "enviado", error: "", enviado_at: `${HOY}T${new Date().toTimeString().slice(0, 8)}` } : { estado: "pendiente", error: "" });
+    await loadAll(); render(); toast(DEMO ? "Simulado: reenviado." : "Reenvío en cola.");
+  } catch (err) { toast("No se pudo reenviar: " + err.message); }
+}
+
+/* ---------- vista: cliente (portada) ---------- */
+function clientePage(r, items, marca, opts = {}) {
+  const f = r.fecha, d = parse(f);
+  const color = r.descanso ? "black" : (r.color || "red");
+  const totalSeries = items.reduce((a, x) => a + (Number(x.series) || 0), 0);
+  const cover = `
+  <div class="mag c-${esc(color)}${r.descanso ? " rest-day" : ""}">
+    <div class="mag-top"><span>${opts.saludo ? esc(opts.saludo) : "Tu rutina de hoy"}</span><span>${esc(DIAS[dayIdx(f)])} ${d.getDate()} ${MESES[d.getMonth()].slice(0, 3)}</span></div>
+    <div class="mag-mast">${esc(marca)}</div>
+    <div class="mag-tag">La revista de tu entrenamiento</div>
+    <h1 class="mag-title${r.titulo.length > 8 ? " long" : ""}">${esc(r.titulo)}</h1>
+    ${r.descanso ? "" : `<div class="mag-burst" aria-hidden="true">${items.length}<br>ejercicios</div>`}
+    ${r.descanso ? "" : `<ul class="mag-lines">${items.slice(0, 6).map(x => `<li><span>${esc(x.ej.nombre)}<small>${esc(x.series)}×${esc(x.reps)}</small></span></li>`).join("")}</ul>`}
+    ${r.nota ? `<div class="mag-box"><b>Nota del entrenador</b>${esc(r.nota)}</div>` : ""}
+    <div class="mag-foot"><div class="barcode"><i></i>${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}</div>${r.descanso ? `<div class="sets">Recupera<br>y vuelve<br>mañana</div>` : `<div class="sets">${totalSeries} series<br>en total</div>`}</div>
+  </div>`;
+  const arts = r.descanso ? "" : `
+  <div class="articles"><h3>Los ejercicios</h3>
+    ${items.map((x, i) => `<article class="art">
+      <div class="art-head"><span class="art-num">${i + 1}</span><span class="art-name">${esc(x.ej.nombre)}</span></div>
+      <div class="art-media">${mediaHTML(x.ej, true)}</div>
+      <div class="specs"><div><b>${esc(x.series)}</b><span>Series</span></div><div><b>${esc(x.reps)}</b><span>Repeticiones</span></div><div><b>${Number(x.descanso_seg) >= 60 ? `${Math.floor(x.descanso_seg / 60)}:${pad(x.descanso_seg % 60)}` : esc(x.descanso_seg) + "s"}</b><span>Descanso</span></div></div>
+      ${x.nota ? `<p class="art-note">${esc(x.nota)}</p>` : ""}
+    </article>`).join("")}
+  </div>`;
+  return `<div class="client">${cover}${arts}<div class="client-foot">¿Dudas con algún ejercicio? Contesta el mensaje de WhatsApp y tu entrenador te responde.</div></div>`;
+}
+function vPreview() {
+  const dias = Array.from({ length: 7 }, (_, i) => addDays(S.week, i));
+  if (!dias.includes(S.previewFecha)) S.previewFecha = dias.includes(HOY) ? HOY : dias[0];
+  const r = rutinaDe(S.memb, S.previewFecha);
+  const c = receptores(S.memb)[0];
+  const chips = dias.map(f => `<button class="pill" data-act="pv" data-id="${f}" aria-pressed="${f === S.previewFecha}">${DIAS[dayIdx(f)].slice(0, 3)}</button>`).join("");
+  const phone = r ? clientePage(r, itemsDe(r.id), S.config.marca || "Hierro", { saludo: c ? `Para ${c.nombre.split(" ")[0]}` : "" })
+    : `<div class="empty-state" style="margin:20px"><h4>Sin rutina</h4><p>Este día aún no tiene rutina. Ármala en La semana.</p><button class="btn primary" data-act="edit" data-f="${S.previewFecha}">Armar ${DIAS[dayIdx(S.previewFecha)]}</button></div>`;
+  return `
+  <div class="preview-layout">
+    <div>
+      <h2 class="headline">Lo que ve tu cliente</h2>
+      <p class="dek">Es la página que abre desde el link de WhatsApp: una portada con la rutina del día y abajo cada ejercicio con su video. Se ve igual en cualquier celular, sin instalar nada.</p>
+      <div class="filters" style="margin-top:16px">${chips}</div>
+      ${r ? `<div class="panel" style="margin-top:8px"><h3>Link de este día</h3><code style="overflow-wrap:anywhere;font-size:13px">${esc(linkCliente(r.id, c?.id))}</code><div class="toolbar"><button class="btn small" data-act="copy-link" data-id="${r.id}">Copiar link</button></div></div>` : ""}
+    </div>
+    <div class="phone">${phone}</div>
+  </div>`;
+}
+
+/* ---------- vista: ajustes ---------- */
+function vAjustes() {
+  const c = S.config;
+  return `
+  <div class="section-head"><div><h2 class="headline">Ajustes</h2><p class="dek">Nombre de la marca, hora de envío y el mensaje que reciben los clientes.</p></div></div>
+  <form id="cfg-form" class="panel" style="max-width:720px" novalidate>
+    <div class="grid2">
+      <div class="field"><label for="cfg-marca">Nombre de la marca</label><input type="text" id="cfg-marca" value="${esc(c.marca)}" maxlength="14"><span class="help">Sale como el título gigante de la revista. Corto se ve mejor.</span></div>
+      <div class="field"><label for="cfg-hora">Hora de envío diario</label><input type="time" id="cfg-hora" value="${esc(c.hora_envio)}"></div>
+    </div>
+    <div class="field"><label for="cfg-url">Dirección de la página del cliente</label><input type="url" id="cfg-url" value="${esc(c.url_vista)}" placeholder="https://tu-usuario.github.io/hierro/"><span class="help">Donde publiques este mismo archivo. El link de cada día se arma con esta dirección.</span></div>
+    <div class="field"><label for="cfg-plantilla">Mensaje de WhatsApp</label><textarea id="cfg-plantilla" rows="4">${esc(c.plantilla)}</textarea><span class="help">Usa {nombre}, {titulo} y {link}. Se reemplazan por el nombre del cliente, el título del día y el link de su rutina.</span></div>
+    <span class="err" id="cfg-err" hidden></span>
+    <div class="toolbar"><button type="submit" class="btn primary">Guardar ajustes</button>${!DEMO ? '<button type="button" class="btn ghost" data-act="logout">Cerrar sesión</button>' : ""}</div>
+  </form>`;
+}
+async function saveConfig(ev) {
+  ev.preventDefault();
+  const row = { marca: $("#cfg-marca").value.trim() || "Hierro", hora_envio: $("#cfg-hora").value || "06:30", url_vista: $("#cfg-url").value.trim(), plantilla: $("#cfg-plantilla").value };
+  if (!row.plantilla.includes("{link}")) { const er = $("#cfg-err"); er.textContent = "El mensaje debe incluir {link} para que el cliente pueda abrir su rutina."; er.hidden = false; return; }
+  try { await DB.update("config", S.config.id || 1, row); await loadAll(); render(); toast("Ajustes guardados."); }
+  catch (err) { toast("No se pudo guardar: " + err.message); }
+}
+
+/* ---------- confirmación en dos pasos (sin confirm()) ---------- */
+function armed(btn, label) {
+  if (btn.dataset.armed === "1") return true;
+  btn.dataset.armed = "1"; const prev = btn.textContent; btn.textContent = label; btn.classList.add("danger-armed");
+  setTimeout(() => { if (btn.isConnected) { btn.dataset.armed = "0"; btn.textContent = prev; btn.classList.remove("danger-armed"); } }, 3500);
+  return false;
+}
+
+/* ---------- eventos ---------- */
+document.addEventListener("click", async ev => {
+  const b = ev.target.closest("[data-act]"); if (!b || b.disabled) return;
+  const a = b.dataset.act, id = b.dataset.id;
+  switch (a) {
+    case "view": S.view = id; render(); window.scrollTo({ top: 0 }); break;
+    case "memb": S.memb = id; render(); break;
+    case "week": S.week = Number(b.dataset.n) ? addDays(S.week, Number(b.dataset.n)) : mondayOf(HOY); render(); break;
+    case "copy-week": b.disabled = true; await copyWeek(); break;
+    case "edit": openEditor(b.dataset.f); break;
+    case "close": $("#dlg").close(); break;
+    case "color": S.edit.color = id; document.querySelectorAll(".swatch").forEach(s => s.setAttribute("aria-pressed", s.dataset.id === id)); break;
+    case "ex-add": { const v = $("#ed-add").value; if (!v) return; S.edit.items.push({ k: uid(), ejercicio_id: v, series: 4, reps: "10-12", descanso_seg: 90, nota: "" }); refreshExList(); break; }
+    case "ex-up": case "ex-down": { const it = S.edit.items, i = it.findIndex(x => x.k === id), j = a === "ex-up" ? i - 1 : i + 1; [it[i], it[j]] = [it[j], it[i]]; refreshExList(); break; }
+    case "ex-del": S.edit.items = S.edit.items.filter(x => x.k !== id); refreshExList(); break;
+    case "save-day": b.disabled = true; await saveDay(); b.disabled = false; break;
+    case "del-day": if (armed(b, "Toca otra vez para borrar")) await deleteDay(); break;
+    case "fcli": S.fCli = id; render(); break;
+    case "cli-new": openCliente(null); break;
+    case "cli-edit": openCliente(id); break;
+    case "cli-toggle": { const c = S.clientes.find(x => x.id === id); await DB.update("clientes", id, { activo: !c.activo }); await loadAll(); render(); toast(c.activo ? `${c.nombre} pausado. Ya no recibe rutinas.` : `${c.nombre} reactivado.`); break; }
+    case "cli-del": if (armed(b, "Toca otra vez para eliminar")) { await DB.removeWhere("envios", "cliente_id", id); await DB.remove("clientes", id); await loadAll(); $("#dlg").close(); render(); toast("Cliente eliminado."); } break;
+    case "fgrupo": S.fGrupo = id; render(); break;
+    case "ej-new": openEjercicio(null); break;
+    case "ej-edit": openEjercicio(id); break;
+    case "ej-del": if (armed(b, "Toca otra vez para eliminar")) { await DB.remove("ejercicios", id); await loadAll(); $("#dlg").close(); render(); toast("Ejercicio eliminado."); } break;
+    case "envday": S.envFecha = addDays(S.envFecha, Number(b.dataset.n)); render(); break;
+    case "send-now": b.disabled = true; await sendNow(id, b.dataset.m); break;
+    case "resend": b.disabled = true; await resend(id); break;
+    case "pv": S.previewFecha = id; render(); break;
+    case "copy-link": { const code = b.closest(".panel").querySelector("code"); try { await navigator.clipboard.writeText(code.textContent); toast("Link copiado."); } catch { const rg = document.createRange(); rg.selectNodeContents(code); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(rg); toast("Selecciona y copia el link."); } break; }
+    case "logout": await sb.auth.signOut(); location.reload(); break;
+  }
+});
+document.addEventListener("input", ev => {
+  const t = ev.target;
+  if (t.dataset.e && S.edit) {
+    S.edit[t.dataset.e] = t.type === "checkbox" ? t.checked : t.value;
+    if (t.dataset.e === "descanso") { $("#ed-ex").hidden = t.checked; if (t.checked && !S.edit.titulo) { S.edit.titulo = "Descanso"; $("#ed-titulo").value = "Descanso"; } }
+    if (t.dataset.e === "titulo") $("#ed-err").hidden = true;
+  }
+  if (t.dataset.it && S.edit) { const it = S.edit.items.find(x => x.k === t.dataset.it); if (it) it[t.dataset.k] = t.value; }
+});
+document.addEventListener("change", ev => {
+  const t = ev.target;
+  if (t.dataset.f === "envFecha" && t.value) { S.envFecha = t.value; render(); }
+});
+let qT;
+document.addEventListener("input", ev => {
+  if (ev.target.dataset.f !== "qCli") return;
+  S.qCli = ev.target.value; clearTimeout(qT);
+  qT = setTimeout(() => { const pos = ev.target.selectionStart; render(); const q = $("#q-cli"); q.focus(); q.setSelectionRange(pos, pos); }, 180);
+});
+document.addEventListener("submit", ev => { if (ev.target.id === "cfg-form") saveConfig(ev); if (ev.target.id === "ed-form") ev.preventDefault(); });
+
+/* ---------- arranque ---------- */
+function loadScript(src) { return new Promise((ok, no) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = () => no(new Error("No cargó " + src)); document.head.appendChild(s); }); }
+async function publicClient(rid) {
+  // Página pública: la abre el cliente desde WhatsApp. Solo lee la rutina.
+  const app = $("#app");
+  app.innerHTML = `<div class="client-standalone"><div class="skel" style="min-height:560px"></div></div>`;
+  try {
+    let r, items, marca = "Hierro";
+    if (DEMO) { await loadAll(); r = S.rutinas.find(x => x.id === rid); items = r ? itemsDe(r.id) : []; marca = S.config.marca; }
+    else {
+      r = (await DB.where("rutinas", "id", rid))[0];
+      const rex = r ? await DB.where("rutina_ejercicios", "rutina_id", rid) : [];
+      const ids = [...new Set(rex.map(x => x.ejercicio_id))];
+      const { data: ej } = ids.length ? await sb.from("ejercicios").select("*").in("id", ids) : { data: [] };
+      const { data: cfg } = await sb.from("config").select("marca").limit(1);
+      marca = cfg?.[0]?.marca || marca;
+      items = rex.sort((a, b) => a.orden - b.orden).map(x => ({ ...x, ej: ej.find(e => e.id === x.ejercicio_id) || { nombre: "Ejercicio", video_url: "" } }));
+    }
+    document.title = r ? `${r.titulo} | ${marca}` : marca;
+    app.innerHTML = r ? `<div class="client-standalone">${clientePage(r, items, marca)}</div>`
+      : `<div class="client-standalone"><div class="empty-state" style="margin:40px 0"><h4>Rutina no encontrada</h4><p>El link puede estar incompleto. Pídele a tu entrenador que te lo reenvíe.</p></div></div>`;
+  } catch (err) {
+    app.innerHTML = `<div class="client-standalone"><div class="empty-state" style="margin:40px 0"><h4>No cargó tu rutina</h4><p>Revisa tu conexión y vuelve a abrir el link.</p></div></div>`;
+  }
+}
+function loginView(msg = "") {
+  $("#app").innerHTML = `<div class="strip"><span>La revista de tu entrenamiento</span><span>Panel del entrenador</span></div>
+  <div class="wrap"><form class="login panel" id="login-form" novalidate>
+    <h1 class="mast" style="font-size:72px">${esc(S.config.marca || "Hierro")}</h1>
+    <div class="field"><label for="l-mail">Correo</label><input type="email" id="l-mail" autocomplete="username" required></div>
+    <div class="field"><label for="l-pass">Contraseña</label><input type="password" id="l-pass" autocomplete="current-password" required></div>
+    <span class="err" id="l-err" ${msg ? "" : "hidden"}>${esc(msg)}</span>
+    <button class="btn primary" type="submit">Entrar</button>
+  </form></div>`;
+  $("#login-form").addEventListener("submit", async ev => {
+    ev.preventDefault();
+    const { error } = await sb.auth.signInWithPassword({ email: $("#l-mail").value.trim(), password: $("#l-pass").value });
+    if (error) { $("#l-err").textContent = "Correo o contraseña incorrectos."; $("#l-err").hidden = false; return; }
+    startPanel();
+  });
+}
+async function startPanel() {
+  render();
+  try { await loadAll(); render(); }
+  catch (err) { $("#app").innerHTML = shell(`<div class="empty-state"><h4>No se pudieron cargar los datos</h4><p>${esc(err.message)}. Revisa la URL y la clave de Supabase en la configuración del archivo.</p></div>`); }
+}
+(async function init() {
+  const rid = new URLSearchParams(location.search).get("r");
+  if (!DEMO) {
+    try { await loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"); sb = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY); }
+    catch (err) { $("#app").innerHTML = `<div class="wrap"><div class="empty-state" style="margin:40px 0"><h4>Sin conexión</h4><p>No se pudo cargar la librería de Supabase. Revisa tu internet.</p></div></div>`; return; }
+  }
+  if (rid) return publicClient(rid);
+  if (!DEMO) { const { data } = await sb.auth.getSession(); if (!data.session) return loginView(); }
+  startPanel();
+})();
 </script>
-</body>
-</html>
+</body></html>
