@@ -1,4 +1,4 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Pedro Barron Rutinas</title>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta property="og:title" content="Tu rutina de hoy | Pedro Barron"><meta property="og:description" content="Ábrela para ver cada ejercicio con su dibujo y su video."><meta property="og:type" content="website"><meta property="og:image" content="img/og.jpg"><meta name="theme-color" content="#1f46a8"><title>Pedro Barron Rutinas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ultra&family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,800;1,900&family=Barlow:wght@400;500;600;700&display=swap">
@@ -215,6 +215,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
 .panel{border:3px solid var(--line);background:#fff;padding:16px;display:grid;gap:14px}
 .panel h3{margin:0;font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:22px;line-height:1.05;color:var(--blue)}
 .msg-preview{background:#dcf8c6;color:#111b21;padding:10px 12px;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere;border-radius:2px 10px 10px 10px;max-width:42ch;box-shadow:0 1px 0 rgba(0,0,0,.15)}
+.bot{display:grid;gap:6px;justify-items:start}.bot p{margin:0;font-size:14px}
 .callout{border-left:6px solid var(--yellow);background:var(--tint-blue);padding:10px 14px;font-size:14px}
 
 /* Vista del cliente */
@@ -774,13 +775,13 @@ function vEnvios() {
     else {
       const filas = dest.map(c => {
         const e = env.find(x => x.cliente_id === c.id);
-        const chip = !e ? '<span class="chip muted">Pendiente</span>' : e.estado === "enviado" ? '<span class="chip ok">Enviado</span>' : e.estado === "fallo" ? '<span class="chip bad">Falló</span>' : '<span class="chip warn">En cola</span>';
-        return `<tr><td class="cell-name">${esc(c.nombre)}</td><td class="num">${esc(c.whatsapp)}</td><td>${chip}${e?.error ? `<div class="err" style="margin-top:4px">${esc(e.error)}</div>` : ""}</td><td class="num">${e?.enviado_at ? e.enviado_at.slice(11, 16) : ""}</td>
+        const chip = !e ? '<span class="chip muted">Sin enviar</span>' : e.estado === "enviado" ? '<span class="chip ok">Enviado</span>' : e.estado === "fallo" ? '<span class="chip bad">Falló</span>' : e.estado === "enviando" ? '<span class="chip info">Enviando</span>' : '<span class="chip warn">En cola</span>';
+        return `<tr><td class="cell-name">${esc(c.nombre)}</td><td class="num">${esc(c.whatsapp)}</td><td>${chip}${e?.error ? `<div class="err" style="margin-top:4px">${esc(e.error)}</div>` : ""}</td><td class="num">${e?.estado === "enviado" && e.enviado_at ? e.enviado_at.slice(11, 16) : ""}</td>
         <td><div class="row-actions">${e && e.estado === "fallo" ? `<button class="btn small" data-act="resend" data-id="${e.id}">Reenviar</button>` : ""}</div></td></tr>`;
       }).join("");
       const sinEnviar = dest.filter(c => !env.find(x => x.cliente_id === c.id)).length;
       body = `<div class="toolbar" style="justify-content:space-between"><span><b>${esc(r.titulo)}</b> · ${itemsDe(r.id).length} ejercicios</span>
-        ${f >= HOY && sinEnviar ? `<button class="btn primary small" data-act="send-now" data-id="${r.id}" data-m="${esc(m.id)}">Enviar ahora a ${sinEnviar}</button>` : ""}</div>
+        ${f === HOY && sinEnviar ? `<button class="btn primary small" data-act="send-now" data-id="${r.id}" data-m="${esc(m.id)}">Enviar ahora a ${sinEnviar}</button>` : ""}</div>
         ${dest.length ? `<div class="table-wrap"><table style="min-width:560px"><thead><tr><th>Cliente</th><th>WhatsApp</th><th>Estado</th><th>Hora</th><th><span hidden>Acciones</span></th></tr></thead><tbody>${filas}</tbody></table></div>` : `<p class="dek" style="margin:0">No hay clientes activos en esta membresía.</p>`}`;
     }
     return `<section class="panel"><h3>Membresía ${esc(m.nombre)}</h3>${body}</section>`;
@@ -791,28 +792,54 @@ function vEnvios() {
     <div class="toolbar"><button class="btn small" data-act="envday" data-n="-1" aria-label="Día anterior">◀</button><input type="date" id="env-fecha" data-f="envFecha" value="${f}" aria-label="Fecha" style="width:auto"><button class="btn small" data-act="envday" data-n="1" aria-label="Día siguiente">▶</button></div></div>
   <div class="send-grid">
     <div style="display:grid;gap:18px">${blocks}</div>
-    <aside class="panel"><h3>Así le llega</h3>
+    <div style="display:grid;gap:18px;align-content:start"><aside class="panel"><h3>Así le llega</h3>
       ${ejC && ejR && !ejR.descanso ? `<div class="msg-preview">${esc(mensaje(ejC, ejR))}</div>` : `<p class="dek" style="margin:0">Arma una rutina para ver el mensaje de ejemplo.</p>`}
-      <div class="callout">El envío lo hace el script de OpenWA en tu computadora: revisa la cola cada minuto, manda con pausas al azar y marca aquí si salió o falló. Hora diaria: <b>${esc(S.config.hora_envio)}</b>. Se cambia en Ajustes.</div>
+      <div class="callout">El envío lo hace el programa de envío en la computadora donde corre OpenWA: revisa la cola cada minuto, manda con pausas al azar y marca aquí si salió o falló. Hora diaria: <b>${esc(S.config.hora_envio)}</b>. Se cambia en Ajustes.</div>
     </aside>
+    <aside class="panel"><h3>Conexión de WhatsApp</h3>${botHTML()}</aside></div>
   </div>`;
+}
+function botHTML() {
+  if (DEMO) return `<div class="bot ok"><span class="chip ok">Conectado</span><p>Simulado: sesión pedro-barron, revisado hace unos segundos.</p></div><p class="dek" style="margin:0;font-size:13px">Con Supabase conectado, aquí ves si el programa de envío está prendido y si WhatsApp está listo.</p>`;
+  const raw = S.config.bot_estado || "", visto = S.config.bot_visto ? new Date(S.config.bot_visto) : null;
+  const [k, ...t] = raw.split("|"), texto = t.join("|");
+  if (!visto) return `<div class="bot bad"><span class="chip bad">Sin señal</span><p>El programa de envío nunca se ha conectado. Ábrelo con doble clic en INICIAR_ENVIOS.bat en la computadora de OpenWA.</p></div>`;
+  const min = Math.round((Date.now() - visto) / 60000);
+  const hace = min < 1 ? "hace unos segundos" : min === 1 ? "hace 1 minuto" : min < 60 ? `hace ${min} minutos` : `el ${visto.toLocaleString("es-MX", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`;
+  if (min > 3) return `<div class="bot bad"><span class="chip bad">Apagado</span><p>El programa de envío no responde desde ${esc(hace)}. Revisa que la computadora esté prendida y que la ventana de INICIAR_ENVIOS siga abierta.</p></div>`;
+  return `<div class="bot ${k === "ok" ? "ok" : "warn"}"><span class="chip ${k === "ok" ? "ok" : "warn"}">${k === "ok" ? "Conectado" : "Revisar"}</span><p>${esc(texto)} Revisado ${esc(hace)}.</p></div>`;
+}
+let envT = null;
+function autoRefreshEnvios() {
+  clearInterval(envT); envT = null;
+  if (DEMO || S.view !== "envios") return;
+  envT = setInterval(async () => {
+    if (S.view !== "envios" || document.hidden || $("#dlg").open) return;
+    try {
+      const [envios, config] = await Promise.all([DB.all("envios"), DB.all("config")]);
+      S.envios = envios; S.config = config[0] || S.config;
+      const y = window.scrollY; render(); window.scrollTo(0, y);
+    } catch {}
+  }, 20000);
 }
 async function sendNow(rid, memb) {
   const ya = new Set(S.envios.filter(e => e.rutina_id === rid).map(e => e.cliente_id));
   const rows = receptores(memb).filter(c => !ya.has(c.id)).map(c => ({ rutina_id: rid, cliente_id: c.id, fecha: S.envFecha, estado: "pendiente", error: "", enviado_at: null }));
   try {
-    const ins = await DB.insertMany("envios", rows);
+    let ins = [];
+    if (DEMO) ins = await DB.insertMany("envios", rows);
+    else if (rows.length) { const { error } = await sb.from("envios").upsert(rows, { onConflict: "rutina_id,cliente_id", ignoreDuplicates: true }); if (error) throw error; }
     if (DEMO) {
       ins.forEach(r => { const m = mem.envios.find(x => x.id === r.id); m.estado = "enviado"; m.enviado_at = `${S.envFecha}T${new Date().toTimeString().slice(0, 8)}`; });
       toast(`Simulado: ${rows.length} mensajes enviados. En tu sistema real quedan en cola para OpenWA.`);
-    } else toast(`${rows.length} mensajes en cola. El script de OpenWA los manda en el siguiente minuto.`);
+    } else toast(`${rows.length} mensajes en cola. El programa de envío los manda en el siguiente minuto.`);
     await loadAll(); render();
   } catch (err) { toast("No se pudo poner en cola: " + err.message); }
 }
 async function resend(id) {
   try {
-    await DB.update("envios", id, DEMO ? { estado: "enviado", error: "", enviado_at: `${HOY}T${new Date().toTimeString().slice(0, 8)}` } : { estado: "pendiente", error: "" });
-    await loadAll(); render(); toast(DEMO ? "Simulado: reenviado." : "Reenvío en cola.");
+    await DB.update("envios", id, DEMO ? { estado: "enviado", error: "", enviado_at: `${HOY}T${new Date().toTimeString().slice(0, 8)}` } : { estado: "reenviar", error: "" });
+    await loadAll(); render(); toast(DEMO ? "Simulado: reenviado." : "Reenvío en cola. Sale en el siguiente minuto.");
   } catch (err) { toast("No se pudo reenviar: " + err.message); }
 }
 
@@ -909,7 +936,7 @@ document.addEventListener("click", async ev => {
   const b = ev.target.closest("[data-act]"); if (!b || b.disabled) return;
   const a = b.dataset.act, id = b.dataset.id;
   switch (a) {
-    case "view": S.view = id; render(); window.scrollTo({ top: 0 }); break;
+    case "view": S.view = id; render(); window.scrollTo({ top: 0 }); autoRefreshEnvios(); break;
     case "memb": S.memb = id; render(); break;
     case "week": S.week = Number(b.dataset.n) ? addDays(S.week, Number(b.dataset.n)) : mondayOf(HOY); render(); break;
     case "copy-week": b.disabled = true; await copyWeek(); break;
